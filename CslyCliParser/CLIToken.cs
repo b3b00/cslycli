@@ -10,6 +10,10 @@ public enum CLIToken
     BLOP = 0,
     
     [Mode("default","genericLexer")]
+    [AlphaId]
+    ID,
+    
+    [Mode("default","genericLexer")]
     [String("'","\\")] STRING,
 
     [Mode("default","genericLexer")]
@@ -57,8 +61,7 @@ public enum CLIToken
     [Mode("genericLexer")]
     [Keyword("Sugar")] SUGARTOKEN,
     
-    [AlphaId]
-    ID,
+   
     
     // [Keyword("parser")]
     // [Push("parser")]

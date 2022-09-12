@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\csly\sly\sly.csproj" />
       <ProjectReference Include="..\CslyCliParser\CslyCliParser.csproj" />
     </ItemGroup>
 

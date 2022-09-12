@@ -1,0 +1,41 @@
+genericLexer
+
+[String] STRING
+[Int] INT
+[AlphaId] ID # to be derived for every identifier types
+
+
+[ Sugar] IF:'if'
+[ Sugar] THEN:'then'
+[ Sugar] ELSE:'else'
+[ Sugar] WHILE:'while'
+[ Sugar] DO:'do'
+[ Sugar] SKIP:'skip'
+[ Sugar] TRUE:'true'
+[ Sugar] FALSE:'false'
+[ Sugar] NOT:'not'
+[ Sugar] AND:'and'
+[ Sugar] OR:'or'
+[ Sugar] PRINT:'print'
+
+ [Sugar] GREATER : '>'
+
+[Sugar] LESSER : '<'
+
+[Sugar] EQUALS : '=='
+
+[Sugar] DIFFERENT : '!='
+
+[Sugar] CONCAT : '.'
+
+[Sugar] ASSIGN : ':='
+
+[Sugar] PLUS : '+'
+[Sugar] MINUS : '-'
+[Sugar] TIMES : '*'
+[Sugar] DIVIDE : '/'
+
+[Sugar] LPAREN : '('
+[Sugar] RPAREN : ')'
+[Sugar] SEMICOLON : ';'
+

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>sly.cli</RootNamespace>        
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>botsay</ToolCommandName>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>csly-cli</ToolCommandName>
+        <PackageOutputPath>./nupkg</PackageOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="sly" Version="2.9.0.9" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CslyCliParser\CslyCliParser.csproj" />
+    </ItemGroup>
+
+</Project>

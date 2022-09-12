@@ -13,8 +13,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        TestParser();
-        // TestLexer();
+        // TestParser();
+        TestLexer();
     }
 
     private static void TestParser()
@@ -45,6 +45,9 @@ public class Program
 
         if (lexerBuildResult.IsOk)
         {
+            var generic = lexerBuildResult.Result as GenericLexer<CLIToken>;
+            var graph = generic.ToGraphViz();
+
             var content = File.ReadAllText(@"C:\Users\olduh\dev\csly-cli\csly-cli\test.txt");
             var tokens = lexerBuildResult.Result.Tokenize(content);
             if (tokens.IsOk)

@@ -6,11 +6,12 @@ namespace CslyCliParser;
 [Lexer(IgnoreEOL = true, IgnoreWS = true)]
 public enum CLIToken
 {
+
+    BLOP = 0,
     
     [Mode("default","genericLexer")]
     [String("'","\\")] STRING,
-    
-    
+
     [Mode("default","genericLexer")]
     [SingleLineComment("#")]
     COMMENT,
@@ -39,22 +40,22 @@ public enum CLIToken
     GENERICLEXER,
     
     [Mode("genericLexer")]
-    [Keyword("String")] STRING_TOKEN,
+    [Keyword("String")] STRINGTOKEN,
     
     [Mode("genericLexer")]
-    [Keyword("Int")] INT_TOKEN,
+    [Keyword("Int")] INTTOKEN,
     
     [Mode("genericLexer")]
-    [Keyword("Double")] DOUBLE_TOKEN,
+    [Keyword("Double")] DOUBLETOKEN,
     
     [Mode("genericLexer")]
-    [Keyword("AlphaId")] ALPHA_ID_TOKEN,
+    [Keyword("AlphaId")] ALPHAIDTOKEN,
     
     [Mode("genericLexer")]
-    [Keyword("KeyWord")] KEYWORD_TOKEN,
+    [Keyword("KeyWord")] KEYWORDTOKEN,
     
     [Mode("genericLexer")]
-    [Keyword("Sugar")] SUGAR_TOKEN,
+    [Keyword("Sugar")] SUGARTOKEN,
     
     [AlphaId]
     ID,

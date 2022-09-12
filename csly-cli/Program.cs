@@ -13,14 +13,14 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        // TestParser();
-        TestLexer();
+        TestParser();
+        // TestLexer();
     }
 
     private static void TestParser()
     {
         ParserBuilder<CLIToken, object> builder = new ParserBuilder<CLIToken, object>();
-        var instance = new ClIParser();
+        var instance = new CLIParser();
         //TestLexer();
 
         var buildParser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, "root");

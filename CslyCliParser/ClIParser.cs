@@ -3,7 +3,7 @@ using sly.parser.generator;
 
 namespace CslyCliParser;
 
-public class ClIParser
+public class CLIParser
 {
     [Production("root: generic")] 
     public object Root(object genericLex)
@@ -22,7 +22,7 @@ public class ClIParser
         "token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN] RIGHTBRACKET[d] ID COLON[d] STRING")]
     public object Token(Token<CLIToken> type, Token<CLIToken> id, Token<CLIToken> value)
     {
-        Console.WriteLine($"[{type.TokenID}] {id.Value} = '{value.Value.Trim()}'");
+        Console.WriteLine($"[{type.TokenID}] {id.Value} = '{value.StringWithoutQuotes.Trim()}'");
         return null;
     }
 

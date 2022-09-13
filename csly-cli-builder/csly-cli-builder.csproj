@@ -2,12 +2,17 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>csly_cli_builder</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\csly\sly\sly.csproj" />
+      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
     </ItemGroup>
 
 </Project>

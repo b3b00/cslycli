@@ -1,16 +1,13 @@
 using System.Diagnostics;
 using sly.lexer;
 
-namespace CslyCliParser;
+namespace csly.cli.parser;
 
 [Lexer(IgnoreEOL = true, IgnoreWS = true)]
 public enum CLIToken
 {
 
     BLOP = 0,
-    
-    [AlphaId]
-    ID,
     
     [String("'","\\")] STRING,
 
@@ -32,5 +29,8 @@ public enum CLIToken
     [Keyword("AlphaId")] ALPHAIDTOKEN,
     [Keyword("KeyWord")] KEYWORDTOKEN,
     [Keyword("Sugar")] SUGARTOKEN,
+    
+    [AlphaId]
+    ID,
     
 }

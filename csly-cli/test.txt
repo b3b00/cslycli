@@ -5,18 +5,18 @@ genericLexer
 [AlphaId] ID # to be derived for every identifier types
 
 
-[ Sugar] IF:'if'
-[ Sugar] THEN:'then'
-[ Sugar] ELSE:'else'
-[ Sugar] WHILE:'while'
-[ Sugar] DO:'do'
-[ Sugar] SKIP:'skip'
-[ Sugar] TRUE:'true'
-[ Sugar] FALSE:'false'
-[ Sugar] NOT:'not'
-[ Sugar] AND:'and'
-[ Sugar] OR:'or'
-[ Sugar] PRINT:'print'
+[ KeyWord] IF:'if'
+[ KeyWord] THEN:'then'
+[ KeyWord] ELSE:'else'
+[ KeyWord] WHILE:'while'
+[ KeyWord] DO:'do'
+[ KeyWord] SKIP:'skip'
+[ KeyWord] TRUE:'true'
+[ KeyWord] FALSE:'false'
+[ KeyWord] NOT:'not'
+[ KeyWord] AND:'and'
+[ KeyWord] OR:'or'
+[ KeyWord] PRINT:'print'
 
  [Sugar] GREATER : '>'
 

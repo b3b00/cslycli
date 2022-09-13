@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>csly.cli.parser</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\csly\sly\sly.csproj" />
+      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
+    </ItemGroup>
+
+</Project>

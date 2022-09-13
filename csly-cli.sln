@@ -2,9 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli", "csly-cli\csly-cli.csproj", "{94827C4E-8D15-4C45-AB84-7F3F7BD95123}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslyCliParser", "CslyCliParser\CslyCliParser.csproj", "{9EC8F4D5-62E0-4B55-81F5-FB7812CE5B00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-parser", "csly-cli-parser\csly-cli-parser.csproj", "{9EC8F4D5-62E0-4B55-81F5-FB7812CE5B00}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sly", "..\csly\sly\sly.csproj", "{4771FB1F-ABF6-4824-A6CD-DB948B18164C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-model", "csly-cli-model\csly-cli-model.csproj", "{3CD89683-E02F-4BB3-AE01-52DE6AA5BE6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-builder", "csly-cli-builder\csly-cli-builder.csproj", "{B51D5FDB-CFC8-4BEA-AAF9-439A86993C77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +28,13 @@ Global
 		{4771FB1F-ABF6-4824-A6CD-DB948B18164C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4771FB1F-ABF6-4824-A6CD-DB948B18164C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4771FB1F-ABF6-4824-A6CD-DB948B18164C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CD89683-E02F-4BB3-AE01-52DE6AA5BE6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CD89683-E02F-4BB3-AE01-52DE6AA5BE6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CD89683-E02F-4BB3-AE01-52DE6AA5BE6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CD89683-E02F-4BB3-AE01-52DE6AA5BE6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B51D5FDB-CFC8-4BEA-AAF9-439A86993C77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B51D5FDB-CFC8-4BEA-AAF9-439A86993C77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B51D5FDB-CFC8-4BEA-AAF9-439A86993C77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B51D5FDB-CFC8-4BEA-AAF9-439A86993C77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

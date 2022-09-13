@@ -10,7 +10,7 @@ namespace clsy.cli.builder.lexer;
 public class LexerBuilder
 {
 
-        public static string DynamixAssemblyName = "LexerAssembly";
+        public static string DynamicAssemblyName = "LexerAssembly";
 
         public static string DynamicLexerName = "DynamicLexer";
 
@@ -31,7 +31,7 @@ public class LexerBuilder
 // Create a dynamic assembly in the current application domain,
 // and allow it to be executed and saved to disk.
 
-            AssemblyName aName = new AssemblyName(DynamixAssemblyName);
+            AssemblyName aName = new AssemblyName(DynamicAssemblyName);
 
             var dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(aName,
                 AssemblyBuilderAccess.Run);

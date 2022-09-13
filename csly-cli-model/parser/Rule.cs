@@ -12,6 +12,11 @@ namespace csly.cli.model.parser
             Clauses = new List<IClause>();
         }
 
+        public bool IsRule => true;
+        public bool IsPrefix => false;
+        public bool IsOperand => false;
+        public bool IsInfix = false;
+
         public Rule(string name, List<IClause> clauses)
         {
             NonTerminalName = name;

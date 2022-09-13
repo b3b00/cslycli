@@ -28,7 +28,7 @@ public class Program
 
     
 
-    private static LexerModel TestParser()
+    private static Model TestParser()
     {
         ParserBuilder<CLIToken, ICLIModel> builder = new ParserBuilder<CLIToken, ICLIModel>();
         var instance = new CLIParser();
@@ -47,7 +47,7 @@ public class Program
             {
                 Model model = result.Result as Model;
                 model.LexerModel.Tokens.ForEach(Console.WriteLine);
-                return model.LexerModel;
+                return model;
             }
         }
         else

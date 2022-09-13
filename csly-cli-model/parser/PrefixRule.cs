@@ -7,6 +7,12 @@ namespace csly.cli.model.parser
 {
     public class PrefixRule : Rule
     {
+        
+        public bool IsRule => false;
+        public bool IsPrefix => true;
+        public bool IsOperand => false;
+        public bool IsInfix = false;
+        
         public PrefixRule()
         {
             Name = null;

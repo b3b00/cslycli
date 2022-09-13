@@ -86,7 +86,7 @@ public class CLIParser
         [Production("rule : LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d] ID SEMICOLON[d]")]
         public ICLIModel OperandRule(Token<CLIToken> id, ParserContext context)
         {
-            return new OperandRule(id.Value);
+            return new OperandRule(id.Value, context.IsTerminal(id.Value));
         }
         
         [Production("rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] ID SEMICOLON[d]")]

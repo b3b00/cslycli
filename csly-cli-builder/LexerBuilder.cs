@@ -1,12 +1,11 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
-using csly_cli_model;
+using clsy.cli.builder.parser.cli.model;
+using csly.cli.model.lexer;
 using sly.lexer;
 using sly.lexer.fsm;
 
-namespace csly_cli_builder;
+namespace clsy.cli.builder.lexer;
 
 public class LexerBuilder
 {
@@ -17,24 +16,34 @@ public class LexerBuilder
 
         public static (object lexerBuildResult, Type tokenType) BuildLexer(LexerModel model)
         {
-                AppDomain currentDomain = AppDomain.CurrentDomain;
+         
+
+// Create the type and save the assembly.
+            Type finished = BuildLexerEnum(model);
+                
+                return (BuildIt(finished), finished);
+        }
+        
+        public static Type BuildLexerEnum(LexerModel model)
+        {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
 
 // Create a dynamic assembly in the current application domain,
 // and allow it to be executed and saved to disk.
 
-                AssemblyName aName = new AssemblyName(DynamixAssemblyName);
+            AssemblyName aName = new AssemblyName(DynamixAssemblyName);
 
-                var dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(aName,
-                        AssemblyBuilderAccess.Run);
+            var dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(aName,
+                AssemblyBuilderAccess.Run);
 
 
 // Define a dynamic module in "TempAssembly" assembly. For a single-
 // module assembly, the module has the same name as the assembly.
-                ModuleBuilder moduleBuilder = dynamicAssembly.DefineDynamicModule(aName.Name);
+            ModuleBuilder moduleBuilder = dynamicAssembly.DefineDynamicModule(aName.Name);
 
 // Define a public enumeration with the name "Elevation" and an 
 // underlying type of Integer.
-                EnumBuilder enumBuilder = moduleBuilder.DefineEnum(DynamicLexerName, TypeAttributes.Public, typeof(int));
+            EnumBuilder enumBuilder = moduleBuilder.DefineEnum(DynamicLexerName, TypeAttributes.Public, typeof(int));
 
 // Define two members, "High" and "Low".
 
@@ -52,9 +61,9 @@ public class LexerBuilder
 
 
 // Create the type and save the assembly.
-                Type finished = enumBuilder.CreateType();
+            Type finished = enumBuilder.CreateType();
                 
-                return (BuildIt(finished), finished);
+            return finished;
         }
 
         private static void AddAttribute(TokenModel model, FieldBuilder builder)

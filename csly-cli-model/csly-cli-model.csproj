@@ -2,13 +2,17 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>csly-cli.model</RootNamespace>
+        <RootNamespace>clsy.cli.model</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\csly\sly\sly.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="parser\LeadingToken.cs" />
     </ItemGroup>
 
 </Project>

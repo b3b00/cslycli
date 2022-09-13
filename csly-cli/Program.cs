@@ -2,13 +2,10 @@
 
 using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using csly_cli_model;
+using clsy.cli.builder.parser.cli.model;
+using csly.cli.model;
 using csly.cli.parser;
-using sly.buildresult;
 using sly.lexer;
-using sly.lexer.fsm;
 using sly.parser.generator;
 
 public class Program
@@ -16,39 +13,8 @@ public class Program
     public static void Main(string[] args)
     {
         var model = TestParser();
-        var lexerResult = csly_cli_builder.LexerBuilder.BuildLexer(model);
-Console.WriteLine("lexer build");
-        var iLexerType = typeof(ILexer<>);
-        iLexerType = iLexerType.MakeGenericType(lexerResult.tokenType);
-Console.WriteLine("ILexer<IN>");
-        var buildResultType = typeof(BuildResult<>);
-        buildResultType = buildResultType.MakeGenericType(iLexerType);
-        Console.WriteLine("buildLexer<IN>");        
-        var resultProperty = buildResultType.GetProperty("Result");
-        var lexer = resultProperty.GetValue(lexerResult.lexerBuildResult, null);
-        var resultPropertyGetter = resultProperty.GetMethod;
-        // resultPropertyGetter = resultPropertyGetter.MakeGenericMethod(iLexerType);
-        // var lexer = resultPropertyGetter.Invoke(lexerResult.lexerBuildResult, new object[] { });
-        //var lexer = resultProperty.GetValue(lexerResult.lexerBuildResult);
-        Console.WriteLine($"result.Result {lexer.GetType()}");
-        
-        var genLexType = typeof(GenericLexer<>);
-        var genGenLexType = genLexType.MakeGenericType(lexerResult.tokenType);
-        Console.WriteLine("GenericLexer<IN>");
-        var meth = genGenLexType.GetMethod("Tokenize", new Type[] { typeof(string) });
-        Console.WriteLine("tokenize");
-        var t = meth.Invoke(lexer, new object[] { "(a:=0; while a < 10 do (print a; a := a +1 ))" });
-        Console.WriteLine("called");
-        
-        Console.WriteLine(t);
-
-        var lexResultType = typeof(LexerResult<>);
-        lexResultType = lexResultType.MakeGenericType(lexerResult.tokenType);
-        var dumpMethod = lexResultType.GetMethod("Dump", new Type[] { });
-        dumpMethod.Invoke(t, new object[]{});
-
-
-
+        var enumType = clsy.cli.builder.lexer.LexerBuilder.BuildLexer(model);
+        Console.WriteLine(enumType);
         // TestLexer();
     }
 
@@ -71,7 +37,7 @@ Console.WriteLine("ILexer<IN>");
             }
             else
             {
-                // (result.Result as LexerModel).Tokens.ForEach(Console.WriteLine);
+                (result.Result as LexerModel).Tokens.ForEach(Console.WriteLine);
                 return result.Result as LexerModel;
             }
         }

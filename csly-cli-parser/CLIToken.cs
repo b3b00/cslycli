@@ -9,6 +9,8 @@ public enum CLIToken
 
     BLOP = 0,
     
+    [Int] INT,
+    
     [String("'","\\")] STRING,
 
     [SingleLineComment("#")]
@@ -30,7 +32,35 @@ public enum CLIToken
     [Keyword("KeyWord")] KEYWORDTOKEN,
     [Keyword("Sugar")] SUGARTOKEN,
     
-    [AlphaId]
+    
+    
+    
+    [AlphaNumDashId] 
     ID,
+        
+    
+        
+    [Sugar("*")]
+    ZEROORMORE,
+        
+    [Sugar("+")]
+    ONEORMORE,
+        
+    [Sugar("?")]
+    OPTION ,
+        
+    [Sugar("[d]")]
+    DISCARD,
+        
+   
+        
+    [Sugar("|")]
+    OR,
+    
+    [Keyword("Right")] RIGHT,
+    [Keyword("Left")] LEFT,
+    [Keyword("Operand")] OPERAND,
+    [Keyword("Prefix")] PREFIX,
+    
     
 }

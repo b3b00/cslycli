@@ -5,18 +5,18 @@ genericLexer
 [AlphaId] ID # to be derived for every identifier types
 
 
-[ KeyWord] IF:'if'
-[ KeyWord] THEN:'then'
-[ KeyWord] ELSE:'else'
-[ KeyWord] WHILE:'while'
-[ KeyWord] DO:'do'
-[ KeyWord] SKIP:'skip'
-[ KeyWord] TRUE:'true'
-[ KeyWord] FALSE:'false'
-[ KeyWord] NOT:'not'
-[ KeyWord] AND:'and'
-[ KeyWord] OR:'or'
-[ KeyWord] PRINT:'print'
+[ Sugar] IF:'if'
+[ Sugar] THEN:'then'
+[ Sugar] ELSE:'else'
+[ Sugar] WHILE:'while'
+[ Sugar] DO:'do'
+[ Sugar] SKIP:'skip'
+[ Sugar] TRUE:'true'
+[ Sugar] FALSE:'false'
+[ Sugar] NOT:'not'
+[ Sugar] AND:'and'
+[ Sugar] OR:'or'
+[ Sugar] PRINT:'print'
 
  [Sugar] GREATER : '>'
 
@@ -39,3 +39,52 @@ genericLexer
 [Sugar] RPAREN : ')'
 [Sugar] SEMICOLON : ';'
 
+Parser
+
+# operations 
+
+[Right 50] LESSER
+[Right 50] GREATER
+[Right 50] EQUALS
+[Right 50]DIFFERENT
+
+[Right 10] CONCAT
+       
+[Right 10] PLUS
+[Left 10] MINUS
+[Right 50] TIMES
+[Left 50]DIVIDE
+
+[Prefix 100] MINUS
+
+[Right 10] OR
+[Right 50] AND
+[Prefix 100] NOT
+
+# operands
+
+[Operand] INT
+[Operand] TRUE
+[Operand] FALSE
+[Operand] STRING
+[Operand] ID
+
+# statements
+
+statement :  LPAREN statement RPAREN 
+
+statement : sequence
+
+sequence : statementPrim additionalStatements*
+
+additionalStatements : SEMICOLON statementPrim
+
+statementPrim: IF WhileParserGeneric_expressions THEN statement ELSE statement
+
+statementPrim: WHILE WhileParserGeneric_expressions DO statement
+
+statementPrim: IDENTIFIER ASSIGN WhileParserGeneric_expressions
+
+statementPrim: SKIP
+
+statementPrim: PRINT parser_expressions

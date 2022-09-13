@@ -9,7 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\csly\sly\sly.csproj" />
-      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
+      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />      
     </ItemGroup>
 
 </Project>

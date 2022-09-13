@@ -1,4 +1,4 @@
-﻿namespace csly_cli_model;
+﻿namespace csly.cli.model;
 
 public interface ICLIModel
 {

@@ -10,14 +10,14 @@ namespace csly.cli.parser;
 
 public class CLIParser
 {
-    [Production("root: generic parser")] 
+    [Production("root: genericRoot parserRoot ")] 
     public ICLIModel Root(ICLIModel genericLex, ICLIModel parser, ParserContext context)
     {
         return new Model(genericLex as LexerModel, parser as ParserModel) ;
     }
 
-    [Production("parser : rule*")]
-    public ICLIModel Parser(List<ICLIModel> rules)
+    [Production("parserRoot : PARSER[d] SEMICOLON[d] rule*")]
+    public ICLIModel Parser(List<ICLIModel> rules, ParserContext context)
     {
         return new ParserModel()
         {
@@ -26,15 +26,17 @@ public class CLIParser
     }
     
     #region generic lexer
+
+  
     
-    [Production("generic : GENERICLEXER[d]  token*")]
+    [Production("genericRoot : GENERICLEXER[d] SEMICOLON[d]  token*")]
     public ICLIModel lexer(List<ICLIModel> tokens, ParserContext context)
     {
         return new LexerModel(tokens.Cast<TokenModel>().ToList());
     }
 
     [Production(
-        "token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN] RIGHTBRACKET[d] ID COLON[d] STRING")]
+        "token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d]")]
     public ICLIModel Token(Token<CLIToken> type, Token<CLIToken> id, Token<CLIToken> value, ParserContext context)
     {
         var tokenType = type.TokenID switch
@@ -47,7 +49,7 @@ public class CLIParser
         return new TokenModel(tokenType,id.Value,value.StringWithoutQuotes);
     }
 
-    [Production("token : LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID")]
+    [Production("token : LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d]")]
     public ICLIModel StringToken(Token<CLIToken> type, Token<CLIToken> id, ParserContext context)
     {
         var tokenType = type.TokenID switch
@@ -72,7 +74,7 @@ public class CLIParser
 
  
 
-        [Production("rule : ID COLON[d] clause+")]
+        [Production("rule : ID COLON[d] clause+ SEMICOLON[d]")]
         public GrammarNode Root(Token<CLIToken> name, List<ICLIModel> clauses, ParserContext context)
         {
             var rule = new Rule();
@@ -80,6 +82,26 @@ public class CLIParser
             rule.Clauses = clauses.Cast<IClause>().ToList();
             return rule;
         }
+        
+        [Production("rule : LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d] ID SEMICOLON[d]")]
+        public ICLIModel OperandRule(Token<CLIToken> id, ParserContext context)
+        {
+            return new OperandRule(id.Value);
+        }
+        
+        [Production("rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] ID SEMICOLON[d]")]
+        public ICLIModel PrefixRule(Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
+        {
+            return new PrefixRule(id.Value,precedence.IntValue);
+        }
+        
+        [Production("rule : LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] ID SEMICOLON[d]")]
+        public ICLIModel InfixRule(Token<CLIToken> rightOrLeft, Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
+        {
+            return new InfixRule(id.Value,rightOrLeft.TokenID == CLIToken.LEFT ? Associativity.Left : Associativity.Right, precedence.IntValue);
+        }
+        
+        
        
         [Production("clause : ID ZEROORMORE[d]")]
         public IClause ZeroMoreClause(Token<CLIToken> id, ParserContext context)
@@ -138,23 +160,7 @@ public class CLIParser
             return new ChoiceClause(headClause,tail.Choices);
         }
 
-        [Production("clause : LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d] ID")]
-        public ICLIModel OperandClause(Token<CLIToken> id, ParserContext context)
-        {
-            return null;
-        }
-        
-        [Production("clause : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] ID")]
-        public ICLIModel PrefixClause(Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
-        {
-            return null;
-        }
-        
-        [Production("clause : LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] ID")]
-        public ICLIModel PrefixClause(Token<CLIToken> rightOrLeft, Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
-        {
-            return null;
-        }
+       
 
         [Production("clause : ID ")]
         public IClause SimpleClause(Token<CLIToken> id, ParserContext context)
@@ -220,15 +226,6 @@ public class CLIParser
             group.Clauses.AddRange(groups.Skip(1).Select(x => BuildTerminalOrNonTerimal(x.Value,context)).ToList());
             return group;
         }
-
-
-        [Production("groupclause : choiceclause ")]
-        public GroupClause GroupChoiceClause(ChoiceClause choices)
-        {
-            return new GroupClause(choices);
-        }
-
-
 
         #endregion
 

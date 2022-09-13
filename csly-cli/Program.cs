@@ -13,8 +13,16 @@ public class Program
     public static void Main(string[] args)
     {
         var model = TestParser();
-        var enumType = clsy.cli.builder.lexer.LexerBuilder.BuildLexer(model);
-        Console.WriteLine(enumType);
+        if (model != null)
+        {
+            //csly.cli.builder.parser.ParserBuilder.BuildParser(model);
+            var builder = new clsy.cli.builder.parser.ParserBuilder();
+            builder.BuildParser(model);
+        }
+        else
+        {
+            Console.WriteLine("bof");
+        }
         // TestLexer();
     }
 
@@ -30,15 +38,16 @@ public class Program
         if (buildParser.IsOk)
         {
             var content = File.ReadAllText(@"C:\Users\olduh\dev\csly-cli\csly-cli\test.txt");
-            var result = buildParser.Result.Parse(content);
+            var result = buildParser.Result.ParseWithContext(content, new ParserContext());
             if (result.IsError)
             {
                 result.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
             }
             else
             {
-                (result.Result as LexerModel).Tokens.ForEach(Console.WriteLine);
-                return result.Result as LexerModel;
+                Model model = result.Result as Model;
+                model.LexerModel.Tokens.ForEach(Console.WriteLine);
+                return model.LexerModel;
             }
         }
         else

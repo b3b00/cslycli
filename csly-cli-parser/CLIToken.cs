@@ -7,7 +7,8 @@ namespace csly.cli.parser;
 public enum CLIToken
 {
 
-    BLOP = 0,
+    [Sugar(";")]
+    SEMICOLON = 0,
     
     [Int] INT,
     
@@ -24,6 +25,9 @@ public enum CLIToken
     
     [Keyword("genericLexer")]
     GENERICLEXER,
+    [Keyword("parser")]
+    PARSER,
+    
     
     [Keyword("String")] STRINGTOKEN,
     [Keyword("Int")] INTTOKEN,

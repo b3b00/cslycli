@@ -1,90 +1,90 @@
-genericLexer
+genericLexer;
 
-[String] STRING
-[Int] INT
-[AlphaId] ID # to be derived for every identifier types
+[String] STRING;
+[Int] INT;
+[AlphaId] ID; # to be derived for every identifier types
 
 
-[ Sugar] IF:'if'
-[ Sugar] THEN:'then'
-[ Sugar] ELSE:'else'
-[ Sugar] WHILE:'while'
-[ Sugar] DO:'do'
-[ Sugar] SKIP:'skip'
-[ Sugar] TRUE:'true'
-[ Sugar] FALSE:'false'
-[ Sugar] NOT:'not'
-[ Sugar] AND:'and'
-[ Sugar] OR:'or'
-[ Sugar] PRINT:'print'
+[ Sugar] IF:'if';
+[ Sugar] THEN:'then';
+[ Sugar] ELSE:'else';
+[ Sugar] WHILE:'while';
+[ Sugar] DO:'do';
+[ Sugar] SKIP:'skip';
+[ Sugar] TRUE:'true';
+[ Sugar] FALSE:'false';
+[ Sugar] NOT:'not';
+[ Sugar] AND:'and';
+[ Sugar] OR:'or';
+[ Sugar] PRINT:'print';
 
- [Sugar] GREATER : '>'
+ [Sugar] GREATER : '>';
 
-[Sugar] LESSER : '<'
+[Sugar] LESSER : '<';
 
-[Sugar] EQUALS : '=='
+[Sugar] EQUALS : '==';
 
-[Sugar] DIFFERENT : '!='
+[Sugar] DIFFERENT : '!=';
 
-[Sugar] CONCAT : '.'
+[Sugar] CONCAT : '.';
 
-[Sugar] ASSIGN : ':='
+[Sugar] ASSIGN : ':=';
 
-[Sugar] PLUS : '+'
-[Sugar] MINUS : '-'
-[Sugar] TIMES : '*'
-[Sugar] DIVIDE : '/'
+[Sugar] PLUS : '+';
+[Sugar] MINUS : '-';
+[Sugar] TIMES : '*';
+[Sugar] DIVIDE : '/';
 
-[Sugar] LPAREN : '('
-[Sugar] RPAREN : ')'
-[Sugar] SEMICOLON : ';'
+[Sugar] LPAREN : '(';
+[Sugar] RPAREN : ')';
+[Sugar] SEMICOLON : ';';
 
-Parser
+parser;
 
 # operations 
 
-[Right 50] LESSER
-[Right 50] GREATER
-[Right 50] EQUALS
-[Right 50]DIFFERENT
+[Right 50] LESSER;
+[Right 50] GREATER;
+[Right 50] EQUALS;
+[Right 50]DIFFERENT;
 
-[Right 10] CONCAT
+[Right 10] CONCAT;
        
-[Right 10] PLUS
-[Left 10] MINUS
-[Right 50] TIMES
-[Left 50]DIVIDE
+[Right 10] PLUS;
+[Left 10] MINUS;
+[Right 50] TIMES;
+[Left 50]DIVIDE;
 
-[Prefix 100] MINUS
+[Prefix 100] MINUS;
 
-[Right 10] OR
-[Right 50] AND
-[Prefix 100] NOT
+[Right 10] OR;
+[Right 50] AND;
+[Prefix 100] NOT;
 
 # operands
 
-[Operand] INT
-[Operand] TRUE
-[Operand] FALSE
-[Operand] STRING
-[Operand] ID
+[Operand] INT;
+[Operand] TRUE;
+[Operand] FALSE;
+[Operand] STRING;
+[Operand] ID;
 
 # statements
 
-statement :  LPAREN statement RPAREN 
+statement :  LPAREN statement RPAREN ;
 
-statement : sequence
+statement : sequence;
 
-sequence : statementPrim additionalStatements*
+sequence : statementPrim additionalStatements*;
 
-additionalStatements : SEMICOLON statementPrim
+additionalStatements : SEMICOLON statementPrim;
 
-statementPrim: IF WhileParserGeneric_expressions THEN statement ELSE statement
+statementPrim: IF WhileParserGeneric_expressions THEN statement ELSE statement;
 
-statementPrim: WHILE WhileParserGeneric_expressions DO statement
+statementPrim: WHILE WhileParserGeneric_expressions DO statement;
 
-statementPrim: IDENTIFIER ASSIGN WhileParserGeneric_expressions
+statementPrim: IDENTIFIER ASSIGN WhileParserGeneric_expressions;
 
-statementPrim: SKIP
+statementPrim: SKIP;
 
-statementPrim: PRINT parser_expressions
+statementPrim: PRINT dynamicParser_expressions;

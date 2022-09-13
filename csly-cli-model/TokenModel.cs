@@ -8,7 +8,7 @@ public class TokenModel : ICLIModel
     
     public string Name { get; set; }
     
-    public string Arg { get; set; }
+    public string[] Args { get; set; }
 
     
 
@@ -16,15 +16,15 @@ public class TokenModel : ICLIModel
     {
         Type = type;
         Name = name;
-        Arg = "";
+        Args = new [] {""};
     }
-    public TokenModel(GenericToken type, string name, string arg) : this(type,name)
+    public TokenModel(GenericToken type, string name, params string[] args) : this(type,name)
     {
-        Arg = arg;
+        Args = args;
     }
 
     public override string ToString()
     {
-        return $"[{Type} {Name}] {Arg}";
+        return $"[{Type} {Name}] {string.Join(", ",Args)}";
     }
 }

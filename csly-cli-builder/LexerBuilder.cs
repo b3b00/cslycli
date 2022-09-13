@@ -59,30 +59,7 @@ public class LexerBuilder
 
         private static void AddAttribute(TokenModel model, FieldBuilder builder)
         {
-            switch (model.Type) 
-            {
-                case GenericToken.Int:
-                case GenericToken.Double:
-                {
-                    Add(model.Type,builder, new string[] {});
-                    break;
-                }
-                case GenericToken.String:
-                {
-                    Add(model.Type,builder,"\"","\\");
-                    break;
-                }
-                default:
-                {
-                    Add(model.Type,builder, new []{model.Arg});
-                    break;
-                }
-            }
-
-            
-
-            
-            
+            Add(model.Type,builder, model.Args);
         }
 
         private static void Add(GenericToken genericToken, FieldBuilder builder, params string[] args)
@@ -111,8 +88,4 @@ public class LexerBuilder
             return built;
         }
         
-        private static Type GetGenericType(Type type, Type enumType)
-        {
-            return type.MakeGenericType(enumType);
-        }
 }

@@ -50,12 +50,18 @@ public class ParserBuilder
         OptionType = typeof(ValueOption<object>);
         GroupListType = BuilderHelper.BuildGenericType(typeof(List<>), GroupType);
 
-        TypeBuilder typeBuilder = moduleBuilder.DefineType(DynamicParserName, TypeAttributes.Public, typeof(int));
+        TypeBuilder typeBuilder = moduleBuilder.DefineType(DynamicParserName, TypeAttributes.Public, typeof(object));
 
         foreach (var rule in model.ParserModel.Rules)
         {
             BuildVisitor(typeBuilder,rule);
         }
+
+        var constructorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
+        var il = constructorBuilder.GetILGenerator();
+        il.Emit(OpCodes.Ldnull);
+        il.Emit(OpCodes.Ret);
+        
         
         
         Type compiledType = typeBuilder.CreateType();
@@ -64,7 +70,7 @@ public class ParserBuilder
 
     private object BuildIt(Type parserType, string root)
     {
-        var constructor = parserType.GetConstructor(BindingFlags.Default, Type.EmptyTypes);
+        var constructor = parserType.GetConstructor(Type.EmptyTypes);
         var instance = constructor.Invoke(new object?[]{});
         var builderType = typeof(ParserBuilder<,>);
         builderType = builderType.MakeGenericType(EnumType, ObjectType);

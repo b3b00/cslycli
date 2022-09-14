@@ -11,6 +11,9 @@ namespace csly.cli.model.parser
 
         public string NonTerminalName { get; set; }
 
-       
+        public override string ToString()
+        {
+            return NonTerminalName;
+        }
     }
 }

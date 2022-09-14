@@ -42,7 +42,6 @@ namespace csly.cli.model.parser
         public List<IClause> Clauses { get; set; }
 
         public string NonTerminalName { get; set; }
-
-       
+        public bool IsRoot { get; set; }
     }
 }

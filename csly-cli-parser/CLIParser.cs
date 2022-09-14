@@ -74,12 +74,13 @@ public class CLIParser
 
  
 
-        [Production("rule : ID COLON[d] clause+ SEMICOLON[d]")]
-        public GrammarNode Root(Token<CLIToken> name, List<ICLIModel> clauses, ParserContext context)
+        [Production("rule  : ROOT? ID COLON[d] clause+ SEMICOLON[d]")]
+        public GrammarNode Root(Token<CLIToken> root, Token<CLIToken> name, List<ICLIModel> clauses, ParserContext context)
         {
             var rule = new Rule();
             rule.NonTerminalName = name.Value;
             rule.Clauses = clauses.Cast<IClause>().ToList();
+            rule.IsRoot = !root.IsEmpty;
             return rule;
         }
         

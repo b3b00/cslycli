@@ -11,5 +11,9 @@ namespace csly.cli.model.parser
 
         public IClause Clause { get; set; }
 
+        public override string ToString()
+        {
+            return $"option_{Clause.ToString()}";
+        }
     }
 }

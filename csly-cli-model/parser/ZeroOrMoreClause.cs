@@ -13,7 +13,7 @@ namespace csly.cli.model.parser
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            return Clause + "*";
+            return Clause.ToString() + "*";
         }
 
       

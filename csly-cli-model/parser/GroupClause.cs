@@ -32,6 +32,11 @@ namespace csly.cli.model.parser
             Clauses.AddRange(clauses.Clauses);
         }
         
+        public override string ToString()
+        {
+            return $"group_{string.Join("_",Clauses.Select(x => x.ToString()))}_end";
+        }
+        
        
     }
 }

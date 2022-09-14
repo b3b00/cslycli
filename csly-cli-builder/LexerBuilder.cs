@@ -10,7 +10,7 @@ namespace clsy.cli.builder.lexer;
 public class LexerBuilder
 {
 
-        public static string DynamicAssemblyName = "LexerAssembly";
+        public static string DynamicAssemblyName = "dynamicAssembly";
 
         public static string DynamicLexerName = "DynamicLexer";
 
@@ -19,12 +19,12 @@ public class LexerBuilder
          
 
 // Create the type and save the assembly.
-            Type finished = BuildLexerEnum(model);
+            var finished = BuildLexerEnum(model);
                 
-                return (BuildIt(finished), finished);
+                return (BuildIt(finished.enumType), finished.enumType);
         }
         
-        public static Type BuildLexerEnum(LexerModel model)
+        public static (Type enumType, AssemblyBuilder assembly, ModuleBuilder moduleBuilder) BuildLexerEnum(LexerModel model)
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
 
@@ -63,7 +63,7 @@ public class LexerBuilder
 // Create the type and save the assembly.
             Type finished = enumBuilder.CreateType();
                 
-            return finished;
+            return (finished,dynamicAssembly,moduleBuilder);
         }
 
         private static void AddAttribute(TokenModel model, FieldBuilder builder)

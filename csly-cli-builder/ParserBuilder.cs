@@ -37,8 +37,10 @@ public class ParserBuilder
     
     public (object parserBuildResult, Type parserType) BuildParser(Model model)
     {
+        
+        
         // TODO
-        EnumType = LexerBuilder.BuildLexerEnum(model.LexerModel);
+        var(EnumType, assemblyBuilder, moduleBuilder) = LexerBuilder.BuildLexerEnum(model.LexerModel);
         ObjectType = typeof(object);
         TokenType = BuilderHelper.BuildGenericType(typeof(Token<>),EnumType);
         TokenListType = BuilderHelper.BuildGenericType(typeof(List<>),TokenType);
@@ -47,24 +49,7 @@ public class ParserBuilder
         OptionGroupType = BuilderHelper.BuildGenericType(typeof(ValueOption<>), GroupType);
         OptionType = typeof(ValueOption<object>);
         GroupListType = BuilderHelper.BuildGenericType(typeof(List<>), GroupType);
-        
-        AppDomain currentDomain = AppDomain.CurrentDomain;
 
-// Create a dynamic assembly in the current application domain,
-// and allow it to be executed and saved to disk.
-
-        AssemblyName aName = new AssemblyName(LexerBuilder.DynamicAssemblyName);
-
-        var dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(aName,
-            AssemblyBuilderAccess.Run);
-
-
-// Define a dynamic module in "TempAssembly" assembly. For a single-
-// module assembly, the module has the same name as the assembly.
-        ModuleBuilder moduleBuilder = dynamicAssembly.DefineDynamicModule(aName.Name);
-
-// Define a public enumeration with the name "Elevation" and an 
-// underlying type of Integer.
         TypeBuilder typeBuilder = moduleBuilder.DefineType(DynamicParserName, TypeAttributes.Public, typeof(int));
 
         foreach (var rule in model.ParserModel.Rules)
@@ -73,9 +58,22 @@ public class ParserBuilder
         }
         
         
-        Type finished = typeBuilder.CreateType();
-        return (null, null);
+        Type compiledType = typeBuilder.CreateType();
+        return (BuildIt(compiledType, model.ParserModel.Root), compiledType);
     }
+
+    private object BuildIt(Type parserType, string root)
+    {
+        var constructor = parserType.GetConstructor(BindingFlags.Default, Type.EmptyTypes);
+        var instance = constructor.Invoke(new object?[]{});
+        var builderType = typeof(ParserBuilder<,>);
+        builderType = builderType.MakeGenericType(EnumType, ObjectType);
+        var builderconstructor = builderType.GetConstructor(BindingFlags.Default, Type.EmptyTypes);
+        var builder = builderconstructor.Invoke(new object?[] { });
+        var buildMethod = builderType.GetMethod("BuildParser", new Type[] { ObjectType,typeof(ParserType),typeof(string)});
+        var x = buildMethod.Invoke(builder, new object?[] { instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, root }); // TODO
+        return x;
+    } 
 
     private void BuildVisitor(TypeBuilder builder, Rule rule)
     {
@@ -102,16 +100,10 @@ public class ParserBuilder
     private  void AddProduction(TypeBuilder builder, Rule rule)
     {
 
-        var methodBuilder = AddMethod(builder, rule.Key, Type.EmptyTypes); 
-            
+        var parameters = rule.Clauses.Select(x => BuildTypeParameter(x)).ToArray();
         
-        // ConstructorInfo constructorInfo = attributeType.GetConstructor(
-        //     new Type[1] { typeof(string) });
-        //     
-        // CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
-        //     constructorInfo, new object[] { rule.RuleString });
-        //
-        // builder.SetCustomAttribute(customAttributeBuilder);
+        var methodBuilder = AddMethod(builder, rule.Key, parameters); 
+       
         _AddProductionAttribute(methodBuilder, rule.RuleString);
     }
     
@@ -202,6 +194,75 @@ public class ParserBuilder
         methodBuilder.GetILGenerator().Emit(OpCodes.Ret);
 
         return methodBuilder;
+    }
+
+
+    private Type BuildTypeParameter(IClause clause)
+    {
+        switch (clause)
+        {
+            case TerminalClause terminal:
+            {
+                return TokenType;
+            }
+            case NonTerminalClause:
+            {
+                return ObjectType;
+            }
+            case GroupClause:
+            {
+                return GroupType;
+            }
+            case OptionClause option:
+            {
+                switch (option.Clause) 
+                {
+                    case TerminalClause:
+                    {
+                        return TokenType;
+                    }
+                    case NonTerminalClause:
+                    {
+                        return OptionType;
+                    }
+                    case GroupClause:
+                    {
+                        return OptionGroupType;
+                    }
+                    default:
+                    {
+                        return OptionType;
+                    }
+                }
+            }
+            case ManyClause many:
+            {
+                switch (many.Clause)
+                {
+                    case TerminalClause:
+                    {
+                        return TokenListType;
+                    }
+                    case NonTerminalClause:
+                    {
+                        return ObjectListType;
+                    }
+                    case GroupClause:
+                    {
+                        return GroupListType;
+                    }
+                    default:
+                    {
+                        return ObjectListType;
+                    }
+                }
+            }
+            default:
+            {
+                return ObjectType;
+            }
+                
+        }
     }
     
     

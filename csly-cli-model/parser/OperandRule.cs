@@ -7,10 +7,10 @@ namespace csly.cli.model.parser
 {
     public class OperandRule : Rule
     {
-        public bool IsRule => false;
-        public bool IsPrefix => false;
-        public bool IsOperand => true;
-        public bool IsInfix = false;
+        public override bool IsRule => false;
+        public override bool IsPrefix => false;
+        public override bool IsOperand => true;
+        public override bool IsInfix => false;
         public OperandRule()
         {
             Name = null;

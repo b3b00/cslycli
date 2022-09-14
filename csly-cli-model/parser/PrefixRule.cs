@@ -8,10 +8,10 @@ namespace csly.cli.model.parser
     public class PrefixRule : Rule
     {
         
-        public bool IsRule => false;
-        public bool IsPrefix => true;
-        public bool IsOperand => false;
-        public bool IsInfix = false;
+        public override bool IsRule => false;
+        public override bool IsPrefix => true;
+        public override bool IsOperand => false;
+        public override bool IsInfix => false;
         
         public PrefixRule()
         {

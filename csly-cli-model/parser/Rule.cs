@@ -12,10 +12,10 @@ namespace csly.cli.model.parser
             Clauses = new List<IClause>();
         }
 
-        public bool IsRule => true;
-        public bool IsPrefix => false;
-        public bool IsOperand => false;
-        public bool IsInfix = false;
+        public virtual bool IsRule => true;
+        public virtual bool IsPrefix => false;
+        public virtual bool IsOperand => false;
+        public virtual bool IsInfix => false;
 
         public Rule(string name, List<IClause> clauses)
         {
@@ -29,6 +29,7 @@ namespace csly.cli.model.parser
         {
             get
             {
+                // TODO : rework Clause.ToString ? 
                 var key = NonTerminalName+"_"+string.Join("_", Clauses.Select<IClause, string>(c => c.ToString()));
                 
                 if (Clauses.Count == 1) 

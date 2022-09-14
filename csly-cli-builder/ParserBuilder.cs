@@ -1,6 +1,5 @@
 using System.Reflection;
 using System.Reflection.Emit;
-using clsy.cli.builder.parser.cli.model;
 using csly.cli.model;
 using csly.cli.model.parser;
 using LexerBuilder = clsy.cli.builder.lexer.LexerBuilder;
@@ -29,6 +28,8 @@ public class ParserBuilder
     public Type OptionGroupType { get; set; }
     
     public Type GroupListType { get; set; }
+    
+    public Type ObjectType { get; set; }
     public ParserBuilder()
     {
         
@@ -38,10 +39,11 @@ public class ParserBuilder
     {
         // TODO
         EnumType = LexerBuilder.BuildLexerEnum(model.LexerModel);
+        ObjectType = typeof(object);
         TokenType = BuilderHelper.BuildGenericType(typeof(Token<>),EnumType);
         TokenListType = BuilderHelper.BuildGenericType(typeof(List<>),TokenType);
-        ObjectListType = BuilderHelper.BuildGenericType(typeof(List<>),typeof(object));
-        GroupType = BuilderHelper.BuildGenericType(typeof(sly.parser.parser.Group<,>), EnumType, typeof(object));
+        ObjectListType = BuilderHelper.BuildGenericType(typeof(List<>),ObjectType);
+        GroupType = BuilderHelper.BuildGenericType(typeof(sly.parser.parser.Group<,>), EnumType, ObjectType);
         OptionGroupType = BuilderHelper.BuildGenericType(typeof(ValueOption<>), GroupType);
         OptionType = typeof(ValueOption<object>);
         GroupListType = BuilderHelper.BuildGenericType(typeof(List<>), GroupType);
@@ -77,34 +79,45 @@ public class ParserBuilder
 
     private void BuildVisitor(TypeBuilder builder, Rule rule)
     {
-        var methodBuilder =  builder.DefineMethod(rule.Key, default);
-
         if (rule.IsRule)
         {
-            AddProduction(methodBuilder,rule.RuleString);
+            AddProduction(builder,rule);
         }
 
         if (rule.IsPrefix && rule is PrefixRule prefix)
         {
-            AddPrefix(methodBuilder, prefix.Name, prefix.Precedence);
+            AddPrefix(builder, prefix);
         }
         if (rule.IsInfix && rule is InfixRule infix)
         {
-            AddInfix(methodBuilder, infix.Name, infix.Associativity, infix.Precedence);
+            AddInfix(builder, infix);
         }
         if (rule.IsOperand && rule is OperandRule operand)
         {
-            AddOperand(methodBuilder, operand.Name);
+            AddOperand(builder, operand);
         }
     }
     
     
-    private static void AddProduction(MethodBuilder builder, string rule)
+    private  void AddProduction(TypeBuilder builder, Rule rule)
+    {
+
+        var methodBuilder = AddMethod(builder, rule.Key, Type.EmptyTypes); 
+            
+        
+        // ConstructorInfo constructorInfo = attributeType.GetConstructor(
+        //     new Type[1] { typeof(string) });
+        //     
+        // CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+        //     constructorInfo, new object[] { rule.RuleString });
+        //
+        // builder.SetCustomAttribute(customAttributeBuilder);
+        _AddProductionAttribute(methodBuilder, rule.RuleString);
+    }
+    
+    private  void _AddProductionAttribute(MethodBuilder builder, string rule)
     {
         Type attributeType = typeof(ProductionAttribute);
-            
-        builder.GetILGenerator().Emit(OpCodes.Ldnull);
-        builder.GetILGenerator().Emit(OpCodes.Ret);
         
         ConstructorInfo constructorInfo = attributeType.GetConstructor(
             new Type[1] { typeof(string) });
@@ -115,44 +128,81 @@ public class ParserBuilder
         builder.SetCustomAttribute(customAttributeBuilder);
     }
     
-    private static void AddPrefix(MethodBuilder builder, string token, int precedence)
+    private  void AddPrefix(TypeBuilder builder, PrefixRule prefix)
     {
+
+        var methodBuilder = AddMethod(builder, $"prefix_{prefix.Name}", TokenType, ObjectType);
+        
         Type attributeType = typeof(PrefixAttribute);
             
         ConstructorInfo constructorInfo = attributeType.GetConstructor(
             new Type[3] { typeof(string),typeof(Associativity),typeof(int) });
             
         CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
-            constructorInfo, new object[] { token,Associativity.Left,precedence });
+            constructorInfo, new object[] { prefix.Name,Associativity.Left,prefix.Precedence });
 
-        builder.SetCustomAttribute(customAttributeBuilder);
+        methodBuilder.SetCustomAttribute(customAttributeBuilder);
     }
     
-    private static void AddInfix(MethodBuilder builder, string token, Associativity assoc, int precedence)
+    private void AddInfix(TypeBuilder builder, InfixRule infix)
     {
+        //var methodBuilder =  builder.DefineMethod($"infix_{infix.Name}_{infix.Associativity}_{infix.Precedence}", default);
+
+        var methodBuilder = AddMethod(builder, $"infix_{infix.Name}_{infix.Associativity}_{infix.Precedence}",
+            ObjectType, TokenType, ObjectType); 
+        
         Type attributeType = typeof(InfixAttribute);
             
         ConstructorInfo constructorInfo = attributeType.GetConstructor(
             new Type[3] { typeof(string),typeof(Associativity),typeof(int) });
             
         CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
-            constructorInfo, new object[] { token,assoc,precedence });
+            constructorInfo, new object[] { infix.Name,infix.Associativity,infix.Precedence });
 
-        builder.SetCustomAttribute(customAttributeBuilder);
+        methodBuilder.SetCustomAttribute(customAttributeBuilder);
     }
     
-    private static void AddOperand(MethodBuilder builder, string token)
+    private void AddOperand(TypeBuilder builder, OperandRule operand)
     {
+
+         var paramtype = operand.IsToken ? TokenType : ObjectType;
+        // var methodBuilder = builder.DefineMethod($"operand_{operand.Name}",
+        //     MethodAttributes.Public,
+        //     CallingConventions.Standard,
+        //     ObjectType, new[] { paramtype });
+        // 
+        //     
+        // methodBuilder.GetILGenerator().Emit(OpCodes.Ldnull);
+        // methodBuilder.GetILGenerator().Emit(OpCodes.Ret);
+
+        var methodBuilder = AddMethod(builder, $"operand_{operand.Name}", paramtype);
         Type attributeType = typeof(OperandAttribute);
-            
         ConstructorInfo constructorInfo = attributeType.GetConstructor(
             new Type[] {  });
-            
+        
         CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
             constructorInfo, new object[] {  });
         
-        AddProduction(builder,$"operand_{token} : {token}");
+        methodBuilder.SetCustomAttribute(customAttributeBuilder);
+        
+        _AddProductionAttribute(methodBuilder,$"operand_{operand.Name} : {operand.Name}");
 
-        builder.SetCustomAttribute(customAttributeBuilder);
+        
     }
+
+    public MethodBuilder AddMethod(TypeBuilder builder, string name, params Type[] parameterTypes)
+    {
+        
+        var methodBuilder = builder.DefineMethod(name,
+            MethodAttributes.Public,
+            CallingConventions.Standard,
+            ObjectType, parameterTypes);
+            
+        methodBuilder.GetILGenerator().Emit(OpCodes.Ldnull);
+        methodBuilder.GetILGenerator().Emit(OpCodes.Ret);
+
+        return methodBuilder;
+    }
+    
+    
 }

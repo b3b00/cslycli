@@ -58,9 +58,8 @@ public class ParserBuilder
         }
 
         var constructorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
-        var il = constructorBuilder.GetILGenerator();
-        il.Emit(OpCodes.Ldnull);
-        il.Emit(OpCodes.Ret);
+        var il = constructorBuilder.GetILGenerator();        
+        il.Emit(OpCodes.Nop);
         
         
         

@@ -17,13 +17,14 @@ public class Program
         {
             //csly.cli.builder.parser.ParserBuilder.BuildParser(model);
             var builder = new clsy.cli.builder.parser.ParserBuilder();
-            builder.BuildParser(model);
+            var x = builder.BuildParser(model);
+            // TODO ???
         }
         else
         {
             Console.WriteLine("bof");
         }
-        // TestLexer();
+        
     }
 
     
@@ -69,6 +70,7 @@ public class Program
 
             var content = File.ReadAllText(@"C:\Users\olduh\dev\csly-cli\csly-cli\test.txt");
             var tokens = lexerBuildResult.Result.Tokenize(content);
+            
             if (tokens.IsOk)
             {
                 foreach (var token in tokens.Tokens)

@@ -60,11 +60,11 @@ public class CLIParser
             CLIToken.ALPHAIDTOKEN => GenericToken.Identifier,
             _ => GenericToken.SugarToken
         };
+        context.AddEnumName(id.Value);
         if (type.TokenID == CLIToken.STRINGTOKEN)
         {
             return new TokenModel(tokenType, id.Value,"\"", "\\");
         }
-        context.AddEnumName(id.Value);
         return new TokenModel(tokenType,id.Value, "");
     } 
     

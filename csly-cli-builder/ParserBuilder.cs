@@ -4,6 +4,7 @@ using csly.cli.model;
 using csly.cli.model.parser;
 using LexerBuilder = clsy.cli.builder.lexer.LexerBuilder;
 using sly.lexer;
+using sly.lexer.fsm;
 using sly.parser.generator;
 using sly.parser.parser;
 
@@ -30,6 +31,10 @@ public class ParserBuilder
     public Type GroupListType { get; set; }
     
     public Type ObjectType { get; set; }
+    
+    public Type BuildExtensionType { get; set; }
+
+    public Type LexerPostProcessType { get; set; }
     public ParserBuilder()
     {
         
@@ -40,7 +45,8 @@ public class ParserBuilder
         
         
         // TODO
-        var(EnumType, assemblyBuilder, moduleBuilder) = LexerBuilder.BuildLexerEnum(model.LexerModel);
+        var(enumType, assemblyBuilder, moduleBuilder) = LexerBuilder.BuildLexerEnum(model.LexerModel);
+        EnumType = enumType;
         ObjectType = typeof(object);
         TokenType = BuilderHelper.BuildGenericType(typeof(Token<>),EnumType);
         TokenListType = BuilderHelper.BuildGenericType(typeof(List<>),TokenType);
@@ -49,6 +55,8 @@ public class ParserBuilder
         OptionGroupType = BuilderHelper.BuildGenericType(typeof(ValueOption<>), GroupType);
         OptionType = typeof(ValueOption<object>);
         GroupListType = BuilderHelper.BuildGenericType(typeof(List<>), GroupType);
+        BuildExtensionType = typeof(BuildExtension<>).MakeGenericType(EnumType);
+        LexerPostProcessType = typeof(LexerPostProcess<>).MakeGenericType(EnumType);
 
         TypeBuilder typeBuilder = moduleBuilder.DefineType(DynamicParserName, TypeAttributes.Public, typeof(object));
 
@@ -73,10 +81,15 @@ public class ParserBuilder
         var instance = constructor.Invoke(new object?[]{});
         var builderType = typeof(ParserBuilder<,>);
         builderType = builderType.MakeGenericType(EnumType, ObjectType);
-        var builderconstructor = builderType.GetConstructor(BindingFlags.Default, Type.EmptyTypes);
+        var builderconstructor =
+            builderType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, Type.EmptyTypes);
         var builder = builderconstructor.Invoke(new object?[] { });
-        var buildMethod = builderType.GetMethod("BuildParser", new Type[] { ObjectType,typeof(ParserType),typeof(string)});
-        var x = buildMethod.Invoke(builder, new object?[] { instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, root }); // TODO
+        var buildMethod = builderType.GetMethod("BuildParser", new Type[] { ObjectType,typeof(ParserType),typeof(string),BuildExtensionType,LexerPostProcessType});
+        
+        // object parserInstance, ParserType parserType,
+        // string rootRule, BuildExtension<IN> extensionBuilder = null, LexerPostProcess<IN> lexerPostProcess = null
+        
+        var x = buildMethod.Invoke(builder, new object?[] { instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, root,null,null }); // TODO
         return x;
     } 
 

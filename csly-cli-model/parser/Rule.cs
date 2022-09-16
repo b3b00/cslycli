@@ -23,7 +23,7 @@ namespace csly.cli.model.parser
             Clauses = clauses;
         }
 
-        public string RuleString { get; set;  }
+        public string RuleString => NonTerminalName + " : " + string.Join(" ", Clauses.Select(x => x.ToString()));
 
         public string Key
         {

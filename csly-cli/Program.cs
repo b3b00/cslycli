@@ -9,51 +9,21 @@ using sly.buildresult;
 using sly.lexer;
 using sly.parser;
 using sly.parser.generator;
+using sly.parser.generator.visitor;
+using sly.parser.generator.visitor.dotgraph;
+using sly.parser.syntax.tree;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-        var model = TestParser();
-        if (model != null)
-        {
-            //csly.cli.builder.parser.ParserBuilder.BuildParser(model);
+       
             var builder = new clsy.cli.builder.parser.ParserBuilder();
-            var x = builder.BuildParser(model);
-            // TODO ???
-            Console.WriteLine("parser build");
+            var graph = builder.GetDot(@"C:\Users\olduh\dev\csly-cli\csly-cli\test.txt",
+                "(a:=0; while a < 10 do (print a; a := a +1 ))");
             
-            Console.WriteLine($"Parser<IN,OUT> : {x.parserType}");
-            var buildResultType = typeof(BuildResult<object>);
-            
-                    
-            var resultProperty = buildResultType.GetProperty("Result");
-            var parser = resultProperty.GetValue(x.parserBuildResult, null);
-            var resultPropertyGetter = resultProperty.GetMethod;
-            // resultPropertyGetter = resultPropertyGetter.MakeGenericMethod(iLexerType);
-            // var lexer = resultPropertyGetter.Invoke(lexerResult.lexerBuildResult, new object[] { });
-            //var lexer = resultProperty.GetValue(lexerResult.lexerBuildResult);
-            Console.WriteLine($"result.Result {parser.GetType()}");
-        
-            // var genLexType = typeof(GenericLexer<>);
-            // var genGenLexType = genLexType.MakeGenericType(lexerResult.tokenType);
-            // Console.WriteLine("GenericLexer<IN>");
-            // var meth = genGenLexType.GetMethod("Tokenize", new Type[] { typeof(string) });
-            // Console.WriteLine("tokenize");
-            // var t = meth.Invoke(lexer, new object[] { "(a:=0; while a < 10 do (print a; a := a +1 ))" });
-            // Console.WriteLine("called");
-            //
-            // Console.WriteLine(t);
-            //
-            // var lexResultType = typeof(LexerResult<>);
-            // lexResultType = lexResultType.MakeGenericType(lexerResult.tokenType);
-            // var dumpMethod = lexResultType.GetMethod("Dump", new Type[] { });
-            // dumpMethod.Invoke(t, new object[]{});
-        }
-        else
-        {
-            Console.WriteLine("bof");
-        }
+            File.Delete("c:\\temp\\tree.dot");
+            File.AppendAllText("c:\\temp\\tree.dot", graph.Compile());
         
     }
 

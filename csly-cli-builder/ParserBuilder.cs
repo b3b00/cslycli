@@ -2,10 +2,15 @@ using System.Reflection;
 using System.Reflection.Emit;
 using csly.cli.model;
 using csly.cli.model.parser;
+using csly.cli.parser;
+using sly.buildresult;
 using LexerBuilder = clsy.cli.builder.lexer.LexerBuilder;
 using sly.lexer;
 using sly.lexer.fsm;
+using sly.parser;
 using sly.parser.generator;
+using sly.parser.generator.visitor;
+using sly.parser.generator.visitor.dotgraph;
 using sly.parser.parser;
 
 namespace clsy.cli.builder.parser;
@@ -39,8 +44,10 @@ public class ParserBuilder
     {
         
     }
+
     
-    public (object parserBuildResult, Type parserType) BuildParser(Model model)
+    
+    private (object parserBuildResult, Type parserType, Type lexerType) BuildParser(Model model)
     {
         
         
@@ -72,9 +79,72 @@ public class ParserBuilder
         
         
         Type compiledType = typeBuilder.CreateType();
-        return (BuildIt(compiledType, model.ParserModel.Root), compiledType);
+        return (BuildIt(compiledType, model.ParserModel.Root), compiledType, EnumType);
     }
 
+    private Model CompileModel(string filename)
+    {
+        ParserBuilder<CLIToken, ICLIModel> builder = new ParserBuilder<CLIToken, ICLIModel>();
+        var instance = new CLIParser();
+        //TestLexer();
+
+        var buildParser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, "root");
+        if (buildParser.IsOk)
+        {
+            var content = File.ReadAllText(filename);
+            var result = buildParser.Result.ParseWithContext(content, new ParserContext());
+            if (result.IsError)
+            {
+                result.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
+            }
+            else {
+                Model model = result.Result as Model;
+                return model;
+            }
+        }
+        else
+        {
+            buildParser.Errors.ForEach(x => Console.WriteLine(x.Message));
+        }
+
+        return null;
+    }
+
+    public DotGraph GetDot(string modelSourceFileName, string source)
+    {
+        var model = CompileModel(modelSourceFileName);
+        var buildResult = BuildParser(model);
+
+        var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType,typeof(object));
+        var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
+            
+        var resultProperty = buildResultType.GetProperty("Result");
+        var parser = resultProperty.GetValue(buildResult.parserBuildResult, null);
+
+        var parseMethod = parserType.GetMethod("Parse", new[] { typeof(string), typeof(string) });
+        var result = parseMethod.Invoke(parser, new object[] { source, null });
+
+        var ParseResultType = typeof(ParseResult<,>).MakeGenericType(buildResult.lexerType, typeof(object));
+        var parseResultProp = ParseResultType.GetProperty("SyntaxTree");
+        var syntaxTree = parseResultProp.GetValue(result);
+            
+        var graphvizType = typeof(GraphVizEBNFSyntaxTreeVisitor<>).MakeGenericType(buildResult.lexerType);
+        var visitor = graphvizType.GetConstructor(new Type[] { }).Invoke(new object[]{});
+            
+            
+        var visited = graphvizType
+            .GetMethod("VisitTree",new Type[]{syntaxTree.GetType()})
+            .Invoke(visitor, new object[]{syntaxTree});
+            
+        var graph = graphvizType
+            .GetProperty("Graph")
+            .GetValue(visitor);
+
+        var dot = (graph as DotGraph);
+
+        return dot;
+    }
+    
     private object BuildIt(Type parserType, string root)
     {
         var constructor = parserType.GetConstructor(Type.EmptyTypes);

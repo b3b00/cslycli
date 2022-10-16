@@ -1,9 +1,11 @@
 ﻿using System.Reflection;
 using System.Reflection.Emit;
+using System.Text.Json.Serialization;
 using clsy.cli.builder.parser.cli.model;
 using csly.cli.model.lexer;
 using sly.lexer;
 using sly.lexer.fsm;
+using JsonConverter = Newtonsoft.Json.JsonConverter;
 
 namespace clsy.cli.builder.lexer;
 
@@ -35,12 +37,13 @@ public class LexerBuilder
 
             var dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(aName,
                 AssemblyBuilderAccess.Run);
-
-
+            
 // Define a dynamic module in "TempAssembly" assembly. For a single-
 // module assembly, the module has the same name as the assembly.
             ModuleBuilder moduleBuilder = dynamicAssembly.DefineDynamicModule(aName.Name);
 
+            
+            
 // Define a public enumeration with the name "Elevation" and an 
 // underlying type of Integer.
             EnumBuilder enumBuilder = moduleBuilder.DefineEnum(DynamicLexerName, TypeAttributes.Public, typeof(int));
@@ -54,7 +57,7 @@ public class LexerBuilder
                 var enumValueBuilder = enumBuilder.DefineLiteral(tokenModel.Name, i);
 
                 AddAttribute(tokenModel, enumValueBuilder);
-
+    
                 
                 i++;
             }
@@ -81,6 +84,15 @@ public class LexerBuilder
             CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
                 constructorInfo, new object[] { genericToken, args });
 
+            builder.SetCustomAttribute(customAttributeBuilder);
+            
+            attributeType = typeof(JsonConverterAttribute);
+            var enumConverterType = typeof(JsonStringEnumConverter);
+            constructorInfo = attributeType.GetConstructor(
+                new Type[1] { typeof(Type)});
+            customAttributeBuilder = new CustomAttributeBuilder(
+                constructorInfo, new object[] { enumConverterType });
+            
             builder.SetCustomAttribute(customAttributeBuilder);
         }
 

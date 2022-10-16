@@ -3,6 +3,7 @@ using System.Reflection.Emit;
 using csly.cli.model;
 using csly.cli.model.parser;
 using csly.cli.parser;
+using Newtonsoft.Json;
 using sly.buildresult;
 using LexerBuilder = clsy.cli.builder.lexer.LexerBuilder;
 using sly.lexer;
@@ -110,7 +111,7 @@ public class ParserBuilder
         return null;
     }
 
-    public DotGraph GetDot(string modelSourceFileName, string source)
+    public DotGraph GetGraphVizDot(string modelSourceFileName, string source)
     {
         var model = CompileModel(modelSourceFileName);
         var buildResult = BuildParser(model);
@@ -145,6 +146,34 @@ public class ParserBuilder
         return dot;
     }
     
+    public string GetJsonSerialization(string modelSourceFileName, string source)
+    {
+        var buildResult = GetSyntaxTree(modelSourceFileName, source, out var syntaxTree);
+        var serialization = JsonConvert.SerializeObject(syntaxTree,Formatting.Indented);
+        return serialization;
+    }
+
+    private (object parserBuildResult, Type parserType, Type lexerType) GetSyntaxTree(string modelSourceFileName,
+        string source, out object? syntaxTree)
+    {
+        var model = CompileModel(modelSourceFileName);
+        var buildResult = BuildParser(model);
+
+        var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType, typeof(object));
+        var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
+
+        var resultProperty = buildResultType.GetProperty("Result");
+        var parser = resultProperty.GetValue(buildResult.parserBuildResult, null);
+
+        var parseMethod = parserType.GetMethod("Parse", new[] { typeof(string), typeof(string) });
+        var result = parseMethod.Invoke(parser, new object[] { source, null });
+
+        var ParseResultType = typeof(ParseResult<,>).MakeGenericType(buildResult.lexerType, typeof(object));
+        var parseResultProp = ParseResultType.GetProperty("SyntaxTree");
+        syntaxTree = parseResultProp.GetValue(result);
+        return buildResult;
+    }
+
     private object BuildIt(Type parserType, string root)
     {
         var constructor = parserType.GetConstructor(Type.EmptyTypes);

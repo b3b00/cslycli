@@ -3,9 +3,11 @@
 using System;
 using System.IO;
 using clsy.cli.builder.parser.cli.model;
+using CommandLine;
 using csly.cli.model;
 using csly.cli.parser;
 using sly.buildresult;
+using sly.cli.options;
 using sly.lexer;
 using sly.parser;
 using sly.parser.generator;
@@ -17,17 +19,61 @@ public class Program
 {
     public static void Main(string[] args)
     {
-       
-            var builder = new clsy.cli.builder.parser.ParserBuilder();
-            var graph = builder.GetDot(@"C:\Users\olduh\dev\csly-cli\csly-cli\test.txt",
-                "(a:=0; while a < 10 do (print a; a := a +1 ))");
-            
-            File.Delete("c:\\temp\\tree.dot");
-            File.AppendAllText("c:\\temp\\tree.dot", graph.Compile());
-        
+        Parser.Default.ParseArguments<TestOPtions, GenerateOPtions>(args)
+            .MapResult(
+                (TestOPtions test) => { return 0; },
+                (GenerateOPtions generate) => { return 0;},
+                errors => {   foreach (var error in errors)
+                    {
+                        Console.WriteLine(error.ToString());
+                    }
+                    return 1;}
+            );
+
+        Test();
     }
 
-    
+    private static void Test(TestOPtions test)
+    {
+        var fi = new FileInfo(test.Grammar);
+        var parserName = fi.Name;
+        var builder = new clsy.cli.builder.parser.ParserBuilder();
+        
+
+        if (test.HasOtput)
+        {
+            if (test.OUtputType == OutputFormat.DOT)
+            {
+                var graph = builder.GetGraphVizDot(test.Grammar,
+                    test.Source);
+            
+
+                var dotFileName = Path.Combine(test.Output, parserName + ".dot");
+                if (File.Exists(dotFileName))
+                {
+                    File.Delete(dotFileName);
+                }
+
+                File.AppendAllText(dotFileName, graph.Compile());
+            }
+            else
+            {
+                var jsonFileName = Path.Combine(test.Output, parserName + ".json");
+                var json = builder.GetJsonSerialization(test.Grammar,
+                    test.Source);
+            
+                if (File.Exists(jsonFileName))
+                {
+                    File.Delete(jsonFileName);
+                }
+
+                File.AppendAllText(jsonFileName, json);
+            }
+
+            
+        }
+    }
+
 
     private static Model TestParser()
     {

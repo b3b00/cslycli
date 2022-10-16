@@ -13,7 +13,7 @@ namespace csly.cli.model.parser
         public override bool IsOperand => false;
         public override bool IsInfix => false;
         
-        public PrefixRule()
+        public PrefixRule(string name)
         {
             Name = null;
         }

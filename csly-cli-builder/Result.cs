@@ -1,4 +1,6 @@
-namespace clsy.cli.builder.parser;
+
+
+namespace clsy.cli.builder;
 
 public class Result<T,E> 
 {
@@ -32,7 +34,7 @@ public class Result<T,E>
         IsOk = false;
         IsError = true;
     }
-    
+
     public static implicit operator T(Result<T,E> r) {
         return r.result;
     } 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using clsy.cli.builder.parser;
 using CommandLine;
 using sly.cli.options;
@@ -8,9 +10,9 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Parser.Default.ParseArguments<TestOPtions, GenerateOPtions>(args)
+        Parser.Default.ParseArguments<TestOptions, GenerateOPtions>(args)
             .MapResult(
-                (TestOPtions test) => { return Test(test); },
+                (TestOptions test) => { return Test(test); },
                 (GenerateOPtions generate) => { return 0; },
                 errors =>
                 {
@@ -26,10 +28,10 @@ public class Program
 
     }
 
-    private static int Test(TestOPtions test)
+    private static int Test(TestOptions test)
     {
         var fi = new FileInfo(test.Grammar);
-        var parserName = fi.Name.Replace(fi.Extension,"");
+        var parserName = fi.Name.Replace(fi.Extension, "");
         var builder = new clsy.cli.builder.parser.ParserBuilder();
 
         SyntaxTreeProcessor emptyProcessor = (Type type, Type lexerType, object tree) => { return ""; };
@@ -49,14 +51,23 @@ public class Program
 
         Console.WriteLine("Model compilation succeeded.");
 
-        SyntaxTreeProcessor processor = test.OUtputType.HasValue
-            ? (test.OUtputType == OutputFormat.DOT
-                ? ParserBuilder.SyntaxTreeToDotGraph
-                : ParserBuilder.SyntaxTreeToJson)
-            : emptyProcessor;
+        List<(OutputFormat format, SyntaxTreeProcessor processor)> formatters =
+            new List<(OutputFormat, SyntaxTreeProcessor)>();
 
-        var result = builder.Get(test.Grammar,
-            test.Source, processor);
+        if (test.OutputTypes.Any())
+        {
+            formatters = test.OutputTypes.Select(x => (x.Value, (x == OutputFormat.DOT
+                ? ((SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToDotGraph)
+                : ((SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToJson)))).ToList();
+        }
+        else
+        {
+            formatters = new List<(OutputFormat, SyntaxTreeProcessor)>() { (OutputFormat.NO, emptyProcessor) };
+        }
+
+
+        var result = builder.Getz(test.Grammar,
+            test.Source, formatters.Select(x => (x.format.ToString(), x.processor)).ToList());
 
         if (result.IsError)
         {
@@ -70,22 +81,28 @@ public class Program
 
         Console.WriteLine("Parse succeeded.");
 
-        if (test.OUtputType.HasValue)
+        if (test.OutputTypes != null && test.OutputTypes.Any())
         {
-
-            var outputFileExtension = test.OUtputType == OutputFormat.DOT ? ".dot" : ".json";
-
-            var dotFileName = Path.Combine(test.Output, parserName + outputFileExtension);
-            if (File.Exists(dotFileName))
+            foreach (var value in result.Value)
             {
-                File.Delete(dotFileName);
-            }
 
-            File.AppendAllText(dotFileName, result.Value);
+                var outputFileExtension = value.format == OutputFormat.DOT.ToString() ? ".dot" : ".json";
+
+                var outputFileName = Path.Combine(test.Output, parserName + outputFileExtension);
+                if (File.Exists(outputFileName))
+                {
+                    File.Delete(outputFileName);
+                }
+
+                File.AppendAllText(outputFileName, value.content);
+
+                Console.WriteLine($"file {outputFileName} generated.");
+            }
         }
 
         return 0;
     }
-
 }
+
+
    

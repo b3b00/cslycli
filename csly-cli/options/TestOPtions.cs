@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using CommandLine;
 
 namespace sly.cli.options;
 
 [Verb("test")]
-public class TestOPtions
+public class TestOptions
 {
     [Option('g',"grammar",Required = true,HelpText = "path to grammar file")]
     public string Grammar { get; set; }
@@ -15,7 +16,7 @@ public class TestOPtions
     public string Output { get; set; }
     
     [Option('f',"format",Required = false,HelpText = "format of output file : DOT=grpahviz dot file, JSON=json")]
-    public OutputFormat? OUtputType { get; set; }
+    public IEnumerable<OutputFormat?> OutputTypes { get; set; }
 
     public bool HasOtput => !string.IsNullOrEmpty(Output);
 
@@ -23,8 +24,9 @@ public class TestOPtions
 
 public enum OutputFormat
 {
-    JSON = 0,
-    DOT = 1
+    NO = 0,
+    JSON = 1,
+    DOT = 2
 }
 
 [Verb("generate")]

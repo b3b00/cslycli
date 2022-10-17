@@ -9,12 +9,12 @@ public class LexerGenerator
     public static string GenerateLexer(LexerModel model, string name, string nameSpace)
     {
         var head = GetHeader(name, nameSpace);
-        var body = getBody(model);
+        var body = GetBody(model);
         var foot = getFooter();
         return head+"\n"+body+"\n"+foot;
     }
 
-    public static string getBody(LexerModel model)
+    private static string GetBody(LexerModel model)
     {
         StringBuilder builder = new StringBuilder();
         builder.AppendLine();

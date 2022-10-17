@@ -52,8 +52,12 @@ public class Program
         var enumCode = LexerGenerator.GenerateLexer(model.Value.LexerModel, generate.Lexer, generate.NameSpace);
         var path = Path.Combine(fi.Directory.FullName, generate.Lexer + ".cs");
         File.WriteAllText(path,enumCode);
-        return 0;
+        
 
+        var parserCode = ParserGenerator.GenerateParser(model.Value.ParserModel, generate.Parser, generate.NameSpace);
+        path = Path.Combine(fi.Directory.FullName, generate.Parser + ".cs");
+        File.WriteAllText(path,parserCode);
+        return 0;
     }
 
     private static int Test(TestOptions test)

@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\csly\sly\sly.csproj" />
+        <PackageReference Include="sly" Version="2.9.1.1" />
     </ItemGroup>
 
     <ItemGroup>

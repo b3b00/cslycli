@@ -44,7 +44,4 @@ public class GenerateOPtions
     [Option('l',"lexer",Required = true,HelpText = "Lexer enum name")]
     public string Lexer { get; set; }
     
-    [Option('l',"t",Required = true,HelpText = "type of the of parser output")]
-    public string OUtputType { get; set; }
-    
 }

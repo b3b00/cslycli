@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using CommandLine;
 using sly.cli.options;
@@ -13,7 +14,7 @@ public class Program
         Parser.Default.ParseArguments<TestOptions, GenerateOPtions>(args)
             .MapResult(
                 (TestOptions test) => { return Test(test); },
-                (GenerateOPtions generate) => { return 0; },
+                (GenerateOPtions generate) => { return Generate(generate); },
                 errors =>
                 {
                     foreach (var error in errors)
@@ -25,6 +26,33 @@ public class Program
                 }
             );
 
+
+    }
+
+    private static int Generate(GenerateOPtions generate)
+    {
+        var fi = new FileInfo(generate.Grammar);
+        var parserName = fi.Name.Replace(fi.Extension, "");
+        var builder = new clsy.cli.builder.parser.ParserBuilder();
+
+        
+
+
+
+        var model = builder.CompileModel(generate.Grammar);
+        if (model.IsError)
+        {
+            foreach (var error in model.Error)
+            {
+                Console.WriteLine(error);
+            }
+
+            return 1;
+        }
+        var enumCode = LexerGenerator.GenerateLexer(model.Value.LexerModel, generate.Lexer, generate.NameSpace);
+        var path = Path.Combine(fi.Directory.FullName, generate.Lexer + ".cs");
+        File.WriteAllText(path,enumCode);
+        return 0;
 
     }
 

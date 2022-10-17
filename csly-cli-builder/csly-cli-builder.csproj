@@ -8,14 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj"/>
-        <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj"/>
+        <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
+        <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="sly" Version="2.9.1.1"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
-        <PackageReference Include="System.Reflection.Emit" Version="4.7.0"/>
+        <PackageReference Include="sly" Version="2.9.1.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
     </ItemGroup>
 
 </Project>

@@ -16,8 +16,11 @@ using sly.parser.parser;
 
 namespace clsy.cli.builder.parser;
 
+public delegate string SyntaxTreeProcessor(Type parserType, Type lexerType, object tree);
+
 public class ParserBuilder
 {
+    
     
     public static string DynamicParserName = "dynamicParser";
 
@@ -48,12 +51,16 @@ public class ParserBuilder
 
     
     
+    /// <summary>
+    /// Build a dynamic parser class. then call BuildParser and returns a Parser instance ready to parse."/>
+    /// </summary>
+    /// <param name="model">the parser model built from parser description file</param>
+    /// <returns>a Parser</returns>
     private (object parserBuildResult, Type parserType, Type lexerType) BuildParser(Model model)
     {
         
-        
-        // TODO
         var(enumType, assemblyBuilder, moduleBuilder) = LexerBuilder.BuildLexerEnum(model.LexerModel);
+        
         EnumType = enumType;
         ObjectType = typeof(object);
         TokenType = BuilderHelper.BuildGenericType(typeof(Token<>),EnumType);
@@ -83,11 +90,10 @@ public class ParserBuilder
         return (BuildIt(compiledType, model.ParserModel.Root), compiledType, EnumType);
     }
 
-    private Model CompileModel(string filename)
+    public Result<Model,List<string>> CompileModel(string filename)
     {
         ParserBuilder<CLIToken, ICLIModel> builder = new ParserBuilder<CLIToken, ICLIModel>();
         var instance = new CLIParser();
-        //TestLexer();
 
         var buildParser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, "root");
         if (buildParser.IsOk)
@@ -96,7 +102,7 @@ public class ParserBuilder
             var result = buildParser.Result.ParseWithContext(content, new ParserContext());
             if (result.IsError)
             {
-                result.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
+                return result.Errors.Select(x => x.ErrorMessage).ToList();
             }
             else {
                 Model model = result.Result as Model;
@@ -105,75 +111,91 @@ public class ParserBuilder
         }
         else
         {
-            buildParser.Errors.ForEach(x => Console.WriteLine(x.Message));
+            // should not happen
+            return new Result<Model, List<string>>();
+        }
+    }
+    
+    public Result<string,List<string>> Get(string modelFileName, string sourceFileName, SyntaxTreeProcessor processor)
+    {
+        var model = CompileModel(modelFileName);
+        var source = File.ReadAllText(sourceFileName);
+        if (model.IsError)
+        {
+            return model.error;
+        }
+        
+        
+        var buildResult = BuildParser(model);
+        
+        var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType,typeof(object));
+        var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
+           
+        
+        // TODO :  return a list<string> if buildResult is error
+        var isErrorResult = buildResultType.GetProperty("IsError").GetValue(buildResult.parserBuildResult, null) as bool?;
+        if (isErrorResult.HasValue && isErrorResult.Value)
+        {
+            var errors = buildResultType.GetProperty("Errors").GetValue(buildResult.parserBuildResult, null) as
+                List<InitializationError>;
+            return errors.Select(x => x.Message).ToList();
+        }
+        
+        var resultProperty = buildResultType.GetProperty("Result");
+        var parser = resultProperty.GetValue(buildResult.parserBuildResult, null);
+
+        var parseMethod = parserType.GetMethod("Parse", new[] { typeof(string), typeof(string) });
+        var result = parseMethod.Invoke(parser, new object[] { source, null });
+
+        // TODO : check if parse returned error
+        
+        
+        var ParseResultType = typeof(ParseResult<,>).MakeGenericType(buildResult.lexerType, typeof(object));
+
+        var x = ParseResultType.GetProperty("IsError").GetValue(result) as bool?;
+        if (x.HasValue && x.Value)
+        {
+            var errors = ParseResultType.GetProperty("Errors").GetValue(result) as List<ParseError>;
+            return errors.Select(x => x.ErrorMessage).ToList();
+        }
+        
+        
+        var parseResultProp = ParseResultType.GetProperty("SyntaxTree");
+        var syntaxTree = parseResultProp.GetValue(result);
+
+
+        if (processor != null)
+        {
+            return processor(buildResult.lexerType, parser.GetType(), syntaxTree);
         }
 
         return null;
     }
 
-    public DotGraph GetGraphVizDot(string modelSourceFileName, string source)
+    public static string SyntaxTreeToDotGraph(Type lexerType, Type parserType, object syntaxTree)
     {
-        var model = CompileModel(modelSourceFileName);
-        var buildResult = BuildParser(model);
-
-        var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType,typeof(object));
-        var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
-            
-        var resultProperty = buildResultType.GetProperty("Result");
-        var parser = resultProperty.GetValue(buildResult.parserBuildResult, null);
-
-        var parseMethod = parserType.GetMethod("Parse", new[] { typeof(string), typeof(string) });
-        var result = parseMethod.Invoke(parser, new object[] { source, null });
-
-        var ParseResultType = typeof(ParseResult<,>).MakeGenericType(buildResult.lexerType, typeof(object));
-        var parseResultProp = ParseResultType.GetProperty("SyntaxTree");
-        var syntaxTree = parseResultProp.GetValue(result);
-            
-        var graphvizType = typeof(GraphVizEBNFSyntaxTreeVisitor<>).MakeGenericType(buildResult.lexerType);
+        var graphvizType = typeof(GraphVizEBNFSyntaxTreeVisitor<>).MakeGenericType(lexerType);
         var visitor = graphvizType.GetConstructor(new Type[] { }).Invoke(new object[]{});
-            
-            
+        
         var visited = graphvizType
-            .GetMethod("VisitTree",new Type[]{syntaxTree.GetType()})
-            .Invoke(visitor, new object[]{syntaxTree});
-            
-        var graph = graphvizType
+            .GetMethod("VisitTree", new Type[] { syntaxTree.GetType() })
+            .Invoke(visitor, new object[] { syntaxTree });
+
+        var graph = graphvizType?
             .GetProperty("Graph")
-            .GetValue(visitor);
+            ?.GetValue(visitor);
 
         var dot = (graph as DotGraph);
 
-        return dot;
+        return dot.Compile();
     }
-    
-    public string GetJsonSerialization(string modelSourceFileName, string source)
+
+    public static string SyntaxTreeToJson(Type lexerType, Type parserTree, object syntaxTree)
     {
-        var buildResult = GetSyntaxTree(modelSourceFileName, source, out var syntaxTree);
         var serialization = JsonConvert.SerializeObject(syntaxTree,Formatting.Indented);
         return serialization;
     }
-
-    private (object parserBuildResult, Type parserType, Type lexerType) GetSyntaxTree(string modelSourceFileName,
-        string source, out object? syntaxTree)
-    {
-        var model = CompileModel(modelSourceFileName);
-        var buildResult = BuildParser(model);
-
-        var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType, typeof(object));
-        var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
-
-        var resultProperty = buildResultType.GetProperty("Result");
-        var parser = resultProperty.GetValue(buildResult.parserBuildResult, null);
-
-        var parseMethod = parserType.GetMethod("Parse", new[] { typeof(string), typeof(string) });
-        var result = parseMethod.Invoke(parser, new object[] { source, null });
-
-        var ParseResultType = typeof(ParseResult<,>).MakeGenericType(buildResult.lexerType, typeof(object));
-        var parseResultProp = ParseResultType.GetProperty("SyntaxTree");
-        syntaxTree = parseResultProp.GetValue(result);
-        return buildResult;
-    }
-
+    
     private object BuildIt(Type parserType, string root)
     {
         var constructor = parserType.GetConstructor(Type.EmptyTypes);
@@ -184,9 +206,6 @@ public class ParserBuilder
             builderType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, Type.EmptyTypes);
         var builder = builderconstructor.Invoke(new object?[] { });
         var buildMethod = builderType.GetMethod("BuildParser", new Type[] { ObjectType,typeof(ParserType),typeof(string),BuildExtensionType,LexerPostProcessType});
-        
-        // object parserInstance, ParserType parserType,
-        // string rootRule, BuildExtension<IN> extensionBuilder = null, LexerPostProcess<IN> lexerPostProcess = null
         
         var x = buildMethod.Invoke(builder, new object?[] { instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, root,null,null }); // TODO
         return x;
@@ -275,14 +294,6 @@ public class ParserBuilder
     {
 
          var paramtype = operand.IsToken ? TokenType : ObjectType;
-        // var methodBuilder = builder.DefineMethod($"operand_{operand.Name}",
-        //     MethodAttributes.Public,
-        //     CallingConventions.Standard,
-        //     ObjectType, new[] { paramtype });
-        // 
-        //     
-        // methodBuilder.GetILGenerator().Emit(OpCodes.Ldnull);
-        // methodBuilder.GetILGenerator().Emit(OpCodes.Ret);
 
         var methodBuilder = AddMethod(builder, $"operand_{operand.Name}", paramtype);
         Type attributeType = typeof(OperandAttribute);

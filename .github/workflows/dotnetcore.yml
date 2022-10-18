@@ -38,7 +38,7 @@ jobs:
       with:
         testProject: ${{env.TESTS_PROJECT}}
         output: 'lcov.info'
-        threshold: 80
+        threshold: 50
         outputFormat: 'lcov'
         excludes: '[Tests]*,[csly-cli]*'     
     - name: publish nuget

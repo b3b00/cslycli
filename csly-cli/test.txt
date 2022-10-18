@@ -68,6 +68,7 @@ parser;
 [Operand] FALSE;
 [Operand] STRING;
 [Operand] ID;
+[Operand] expressionGroup;
 
 # statements
 
@@ -88,3 +89,5 @@ statementPrim: ID ASSIGN dynamicParser_expressions;
 statementPrim: SKIP;
 
 statementPrim: PRINT dynamicParser_expressions;
+
+expressionGroup : LPAREN dynamicParser_expressions RPAREN

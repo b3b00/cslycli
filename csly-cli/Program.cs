@@ -54,7 +54,7 @@ public class Program
         File.WriteAllText(path,enumCode);
         
 
-        var parserCode = ParserGenerator.GenerateParser(model.Value.ParserModel, generate.Parser, generate.NameSpace);
+        var parserCode = ParserGenerator.GenerateParser(model.Value.ParserModel, generate.Parser, generate.NameSpace, generate.Lexer, generate.ParserOutput);
         path = Path.Combine(fi.Directory.FullName, generate.Parser + ".cs");
         File.WriteAllText(path,parserCode);
         return 0;

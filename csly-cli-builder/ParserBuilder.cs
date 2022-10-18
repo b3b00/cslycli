@@ -21,7 +21,6 @@ public delegate string SyntaxTreeProcessor(Type parserType, Type lexerType, obje
 public class ParserBuilder
 {
     
-    
     public static string DynamicParserName = "dynamicParser";
 
     public Type EnumType { get; set; }
@@ -90,7 +89,7 @@ public class ParserBuilder
         return (BuildIt(compiledType, model.ParserModel.Root), compiledType, EnumType);
     }
 
-    public Result<Model,List<string>> CompileModel(string filename)
+    public Result<Model,List<string>> CompileModel(string filename, string parserName = "dynamicParser")
     {
         ParserBuilder<CLIToken, ICLIModel> builder = new ParserBuilder<CLIToken, ICLIModel>();
         var instance = new CLIParser();
@@ -99,7 +98,8 @@ public class ParserBuilder
         if (buildParser.IsOk)
         {
             var content = File.ReadAllText(filename);
-            var result = buildParser.Result.ParseWithContext(content, new ParserContext());
+            var context = new ParserContext(parserName);
+            var result = buildParser.Result.ParseWithContext(content, context);
             if (result.IsError)
             {
                 return result.Errors.Select(x => x.ErrorMessage).ToList();
@@ -116,65 +116,11 @@ public class ParserBuilder
         }
     }
     
-    public Result<string,List<string>> Get(string modelFileName, string sourceFileName, SyntaxTreeProcessor processor)
-    {
-        var model = CompileModel(modelFileName);
-        var source = File.ReadAllText(sourceFileName);
-        if (model.IsError)
-        {
-            return model.error;
-        }
-        
-        
-        var buildResult = BuildParser(model);
-        
-        var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType,typeof(object));
-        var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
-           
-        
-        // TODO :  return a list<string> if buildResult is error
-        var isErrorResult = buildResultType.GetProperty("IsError").GetValue(buildResult.parserBuildResult, null) as bool?;
-        if (isErrorResult.HasValue && isErrorResult.Value)
-        {
-            var errors = buildResultType.GetProperty("Errors").GetValue(buildResult.parserBuildResult, null) as
-                List<InitializationError>;
-            return errors.Select(x => x.Message).ToList();
-        }
-        
-        var resultProperty = buildResultType.GetProperty("Result");
-        var parser = resultProperty.GetValue(buildResult.parserBuildResult, null);
-
-        var parseMethod = parserType.GetMethod("Parse", new[] { typeof(string), typeof(string) });
-        var result = parseMethod.Invoke(parser, new object[] { source, null });
-
-        // TODO : check if parse returned error
-        
-        
-        var ParseResultType = typeof(ParseResult<,>).MakeGenericType(buildResult.lexerType, typeof(object));
-
-        var x = ParseResultType.GetProperty("IsError").GetValue(result) as bool?;
-        if (x.HasValue && x.Value)
-        {
-            var errors = ParseResultType.GetProperty("Errors").GetValue(result) as List<ParseError>;
-            return errors.Select(x => x.ErrorMessage).ToList();
-        }
-        
-        
-        var parseResultProp = ParseResultType.GetProperty("SyntaxTree");
-        var syntaxTree = parseResultProp.GetValue(result);
-
-
-        if (processor != null)
-        {
-            return processor(buildResult.lexerType, parser.GetType(), syntaxTree);
-        }
-
-        return null;
-    }
+   
     
-      public Result<List<(string format,string content)>,List<string>> Getz(string modelFileName, string sourceFileName, List<(string format,SyntaxTreeProcessor processor)> processors)
+      public Result<List<(string format,string content)>,List<string>> Getz(string modelFileName, string sourceFileName, string parserName, List<(string format,SyntaxTreeProcessor processor)> processors)
     {
-        var model = CompileModel(modelFileName);
+        var model = CompileModel(modelFileName, parserName);
         var source = File.ReadAllText(sourceFileName);
         if (model.IsError)
         {

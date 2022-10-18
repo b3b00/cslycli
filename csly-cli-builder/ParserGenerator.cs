@@ -5,10 +5,10 @@ namespace clsy.cli.builder;
 
 public class ParserGenerator
 {
-    public static string GenerateParser(ParserModel model, string name, string nameSpace, string lexer, string output)
+    public static string GenerateParser(ParserModel model, string parser, string nameSpace, string lexer, string output)
     {
-        var head = GetHeader(name, nameSpace);
-        var body = GetBody(model, lexer, output);
+        var head = GetHeader(parser, nameSpace);
+        var body = GetBody(model, parser, lexer, output);
         var foot = getFooter();
         return head+"\n"+body+"\n"+foot;
     }
@@ -35,7 +35,7 @@ namespace {nameSpace} {{
 }";
     }
 
-    private static string GetBody(ParserModel model, string lexer, string output)
+    private static string GetBody(ParserModel model, string parser, string lexer, string output)
     {
         StringBuilder builder = new StringBuilder();
         foreach (var rule in model.Rules)
@@ -61,8 +61,8 @@ namespace {nameSpace} {{
             }
             else
             {
-                builder.AppendLine(GetProduction(rule));
-                builder.AppendLine(GetVisitor(rule, lexer, output));
+                builder.AppendLine(GetProduction(rule, parser));
+                builder.AppendLine(GetVisitor(rule, parser, lexer, output));
                 builder.AppendLine();
             }
         }
@@ -77,9 +77,9 @@ namespace {nameSpace} {{
         [Production(""operand_{operand.Name} : {operand.Name}"")]";
     }
     
-    private static string GetProduction(Rule rule)
+    private static string GetProduction(Rule rule, string parser)
     {
-        return $"\t\t[Production(\"{GetRuleString(rule)}\")]";
+        return $"\t\t[Production(\"{GetRuleString(rule, parser)}\")]";
     }
     
     private static string GetProduction(InfixRule rule)
@@ -95,20 +95,24 @@ namespace {nameSpace} {{
     
     #region rule string
 
-    private static string GetRuleString(Rule rule)
+    private static string GetRuleString(Rule rule, string parser)
     {
         StringBuilder builder = new StringBuilder();
         builder.Append(rule.NonTerminalName).Append(" : ");
-        builder.Append(string.Join(" ", rule.Clauses.Select(x => GetClause(x))));
+        builder.Append(string.Join(" ", rule.Clauses.Select(x => GetClause(x, parser))));
         return builder.ToString();
     }
 
-    private static string GetClause(IClause clause)
+    private static string GetClause(IClause clause, string parser)
     {
         switch (clause)
         {
             case NonTerminalClause nt:
             {
+                if (nt.NonTerminalName == "dynamicParser_expressions")
+                {
+                    return $"{parser}_expressions";
+                }
                 return nt.NonTerminalName;
             }
             case TerminalClause t:
@@ -119,7 +123,7 @@ namespace {nameSpace} {{
             {
                 StringBuilder builder = new StringBuilder();
                 builder.Append("(");
-                builder.Append(string.Join(" ", grp.Clauses.Select(x => GetClause(x))));
+                builder.Append(string.Join(" ", grp.Clauses.Select(x => GetClause(x, parser))));
                 builder.Append(")");
                 return builder.ToString();
             }
@@ -127,21 +131,21 @@ namespace {nameSpace} {{
             {
                 StringBuilder builder = new StringBuilder();
                 builder.Append("[ ");
-                builder.Append(string.Join(" | ", choice.Choices.Select(x => GetClause(x))));
+                builder.Append(string.Join(" | ", choice.Choices.Select(x => GetClause(x, parser))));
                 builder.Append(" ]");
                 return builder.ToString();
             }
             case OneOrMoreClause oneOr:
             {
-                return GetClause(oneOr.Clause) + "+";
+                return GetClause(oneOr.Clause, parser) + " +";
             }
             case ZeroOrMoreClause zeroOr:
             {
-                return GetClause(zeroOr.Clause) + "+";
+                return GetClause(zeroOr.Clause, parser) + " *";
             }
             case OptionClause opt:
             {
-                return GetClause(opt.Clause) + "?";
+                return GetClause(opt.Clause, parser) + "?";
             }
             default:
             {
@@ -183,9 +187,9 @@ namespace {nameSpace} {{
         }}";
     }
 
-    public static string GetVisitor(Rule rule, string lexer, string output)
+    public static string GetVisitor(Rule rule, string parser, string lexer, string output)
     {
-        return GetVisitorHeader(rule, lexer, output) + "\n" + GetVisitorBody(output);
+        return GetVisitorHeader(rule, parser, lexer, output) + "\n" + GetVisitorBody(output);
     }
     
     public static string GetVisitorBody(string output)
@@ -196,7 +200,7 @@ namespace {nameSpace} {{
         }}";
     }
     
-    public static string GetVisitorHeader(Rule rule, string lexer, string output)
+    public static string GetVisitorHeader(Rule rule, string parser, string lexer, string output)
     {
         string name = rule.RuleString.Replace(" ","").Replace(":","_").Replace("*","");
 
@@ -204,7 +208,7 @@ namespace {nameSpace} {{
         for (int i = 0; i < rule.Clauses.Count; i++)
         {
             var clause = rule.Clauses[i];
-            var type = GetClauseType(clause, lexer, output);
+            var type = GetClauseType(clause, parser, lexer, output);
             var p = $"p{i}";
             parameters += $"{type} {p}";
             if (i < rule.Clauses.Count - 1)
@@ -218,7 +222,7 @@ namespace {nameSpace} {{
             $"\t\tpublic {output} {name}({parameters})";
     }
     
-    public static string GetClauseType(IClause clause, string lexer, string output)
+    public static string GetClauseType(IClause clause, string parser, string lexer, string output)
     {
         switch (clause)
         {
@@ -238,27 +242,27 @@ namespace {nameSpace} {{
             {
                 StringBuilder builder = new StringBuilder();
                 builder.Append("[ ");
-                builder.Append(string.Join(" | ", choice.Choices.Select(x => GetClause(x))));
+                builder.Append(string.Join(" | ", choice.Choices.Select(x => GetClause(x, parser))));
                 builder.Append(" ]");
                 return builder.ToString();
             }
             case ManyClause many:
             {
-                return $"List<{GetClauseType(many.Clause,lexer,output)}>";
+                return $"List<{GetClauseType(many.Clause, parser, lexer,output)}>";
             }
             case OptionClause opt:
             {
                 if (opt.Clause is NonTerminalClause)
                 {
-                    return $"ValueOption<{GetClauseType(clause,lexer,output)}>";
+                    return $"ValueOption<{GetClauseType(clause,parser,lexer,output)}>";
                 }
                 else if (clause is TerminalClause)
                 {
-                    return GetClauseType(clause,lexer,output);
+                    return GetClauseType(clause, parser, lexer,output);
                 }
                 else if (clause is GroupClause)
                 {
-                    return $"ValueOption<{GetClauseType(clause,lexer,output)}>";
+                    return $"ValueOption<{GetClauseType(clause, parser, lexer,output)}>";
                 }
 
                 return output;

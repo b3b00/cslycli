@@ -5,16 +5,19 @@ using System.Linq;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using CommandLine;
+using my.ns;
 using sly.cli.options;
+using sly.parser.generator;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-        Parser.Default.ParseArguments<TestOptions, GenerateOPtions>(args)
+        Parser.Default.ParseArguments<TestOptions, GenerateOPtions, TestGenerate>(args)
             .MapResult(
                 (TestOptions test) => { return Test(test); },
                 (GenerateOPtions generate) => { return Generate(generate); },
+                (TestGenerate testGen) => { return TestGen(testGen);},
                 errors =>
                 {
                     foreach (var error in errors)
@@ -27,6 +30,38 @@ public class Program
             );
 
 
+    }
+
+    private static int TestGen(TestGenerate testGen)
+    {
+        MyParser instance = new MyParser();
+        var builder = new ParserBuilder<MyLexer, object>();
+        var Parser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, "statement");
+        
+        if (Parser.IsOk)
+        {
+            var source = File.ReadAllText(testGen.Source);
+            var r =Parser.Result.Parse(source);
+            if (r.IsError)
+            {
+                foreach (var error in r.Errors)
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+            }
+            else
+            {
+                Console.WriteLine("result :: "+r.Result);
+            }
+        }
+        else
+        {
+            foreach (var error in Parser.Errors)
+            {
+                Console.WriteLine(error.Message);
+            }
+        }
+        return 0;
     }
 
     private static int Generate(GenerateOPtions generate)
@@ -99,7 +134,7 @@ public class Program
 
 
         var result = builder.Getz(test.Grammar,
-            test.Source, formatters.Select(x => (x.format.ToString(), x.processor)).ToList());
+            test.Source, parserName,formatters.Select(x => (x.format.ToString(), x.processor)).ToList());
 
         if (result.IsError)
         {

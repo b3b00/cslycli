@@ -80,14 +80,14 @@ sequence : statementPrim additionalStatements*;
 
 additionalStatements : SEMICOLON statementPrim;
 
-statementPrim: IF dynamicParser_expressions THEN statement ELSE statement;
+statementPrim: IF MyParser_expressions THEN statement ELSE statement;
 
-statementPrim: WHILE dynamicParser_expressions DO statement;
+statementPrim: WHILE MyParser_expressions DO statement;
 
-statementPrim: ID ASSIGN dynamicParser_expressions;
+statementPrim: ID ASSIGN MyParser_expressions;
 
 statementPrim: SKIP;
 
-statementPrim: PRINT dynamicParser_expressions;
+statementPrim: PRINT MyParser_expressions;
 
-expressionGroup : LPAREN dynamicParser_expressions RPAREN
+expressionGroup : LPAREN MyParser_expressions RPAREN

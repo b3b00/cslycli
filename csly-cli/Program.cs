@@ -38,9 +38,9 @@ public class Program
 
         
 
+        var grammar = File.ReadAllText(generate.Grammar);
 
-
-        var model = builder.CompileModel(generate.Grammar);
+        var model = builder.CompileModel(grammar);
         if (model.IsError)
         {
             foreach (var error in model.Error)
@@ -69,9 +69,9 @@ public class Program
 
         SyntaxTreeProcessor emptyProcessor = (Type type, Type lexerType, object tree) => { return ""; };
 
+        var grammarSource = File.ReadAllText(test.Grammar);
 
-
-        var mod = builder.CompileModel(test.Grammar);
+        var mod = builder.CompileModel(grammarSource);
         if (mod.IsError)
         {
             foreach (var error in mod.Error)
@@ -98,9 +98,11 @@ public class Program
             formatters = new List<(OutputFormat, SyntaxTreeProcessor)>() { (OutputFormat.NO, emptyProcessor) };
         }
 
+        var grammar = File.ReadAllText(test.Grammar);
+        var source = File.ReadAllText(test.Source);
 
-        var result = builder.Getz(test.Grammar,
-            test.Source, parserName,formatters.Select(x => (x.format.ToString(), x.processor)).ToList());
+        var result = builder.Getz(grammar,
+            source, parserName,formatters.Select(x => (x.format.ToString(), x.processor)).ToList());
 
         if (result.IsError)
         {

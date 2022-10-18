@@ -6,9 +6,10 @@ namespace csly.cli.parser;
 [Lexer(IgnoreEOL = true, IgnoreWS = true)]
 public enum CLIToken
 {
+    EOS = 0,
 
     [Sugar(";")]
-    SEMICOLON = 0,
+    SEMICOLON = 1,
     
     [Int] INT,
     

@@ -1,0 +1,7 @@
+genericLexer MinimalLexer;
+
+[Int] INT;
+
+parser MinimalParser;
+
+@ root : INT;

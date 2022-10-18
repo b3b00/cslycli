@@ -90,7 +90,7 @@ public class ParserBuilder
         return (BuildIt(compiledType, model.ParserModel.Root), compiledType, EnumType);
     }
 
-    public Result<Model,List<string>> CompileModel(string filename, string parserName = "dynamicParser")
+    public Result<Model,List<string>> CompileModel(string modelSource, string parserName = "dynamicParser")
     {
         ParserBuilder<CLIToken, ICLIModel> builder = new ParserBuilder<CLIToken, ICLIModel>();
         var instance = new CLIParser();
@@ -98,9 +98,8 @@ public class ParserBuilder
         var buildParser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, "root");
         if (buildParser.IsOk)
         {
-            var content = File.ReadAllText(filename);
             var context = new ParserContext(parserName);
-            var result = buildParser.Result.ParseWithContext(content, context);
+            var result = buildParser.Result.ParseWithContext(modelSource, context);
             if (result.IsError)
             {
                 return result.Errors.Select(x => x.ErrorMessage).ToList();
@@ -119,10 +118,10 @@ public class ParserBuilder
     
    
     
-      public Result<List<(string format,string content)>,List<string>> Getz(string modelFileName, string sourceFileName, string parserName, List<(string format,SyntaxTreeProcessor processor)> processors)
+      public Result<List<(string format,string content)>,List<string>> Getz(string modelSource, string source, string parserName, List<(string format,SyntaxTreeProcessor processor)> processors)
     {
-        var model = CompileModel(modelFileName, parserName);
-        var source = File.ReadAllText(sourceFileName);
+        var model = CompileModel(modelSource, parserName);
+        
         if (model.IsError)
         {
             return model.error;

@@ -164,7 +164,7 @@ namespace {nameSpace} {{
         var paramType = operand.IsToken ? $"Token<{lexer}>": output;
         return $@"
         public {output} operand_{operand.Name}({paramType} value) {{
-            return value;
+            return default({output});
         }}";
     }
 

@@ -1,0 +1,62 @@
+{
+  "Children": [
+    {
+      "Token": {
+        "StringDelimiter": "\u0000",
+        "DecimalSeparator": "\u0000",
+        "CharDelimiter": "'",
+        "Notignored": false,
+        "Channel": 0,
+        "SpanValue": {
+          "Length": 1,
+          "IsEmpty": false
+        },
+        "Position": {
+          "IsStartOfLine": true,
+          "Indentations": [],
+          "CurrentIndentation": 0,
+          "Column": 0,
+          "Index": 0,
+          "Line": 0,
+          "Mode": "default"
+        },
+        "PositionInTokenVisibleFlow": 0,
+        "PositionInTokenFlow": 0,
+        "TokenID": 0,
+        "IsComment": false,
+        "Discarded": false,
+        "IsEOS": false,
+        "IsIndent": false,
+        "IsUnIndent": false,
+        "IndentationLevel": 0,
+        "IsWhiteSpace": false,
+        "IsEOL": false,
+        "IsImplicit": false,
+        "CommentType": 0,
+        "IsEmpty": false,
+        "IsMultiLineComment": false,
+        "IsSingleLineComment": true,
+        "Value": "2",
+        "End": true,
+        "IsLineEnding": false
+      },
+      "Discarded": false,
+      "Name": "INT",
+      "HasByPassNodes": false
+    }
+  ],
+  "IsByPassNode": false,
+  "IsEmpty": false,
+  "ExpressionAffix": 0,
+  "Discarded": false,
+  "Name": "root",
+  "HasByPassNodes": false,
+  "IsExpressionNode": false,
+  "IsBinaryOperationNode": false,
+  "IsUnaryOperationNode": false,
+  "Precedence": -1,
+  "Associativity": 0,
+  "IsLeftAssociative": false,
+  "Left": null,
+  "Right": null
+}

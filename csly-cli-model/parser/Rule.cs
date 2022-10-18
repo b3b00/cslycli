@@ -17,12 +17,6 @@ namespace csly.cli.model.parser
         public virtual bool IsOperand => false;
         public virtual bool IsInfix => false;
 
-        public Rule(string name, List<IClause> clauses)
-        {
-            NonTerminalName = name;
-            Clauses = clauses;
-        }
-
         public string RuleString => NonTerminalName + " : " + string.Join(" ", Clauses.Select(x => x.ToString()));
 
         public string Key

@@ -35,6 +35,7 @@
       <EmbeddedResource Include="data\lexer.csharp" />
       <EmbeddedResource Include="data\minimalGrammar.txt" />
       <EmbeddedResource Include="data\parser.csharp" />
+      <EmbeddedResource Include="data\whileGrammar.txt" />
       <None Remove="data\gammar1.txt" />
       <EmbeddedResource Include="data\grammar1.txt" />
       <None Remove="data\minimalJSON.json" />

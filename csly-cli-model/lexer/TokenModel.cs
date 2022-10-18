@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using sly.lexer;
 
 namespace csly.cli.model.lexer;
@@ -23,6 +24,7 @@ public class TokenModel : ICLIModel
         Args = args;
     }
 
+    [ExcludeFromCodeCoverage]
     public override string ToString()
     {
         return $"[{Type} {Name}] {string.Join(", ",Args)}";

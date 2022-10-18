@@ -1,0 +1,93 @@
+genericLexer WhileLexer;
+
+[String] STRING;
+[Int] INT;
+[AlphaId] ID; # to be derived for every identifier types
+
+
+[ KeyWord] IF:'if';
+[ KeyWord] THEN:'then';
+[ KeyWord] ELSE:'else';
+[ KeyWord] WHILE:'while';
+[ KeyWord] DO:'do';
+[ KeyWord] SKIP:'skip';
+[ KeyWord] TRUE:'true';
+[ KeyWord] FALSE:'false';
+[ KeyWord] NOT:'not';
+[ KeyWord] AND:'and';
+[ KeyWord] OR:'or';
+[ KeyWord] PRINT:'print';
+
+ [Sugar] GREATER : '>';
+
+[Sugar] LESSER : '<';
+
+[Sugar] EQUALS : '==';
+
+[Sugar] DIFFERENT : '!=';
+
+[Sugar] CONCAT : '.';
+
+[Sugar] ASSIGN : ':=';
+
+[Sugar] PLUS : '+';
+[Sugar] MINUS : '-';
+[Sugar] TIMES : '*';
+[Sugar] DIVIDE : '/';
+
+[Sugar] LPAREN : '(';
+[Sugar] RPAREN : ')';
+[Sugar] SEMICOLON : ';';
+
+parser WhileParser;
+
+# operations 
+
+[Right 50] LESSER;
+[Right 50] GREATER;
+[Right 50] EQUALS;
+[Right 50]DIFFERENT;
+
+[Right 10] CONCAT;
+       
+[Right 10] PLUS;
+[Left 10] MINUS;
+[Right 50] TIMES;
+[Left 50]DIVIDE;
+
+[Prefix 100] MINUS;
+
+[Right 10] OR;
+[Right 50] AND;
+[Prefix 100] NOT;
+
+# operands
+
+[Operand] INT;
+[Operand] TRUE;
+[Operand] FALSE;
+[Operand] STRING;
+[Operand] ID;
+[Operand] expressionGroup;
+
+# statements
+
+@ statement :  LPAREN statement RPAREN ;
+
+statement : sequence;
+
+sequence : statementPrim additionalStatements*;
+
+additionalStatements : SEMICOLON statementPrim;
+
+statementPrim: IF WhileParser_expressions THEN statement ELSE statement;
+
+statementPrim: WHILE WhileParser_expressions DO statement;
+
+statementPrim: ID ASSIGN WhileParser_expressions;
+
+statementPrim: SKIP;
+
+statementPrim: PRINT WhileParser_expressions;
+
+expressionGroup : LPAREN WhileParser_expressions RPAREN;

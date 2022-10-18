@@ -11,11 +11,7 @@ namespace csly.cli.model.parser
         public override bool IsPrefix => false;
         public override bool IsOperand => true;
         public override bool IsInfix => false;
-        public OperandRule()
-        {
-            Name = null;
-        }
-
+       
         public OperandRule(string name, bool isTerminal)
         {
             Name = name;

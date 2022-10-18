@@ -16,20 +16,20 @@ genericLexer;
  [AlphaId] ID; # to be derived for every identifier types 
   
   
- [ KeyWord] IF:'if'; 
- [ KeyWord] THEN:'then'; 
- [ KeyWord] ELSE:'else'; 
- [ KeyWord] WHILE:'while'; 
- [ KeyWord] DO:'do'; 
- [ KeyWord] SKIP:'skip'; 
- [ KeyWord] TRUE:'true'; 
- [ KeyWord] FALSE:'false'; 
- [ KeyWord] NOT:'not'; 
- [ KeyWord] AND:'and'; 
- [ KeyWord] OR:'or'; 
- [ KeyWord] PRINT:'print'; 
+ [KeyWord] IF:'if'; 
+ [KeyWord] THEN:'then'; 
+ [KeyWord] ELSE:'else'; 
+ [KeyWord] WHILE:'while'; 
+ [KeyWord] DO:'do'; 
+ [KeyWord] SKIP:'skip'; 
+ [KeyWord] TRUE:'true'; 
+ [KeyWord] FALSE:'false'; 
+ [KeyWord] NOT:'not'; 
+ [KeyWord] AND:'and'; 
+ [KeyWord] OR:'or'; 
+ [KeyWord] PRINT:'print'; 
   
-  [Sugar] GREATER : '>'; 
+ [Sugar] GREATER : '>'; 
   
  [Sugar] LESSER : '<'; 
   

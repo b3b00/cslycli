@@ -21,7 +21,7 @@ public delegate string SyntaxTreeProcessor(Type parserType, Type lexerType, obje
 public class ParserBuilder
 {
     
-    public static string DynamicParserName = "dynamicParser";
+    public string DynamicParserName { get; set; } = "dynamicParser";
 
     public Type EnumType { get; set; }
     public Type TokenType { get; set; }
@@ -57,8 +57,9 @@ public class ParserBuilder
     /// <returns>a Parser</returns>
     private (object parserBuildResult, Type parserType, Type lexerType) BuildParser(Model model)
     {
-        
-        var(enumType, assemblyBuilder, moduleBuilder) = LexerBuilder.BuildLexerEnum(model.LexerModel);
+        DynamicParserName = model.ParserModel.Name;
+        var lexerBuilder = new LexerBuilder(model.LexerModel.Name);
+        var(enumType, assemblyBuilder, moduleBuilder) = lexerBuilder.BuildLexerEnum(model.LexerModel);
         
         EnumType = enumType;
         ObjectType = typeof(object);

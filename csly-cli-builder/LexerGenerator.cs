@@ -6,9 +6,9 @@ namespace clsy.cli.builder;
 
 public class LexerGenerator
 {
-    public static string GenerateLexer(LexerModel model, string name, string nameSpace)
+    public static string GenerateLexer(LexerModel model, string nameSpace)
     {
-        var head = GetHeader(name, nameSpace);
+        var head = GetHeader(model.Name, nameSpace);
         var body = GetBody(model);
         var foot = getFooter();
         return head+"\n"+body+"\n"+foot;

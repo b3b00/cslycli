@@ -13,10 +13,11 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Parser.Default.ParseArguments<TestOptions, GenerateOPtions>(args)
+        Parser.Default.ParseArguments<TestOptions, GenerateOptions/*, TestGenerate */>(args)
             .MapResult(
                 (TestOptions test) => { return Test(test); },
-                (GenerateOPtions generate) => { return Generate(generate); },
+                (GenerateOptions generate) => { return Generate(generate); },
+                // (TestGenerate testGen) => { return TestGen(testGen);},
                 errors =>
                 {
                     foreach (var error in errors)
@@ -31,7 +32,7 @@ public class Program
 
     }
 
-    private static int Generate(GenerateOPtions generate)
+    private static int Generate(GenerateOptions generate)
     {
         var fi = new FileInfo(generate.Grammar);
         var parserName = fi.Name.Replace(fi.Extension, "");
@@ -51,13 +52,13 @@ public class Program
 
             return 1;
         }
-        var enumCode = LexerGenerator.GenerateLexer(model.Value.LexerModel, generate.Lexer, generate.NameSpace);
-        var path = Path.Combine(fi.Directory.FullName, generate.Lexer + ".cs");
+        var enumCode = LexerGenerator.GenerateLexer(model.Value.LexerModel, generate.NameSpace);
+        var path = Path.Combine(fi.Directory.FullName, model.Value.LexerModel.Name + ".cs");
         File.WriteAllText(path,enumCode);
         
 
-        var parserCode = ParserGenerator.GenerateParser(model.Value.ParserModel, generate.Parser, generate.NameSpace, generate.Lexer, generate.ParserOutput);
-        path = Path.Combine(fi.Directory.FullName, generate.Parser + ".cs");
+        var parserCode = ParserGenerator.GenerateParser(model.Value,  generate.NameSpace, generate.ParserOutput);
+        path = Path.Combine(fi.Directory.FullName, model.Value.ParserModel.Name + ".cs");
         File.WriteAllText(path,parserCode);
         return 0;
     }
@@ -136,6 +137,40 @@ public class Program
 
         return 0;
     }
+    
+    
+    // private static int TestGen(TestGenerate testGen)
+    // {
+    //     MyParser instance = new MyParser();
+    //     var builder = new ParserBuilder<MyLexer, object>();
+    //     var Parser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, "statement");
+    //     
+    //     if (Parser.IsOk)
+    //     {
+    //         var source = File.ReadAllText(testGen.Source);
+    //         var r =Parser.Result.Parse(source);
+    //         if (r.IsError)
+    //         {
+    //             foreach (var error in r.Errors)
+    //             {
+    //                 Console.WriteLine(error.ErrorMessage);
+    //             }
+    //         }
+    //         else
+    //         {
+    //             Console.WriteLine("parse OK !");
+    //             Console.WriteLine("result :: "+r.Result);
+    //         }
+    //     }
+    //     else
+    //     {
+    //         foreach (var error in Parser.Errors)
+    //         {
+    //             Console.WriteLine(error.Message);
+    //         }
+    //     }
+    //     return 0;
+    // }
 }
 
 

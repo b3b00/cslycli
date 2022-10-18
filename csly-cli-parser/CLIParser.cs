@@ -16,11 +16,12 @@ public class CLIParser
         return new Model(genericLex as LexerModel, parser as ParserModel) ;
     }
 
-    [Production("parserRoot : PARSER[d] SEMICOLON[d] rule*")]
-    public ICLIModel Parser(List<ICLIModel> rules, ParserContext context)
+    [Production("parserRoot : PARSER[d] ID SEMICOLON[d] rule*")]
+    public ICLIModel Parser(Token<CLIToken> name, List<ICLIModel> rules, ParserContext context)
     {
         return new ParserModel()
         {
+            Name = name.Value,
             Rules = rules.Cast<Rule>().ToList()
         };
     }
@@ -29,10 +30,10 @@ public class CLIParser
 
   
     
-    [Production("genericRoot : GENERICLEXER[d] SEMICOLON[d]  token*")]
-    public ICLIModel lexer(List<ICLIModel> tokens, ParserContext context)
+    [Production("genericRoot : GENERICLEXER[d] ID SEMICOLON[d]  token*")]
+    public ICLIModel lexer(Token<CLIToken> name, List<ICLIModel> tokens, ParserContext context)
     {
-        return new LexerModel(tokens.Cast<TokenModel>().ToList());
+        return new LexerModel(tokens.Cast<TokenModel>().ToList(), name.Value);
     }
 
     [Production(

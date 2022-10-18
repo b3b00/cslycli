@@ -1,14 +1,15 @@
 using System.Text;
+using csly.cli.model;
 using csly.cli.model.parser;
 
 namespace clsy.cli.builder;
 
 public class ParserGenerator
 {
-    public static string GenerateParser(ParserModel model, string parser, string nameSpace, string lexer, string output)
+    public static string GenerateParser(Model model, string nameSpace, string output)
     {
-        var head = GetHeader(parser, nameSpace);
-        var body = GetBody(model, parser, lexer, output);
+        var head = GetHeader(model.ParserModel.Name, nameSpace);
+        var body = GetBody(model.ParserModel, model.ParserModel.Name, model.LexerModel.Name, output);
         var foot = getFooter();
         return head+"\n"+body+"\n"+foot;
     }
@@ -109,10 +110,6 @@ namespace {nameSpace} {{
         {
             case NonTerminalClause nt:
             {
-                if (nt.NonTerminalName == "dynamicParser_expressions")
-                {
-                    return $"{parser}_expressions";
-                }
                 return nt.NonTerminalName;
             }
             case TerminalClause t:

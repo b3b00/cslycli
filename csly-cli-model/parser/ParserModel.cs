@@ -6,4 +6,5 @@ public class ParserModel : ICLIModel
     
     
     public string Root => Rules.FirstOrDefault(x => x.IsRoot).NonTerminalName;
+    public string Name { get; set; }
 }

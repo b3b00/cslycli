@@ -14,11 +14,16 @@ public class LexerBuilder
 
         public static string DynamicAssemblyName = "dynamicAssembly";
 
-        public static string DynamicLexerName = "DynamicLexer";
+        public string DynamicLexerName { get; set; } = "DynamicLexer";
 
-        public static (object lexerBuildResult, Type tokenType) BuildLexer(LexerModel model)
+        public LexerBuilder(string name)
         {
-         
+            DynamicLexerName = name;
+        }
+        
+        public (object lexerBuildResult, Type tokenType) BuildLexer(LexerModel model)
+        {
+            DynamicLexerName = model.Name;
 
 // Create the type and save the assembly.
             var finished = BuildLexerEnum(model);
@@ -26,7 +31,7 @@ public class LexerBuilder
                 return (BuildIt(finished.enumType), finished.enumType);
         }
         
-        public static (Type enumType, AssemblyBuilder assembly, ModuleBuilder moduleBuilder) BuildLexerEnum(LexerModel model)
+        public (Type enumType, AssemblyBuilder assembly, ModuleBuilder moduleBuilder) BuildLexerEnum(LexerModel model)
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
 
@@ -69,12 +74,12 @@ public class LexerBuilder
             return (finished,dynamicAssembly,moduleBuilder);
         }
 
-        private static void AddAttribute(TokenModel model, FieldBuilder builder)
+        private void AddAttribute(TokenModel model, FieldBuilder builder)
         {
             Add(model.Type,builder, model.Args);
         }
 
-        private static void Add(GenericToken genericToken, FieldBuilder builder, params string[] args)
+        private void Add(GenericToken genericToken, FieldBuilder builder, params string[] args)
         {
             Type attributeType = typeof(LexemeAttribute);
             
@@ -97,7 +102,7 @@ public class LexerBuilder
         }
 
 
-        private static object BuildIt(Type enumType)
+        private object BuildIt(Type enumType)
         {
             var methods = typeof(sly.lexer.LexerBuilder).GetMethods().ToList();
             var builders = methods.Where(x => x.Name.Contains("Build")).Where(x => x.GetParameters().Length == 2).ToList();

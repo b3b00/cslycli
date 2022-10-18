@@ -1,4 +1,4 @@
-genericLexer;
+genericLexer MyLexer;
 
 [String] STRING;
 [Int] INT;
@@ -39,7 +39,7 @@ genericLexer;
 [Sugar] RPAREN : ')';
 [Sugar] SEMICOLON : ';';
 
-parser;
+parser MyParser;
 
 # operations 
 

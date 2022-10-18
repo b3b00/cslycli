@@ -5,9 +5,7 @@ using System.Linq;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using CommandLine;
-using my.ns;
 using sly.cli.options;
-using sly.parser.generator;
 
 public class Program
 {
@@ -141,8 +139,8 @@ public class Program
     
     // private static int TestGen(TestGenerate testGen)
     // {
-    //     MyParser instance = new MyParser();
-    //     var builder = new ParserBuilder<MyLexer, object>();
+    //     my.MyParser instance = new my.MyParser();
+    //     var builder = new ParserBuilder<my.MyLexer, object>();
     //     var Parser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, "statement");
     //     
     //     if (Parser.IsOk)

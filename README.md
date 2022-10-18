@@ -1,5 +1,7 @@
 # csly-cli
 
+[![Coverage Status](https://coveralls.io/repos/github/b3b00/cslycli/badge.svg?branch=main)](https://coveralls.io/github/b3b00/cslycli?branch=main)
+
 CSLY CLI is a tool to quickly test a CSLY lexer/parser without the need to code it.
 It describes the lexer/parser as a text file (ala yacc) with dedicated notations for CSLY specificities.
 
@@ -116,8 +118,6 @@ parse :
   generate : 
 
    - -g --grammar * : chemin vers le fichier grammaire
-   - -n --namespace * : parser namespace
-   - -p --parser * : parser class name
-   - -l --lexer * : lexer enum name
+   - -n --namespace * : parser namespace   
    - -t --type * : parser output type
 

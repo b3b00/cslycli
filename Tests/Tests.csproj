@@ -7,16 +7,18 @@
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-        <PackageReference Include="NFluent" Version="3.0.0.277-beta" />
+    <ItemGroup>        
         <PackageReference Include="SharpCoreFileSystem" Version="1.0.4" />
-        <PackageReference Include="xunit" Version="2.4.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+        <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+        <PackageReference Include="NFluent" Version="3.0.0.277-beta" />
+        <PackageReference Include="xunit" Version="2.4.2" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="coverlet.collector" Version="3.1.0">
+        <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+        <PackageReference Include="coverlet.msbuild" Version="3.1.2">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
@@ -30,7 +32,9 @@
 
     <ItemGroup>
       <EmbeddedResource Include="data\badGrammar.txt" />
+      <EmbeddedResource Include="data\lexer.csharp" />
       <EmbeddedResource Include="data\minimalGrammar.txt" />
+      <EmbeddedResource Include="data\parser.csharp" />
       <None Remove="data\gammar1.txt" />
       <EmbeddedResource Include="data\grammar1.txt" />
       <None Remove="data\minimalJSON.json" />

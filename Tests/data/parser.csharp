@@ -1,0 +1,19 @@
+
+using sly.lexer;
+using sly.parser.generator;
+using System.Collections.Generic;
+
+namespace ns {
+
+    public class MinimalParser {
+
+		[Production("root : INT")]
+		public int root_INT(Token<MinimalLexer> p0)
+        {
+            return default(int);
+        }
+
+
+
+    }
+}

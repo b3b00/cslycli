@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using NFluent;
 using SharpFileSystem.FileSystems;
@@ -62,5 +64,39 @@ public class Tests
         Assert.NotEmpty(content);
         var expected = fs.ReadAllText("/data/minimalJSON.json");
         Check.That(content).IsEqualTo(expected);
+    }
+
+    [Fact]
+    public void GenerateLexerTest()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/minimalGrammar.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MinimalParser");
+        Check.That(model.IsError).IsFalse();
+        Check.That(model.Value).IsNotNull();
+        var source = LexerGenerator.GenerateLexer(model.Value.LexerModel, "ns");
+        Check.That(source).IsNotNull();
+        Check.That(source).IsNotEmpty();
+        source = source.Replace("\r\n", "\n");
+        var expected = fs.ReadAllText("/data/lexer.csharp").Replace("\r\n","\n");
+        Check.That(source).IsEqualTo(expected);
+    }
+    
+    [Fact]
+    public void GenerateParserTest()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/minimalGrammar.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MinimalParser");
+        Check.That(model.IsError).IsFalse();
+        Check.That(model.Value).IsNotNull();
+        var source = ParserGenerator.GenerateParser(model.Value, "ns","int");
+        Check.That(source).IsNotNull();
+        Check.That(source).IsNotEmpty();
+        source = source.Replace("\r\n", "\n");
+        var expected = fs.ReadAllText("/data/parser.csharp").Replace("\r\n","\n");
+        Check.That(source).IsEqualTo(expected);
     }
 }

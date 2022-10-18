@@ -186,7 +186,7 @@ namespace {nameSpace} {{
 
     public static string GetVisitor(Rule rule, string parser, string lexer, string output)
     {
-        return GetVisitorHeader(rule, parser, lexer, output) + "\n" + GetVisitorBody(output);
+        return GetVisitorHeader(rule, parser, lexer, output) + GetVisitorBody(output);
     }
     
     public static string GetVisitorBody(string output)

@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/b3b00/cslycli/blob/main/LICENSE.md)
 [![NuGet](https://img.shields.io/nuget/v/csly-cli.svg?kill_cache=1)](https://www.nuget.org/packages/csly-cli)
 
-CSLY CLI is a CLI communion tool for [CSLY](HTTPS:/GITHUB.com/b3b00/csly). It helps quickly test a CSLY lexer/parser without the need to code it.
+CSLY CLI is a CLI communion tool for [CSLY](https://github.com/b3b00/csly). It helps quickly test a CSLY lexer/parser without the need to code it.
 It describes the lexer/parser as a text file (ala yacc) with dedicated notations for CSLY specificities.
 
 C# sources can also be generated to bootstrap real development using the prototyped parser. 

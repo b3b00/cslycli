@@ -1,0 +1,25 @@
+genericLexer MyLexer1;
+
+[Int] INT;
+
+[Sugar] LPAREN : '(';
+[Sugar] RPAREN : ')';
+
+parser MyParser1;
+
+
+# statements
+
+@ expression :  term ['+' | '-'] expression ;
+
+expression : term;
+
+term : factor ['*' | '/'] term;
+
+term : factor;
+
+factor : INT;
+factor : LPAREN expression RPAREN; 
+
+
+

@@ -8,16 +8,31 @@ namespace csly.cli.model.parser
     [DebuggerDisplay("Terminal {(ExpectedToken.ToString())}{Discarded ? \"[d]\" : \"\"}")]
     public class TerminalClause : IClause
     {
-        public TerminalClause(string name)
+
+        public bool IsImplicit { get; set; }
+        
+        public string TokenName  { get; set; }
+        
+        public string ImplicitToken { get; set; }
+        
+        public TerminalClause(bool isImplicit, string value)
         {
-            Name = name;
+            IsImplicit = isImplicit;
+            if (IsImplicit)
+            {
+                ImplicitToken = value;
+            }
+            else
+            {
+                TokenName = value;
+            }
         }
 
-        public string Name  { get; set; }
+        
 
         public override string ToString()
         {
-            return Name;
+            return IsImplicit ? $"'{ImplicitToken}'" : TokenName;
         }
         
     }

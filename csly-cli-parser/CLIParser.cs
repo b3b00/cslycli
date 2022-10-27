@@ -102,73 +102,77 @@ public class CLIParser
         {
             return new InfixRule(id.Value,rightOrLeft.TokenID == CLIToken.LEFT ? Associativity.Left : Associativity.Right, precedence.IntValue);
         }
-        
+
+
+        [Production("item : [ ID | STRING ] ")]
+        public IClause Clause(Token<CLIToken> item, ParserContext context)
+        {
+            return BuildTerminalOrNonTerminal(item, context);
+        }
         
        
-        [Production("clause : ID ZEROORMORE[d]")]
-        public IClause ZeroMoreClause(Token<CLIToken> id, ParserContext context)
+        [Production("clause : item ZEROORMORE[d]")]
+        public IClause ZeroMoreClause(IClause item, ParserContext context)
         {
-            var innerClause = BuildTerminalOrNonTerimal(id.Value, context);
-            return new ZeroOrMoreClause(innerClause);
+            //var innerClause = BuildTerminalOrNonTerimal(id.Value, context);
+            return new ZeroOrMoreClause(item);
         }
 
-        [Production("clause : ID ONEORMORE[d]")]
-        public IClause OneMoreClause(Token<CLIToken> id, ParserContext context)
+        [Production("clause : item ONEORMORE[d]")]
+        public IClause OneMoreClause(IClause item, ParserContext context)
         {
-            var innerClause = BuildTerminalOrNonTerimal(id.Value,context);
-            return new OneOrMoreClause(innerClause);
+            // var innerClause = BuildTerminalOrNonTerimal(id.Value,context);
+            return new OneOrMoreClause(item);
         }
 
-        [Production("clause : ID OPTION")]
-        public IClause OptionClause(Token<CLIToken> id, Token<CLIToken> discarded, ParserContext context)
+        [Production("clause : item OPTION")]
+        public IClause OptionClause(IClause  item, Token<CLIToken> discarded, ParserContext context)
         {
-            var innerClause = BuildTerminalOrNonTerimal(id.Value,context);
-            return new OptionClause(innerClause);
+            return new OptionClause(item);
         }
 
-        [Production("clause : ID")]
-        public IClause SimpleDiscardedClause(Token<CLIToken> id, ParserContext context)
-        {
-            var clause = BuildTerminalOrNonTerimal(id.Value, context);
-            return clause;
-        }
+        // [Production("clause : item")]
+        // public IClause SimpleDiscardedClause(IClause  item, ParserContext context)
+        // {
+        //     return item;
+        // }
 
         
         [Production("clause : choiceclause")]
-        public IClause AlternateClause(ChoiceClause choices)
+        public IClause AlternateClause(ChoiceClause choices, ParserContext context)
         {
             return choices;
         }
 
         [Production("choiceclause : LEFTBRACKET[d]  choices RIGHTBRACKET[d]  ")]
-        public IClause AlternateChoices(IClause choices)
+        public IClause AlternateChoices(IClause choices, ParserContext context)
         {            
             return choices;
         }
        
         
-        [Production("choices : ID ( OR[d] ID)*")]
-        public IClause ChoicesString(Token<CLIToken> head, List<Group<CLIToken,ICLIModel>> tail, ParserContext context)
+        [Production("choices : item ( OR[d] item)*")]
+        public IClause ChoicesString(ICLIModel head, List<Group<CLIToken,ICLIModel>> tail, ParserContext context)
         {
-            var first = BuildTerminalOrNonTerimal(head.Value, context);
-            var choice = new ChoiceClause(first, tail.Select(x => BuildTerminalOrNonTerimal(x.Token(0).Value,context)).ToList());
+            // var first = BuildTerminalOrNonTerimal(head.Value, context);
+            var choice = new ChoiceClause(head as IClause, tail.Select(x => x.Value(0)).Cast<IClause>().ToList());
             return choice;
         }
         
-        [Production("choices : ID OR choices ")]
-        public IClause ChoicesMany(Token<CLIToken> head, Token<CLIToken> discardOr, ChoiceClause tail, ParserContext context)
+        [Production("choices : item OR[d] choices ")]
+        public IClause ChoicesMany(IClause head,  ChoiceClause tail, ParserContext context)
         {
-            var headClause = BuildTerminalOrNonTerimal(head.Value,context); 
-            return new ChoiceClause(headClause,tail.Choices);
+            // var headClause = BuildTerminalOrNonTerimal(head.Value,context); 
+            return new ChoiceClause(head,tail.Choices);
         }
 
        
 
-        [Production("clause : ID ")]
-        public IClause SimpleClause(Token<CLIToken> id, ParserContext context)
+        [Production("clause : item ")]
+        public IClause SimpleClause(IClause item, ParserContext context)
         {
-            var clause = BuildTerminalOrNonTerimal(id.Value,context);
-            return clause;
+            // var clause = BuildTerminalOrNonTerimal(id,context);
+            return item as IClause;
         }
 
 
@@ -221,30 +225,59 @@ public class CLIParser
         }
 
 
-        [Production("groupclauses : ID*")]
-        public GroupClause GroupClauses(List<Token<CLIToken>> groups, ParserContext context)
+        [Production("groupclauses : item*")]
+        public GroupClause GroupClauses(List<ICLIModel> groups, ParserContext context)
         {
-            var group = new GroupClause(BuildTerminalOrNonTerimal(groups[0].Value,context));
-            group.Clauses.AddRange(groups.Skip(1).Select(x => BuildTerminalOrNonTerimal(x.Value,context)).ToList());
+            var group = new GroupClause(groups[0] as IClause);
+            group.Clauses.AddRange(groups.Skip(1).Cast<IClause>());
             return group;
         }
 
         #endregion
 
 
-        private IClause BuildTerminalOrNonTerimal(string name, ParserContext context)
-        {
+        // private IClause BuildTerminalOrNonTerimal(string name, ParserContext context)
+        // {
+        //
+        //     bool isTerminal = context.IsTerminal(name);
+        //
+        //     IClause clause = null;
+        //
+        //     if (isTerminal)
+        //         clause = new TerminalClause(name);
+        //     else
+        //     {
+        //
+        //         clause = new NonTerminalClause(name);
+        //
+        //     }
+        //
+        //     return clause;
+        // }
 
-            bool isTerminal = context.IsTerminal(name);
+
+        private IClause BuildTerminalOrNonTerminal(Token<CLIToken> token, ParserContext context)
+        {
+            bool isTerminal = context.IsTerminal(token.Value) || token.TokenID == CLIToken.STRING;
 
             IClause clause = null;
 
             if (isTerminal)
-                clause = new TerminalClause(name);
+            {
+
+                if (token.TokenID == CLIToken.ID)
+                {
+                    clause =  new TerminalClause(false, token.Value);
+                }
+                else if (token.TokenID == CLIToken.STRING)
+                {
+                    clause = new TerminalClause(true,token.StringWithoutQuotes);
+                }
+            }
             else
             {
 
-                clause = new NonTerminalClause(name);
+                clause = new NonTerminalClause(token.Value);
 
             }
 

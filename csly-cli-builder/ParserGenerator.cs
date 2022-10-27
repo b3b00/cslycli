@@ -114,7 +114,7 @@ namespace {nameSpace} {{
             }
             case TerminalClause t:
             {
-                return t.Name;
+                return t.ToString();
             }
             case GroupClause grp:
             {

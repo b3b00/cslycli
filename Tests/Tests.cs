@@ -28,6 +28,36 @@ public class Tests
 
     }
     
+    
+    [Fact]
+    public void TestGrammarWithImplicitsGenerator()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/grammarWithImplicits.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MyParser1");
+        Check.That(model.IsError).IsFalse();
+        Check.That(model.Value).IsNotNull();
+        var source = ParserGenerator.GenerateParser(model.Value, "ns","int");
+        Check.That(source).IsNotNull();
+        Check.That(source).IsNotEmpty();
+
+    }
+    
+    [Fact]
+    public void TestGrammarWithImplicits()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/grammarWithImplicits.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MyParser1");
+        Check.That(model.IsError).IsFalse();
+        Check.That(model.Value).IsNotNull();
+        var dot = builder.Getz(grammar, "2 + 2", "MyParser1", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
+        Check.That(dot.IsError).IsFalse();
+
+    }
+    
     [Fact]
     public void TestWhileGrammar()
     {

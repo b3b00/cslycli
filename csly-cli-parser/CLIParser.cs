@@ -110,18 +110,18 @@ public class CLIParser
             return BuildTerminalOrNonTerminal(item, context);
         }
         
+        
+        #region clauses
        
         [Production("clause : item ZEROORMORE[d]")]
         public IClause ZeroMoreClause(IClause item, ParserContext context)
         {
-            //var innerClause = BuildTerminalOrNonTerimal(id.Value, context);
             return new ZeroOrMoreClause(item);
         }
 
         [Production("clause : item ONEORMORE[d]")]
         public IClause OneMoreClause(IClause item, ParserContext context)
         {
-            // var innerClause = BuildTerminalOrNonTerimal(id.Value,context);
             return new OneOrMoreClause(item);
         }
 
@@ -130,60 +130,31 @@ public class CLIParser
         {
             return new OptionClause(item);
         }
+       
 
-        // [Production("clause : item")]
-        // public IClause SimpleDiscardedClause(IClause  item, ParserContext context)
-        // {
-        //     return item;
-        // }
-
+        [Production("clause : item ")]
+        public IClause SimpleClause(IClause item, ParserContext context)
+        {
+            return item as IClause;
+        }
         
+        #endregion
+
+        #region choices
+
         [Production("clause : choiceclause")]
         public IClause AlternateClause(ChoiceClause choices, ParserContext context)
         {
             return choices;
         }
 
-        [Production("choiceclause : LEFTBRACKET[d]  choices RIGHTBRACKET[d]  ")]
-        public IClause AlternateChoices(IClause choices, ParserContext context)
+        [Production("choiceclause : LEFTBRACKET[d]  item ( OR[d] item)* RIGHTBRACKET[d]  ")]
+        public IClause AlternateChoices(ICLIModel head, List<Group<CLIToken,ICLIModel>> tail, ParserContext context)
         {            
-            return choices;
-        }
-       
-        
-        [Production("choices : item ( OR[d] item)*")]
-        public IClause ChoicesString(ICLIModel head, List<Group<CLIToken,ICLIModel>> tail, ParserContext context)
-        {
-            // var first = BuildTerminalOrNonTerimal(head.Value, context);
             var choice = new ChoiceClause(head as IClause, tail.Select(x => x.Value(0)).Cast<IClause>().ToList());
             return choice;
         }
-        
-        [Production("choices : item OR[d] choices ")]
-        public IClause ChoicesMany(IClause head,  ChoiceClause tail, ParserContext context)
-        {
-            // var headClause = BuildTerminalOrNonTerimal(head.Value,context); 
-            return new ChoiceClause(head,tail.Choices);
-        }
-
        
-
-        [Production("clause : item ")]
-        public IClause SimpleClause(IClause item, ParserContext context)
-        {
-            // var clause = BuildTerminalOrNonTerimal(id,context);
-            return item as IClause;
-        }
-
-
-        #region  groups
-
-        [Production("clause : LEFTPAREN[d]  groupclauses RIGHTPAREN[d] ")]
-        public GroupClause Group( GroupClause clauses, ParserContext context)
-        {
-            return clauses;
-        }
-        
         [Production("clause : choiceclause ONEORMORE[d] ")]
         public IClause ChoiceOneOrMore(ChoiceClause choices, ParserContext context)
         {
@@ -203,57 +174,48 @@ public class CLIParser
             return new OptionClause(choices);
         }
 
-        [Production("clause : LEFTPAREN  groupclauses RIGHTPAREN ONEORMORE ")]
-        public IClause GroupOneOrMore(Token<CLIToken> discardLeft, GroupClause clauses,
-            Token<CLIToken> discardRight, Token<CLIToken> oneZeroOrMore, ParserContext context)
+        #endregion
+        
+        
+
+        #region  groups
+
+        [Production("clause : group")]
+        public IClause GroupClause(IClause group) => group;
+        
+        [Production("group : LEFTPAREN[d]  item* RIGHTPAREN[d] ")]
+        public GroupClause Group( List<ICLIModel> clauses, ParserContext context)
         {
-            return new OneOrMoreClause(clauses);
+            var group = new GroupClause(clauses[0] as IClause);
+            group.Clauses.AddRange(clauses.Skip(1).Cast<IClause>());
+            return group;;
+        }
+        
+        [Production("clause : group ONEORMORE[d] ")]
+        public IClause GroupOneOrMore( GroupClause group, ParserContext context)
+        {
+            return new OneOrMoreClause(group);
         }
 
-        [Production("clause : LEFTPAREN  groupclauses RIGHTPAREN ZEROORMORE ")]
-        public IClause GroupZeroOrMore(Token<CLIToken> discardLeft, GroupClause clauses,
-            Token<CLIToken> discardRight, Token<CLIToken> discardZeroOrMore, ParserContext context)
+        [Production("clause : group ZEROORMORE [d]")]
+        public IClause GroupZeroOrMore(GroupClause group, ParserContext context)
         {
-            return new ZeroOrMoreClause(clauses);
+            return new ZeroOrMoreClause(group);
         }
 
-        [Production("clause : LEFTPAREN  groupclauses RIGHTPAREN OPTION ")]
-        public IClause GroupOptional(Token<CLIToken> discardLeft, GroupClause group,
-            Token<CLIToken> discardRight, Token<CLIToken> option, ParserContext context)
+        [Production("clause : group OPTION[d] ")]
+        public IClause GroupOptional(GroupClause group, ParserContext context)
         {
             return new OptionClause(group);
         }
 
 
-        [Production("groupclauses : item*")]
-        public GroupClause GroupClauses(List<ICLIModel> groups, ParserContext context)
-        {
-            var group = new GroupClause(groups[0] as IClause);
-            group.Clauses.AddRange(groups.Skip(1).Cast<IClause>());
-            return group;
-        }
+        
 
         #endregion
 
 
-        // private IClause BuildTerminalOrNonTerimal(string name, ParserContext context)
-        // {
-        //
-        //     bool isTerminal = context.IsTerminal(name);
-        //
-        //     IClause clause = null;
-        //
-        //     if (isTerminal)
-        //         clause = new TerminalClause(name);
-        //     else
-        //     {
-        //
-        //         clause = new NonTerminalClause(name);
-        //
-        //     }
-        //
-        //     return clause;
-        // }
+        
 
 
         private IClause BuildTerminalOrNonTerminal(Token<CLIToken> token, ParserContext context)

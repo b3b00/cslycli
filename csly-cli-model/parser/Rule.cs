@@ -7,14 +7,17 @@ namespace csly.cli.model.parser
 {
     public class Rule : GrammarNode
     {
-        public Rule()
+        public Rule( bool  isOperand = false)
         {
             Clauses = new List<IClause>();
+            _isOperand = isOperand;
         }
 
         public virtual bool IsRule => true;
         public virtual bool IsPrefix => false;
-        public virtual bool IsOperand => false;
+
+        private bool _isOperand = false;
+        public virtual bool IsOperand => _isOperand;
         public virtual bool IsInfix => false;
 
         public string RuleString => NonTerminalName + " : " + string.Join(" ", Clauses.Select(x => x.ToString()));

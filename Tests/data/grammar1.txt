@@ -25,11 +25,11 @@ parser MyParser1;
 
 # operands
 
-[Operand] INT;
-[Operand] expressionGroup;
+[Operand] operand : INT;
+[Operand] operand : LPAREN MyParser1_expressions RPAREN; 
 
 # statements
 
 @ expression :  MyParser1_expressions ;
 
-expressionGroup : LPAREN MyParser1_expressions RPAREN;
+

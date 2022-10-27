@@ -73,23 +73,29 @@ public class CLIParser
 
   #region  parser
 
- 
 
-        [Production("rule  : ROOT? ID COLON[d] clause+ SEMICOLON[d]")]
-        public GrammarNode Root(Token<CLIToken> root, Token<CLIToken> name, List<ICLIModel> clauses, ParserContext context)
+  [Production("operand :  LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d]")]
+  public GrammarNode Operand(ParserContext context)
+  {
+      return null;
+  }
+  
+
+        [Production("rule  : ROOT ? operand? ID COLON[d] clause+ SEMICOLON[d]")]
+        public GrammarNode Root(Token<CLIToken> root, ValueOption<ICLIModel> operand,Token<CLIToken> name, List<ICLIModel> clauses, ParserContext context)
         {
-            var rule = new Rule();
+            var rule = new Rule(operand.IsSome);
             rule.NonTerminalName = name.Value;
             rule.Clauses = clauses.Cast<IClause>().ToList();
             rule.IsRoot = !root.IsEmpty;
             return rule;
         }
         
-        [Production("rule : LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d] ID SEMICOLON[d]")]
-        public ICLIModel OperandRule(Token<CLIToken> id, ParserContext context)
-        {
-            return new OperandRule(id.Value, context.IsTerminal(id.Value));
-        }
+        // [Production("rule : LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d] ID SEMICOLON[d]")]
+        // public ICLIModel OperandRule(Token<CLIToken> id, ParserContext context)
+        // {
+        //     return new OperandRule(id.Value, context.IsTerminal(id.Value));
+        // }
         
         [Production("rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] ID SEMICOLON[d]")]
         public ICLIModel PrefixRule(Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)

@@ -54,12 +54,6 @@ namespace {nameSpace} {{
                 builder.AppendLine();
                 builder.AppendLine();
             }
-            else if (rule is OperandRule operand)
-            {
-                builder.AppendLine(GetProduction(operand, lexer, output));
-                builder.AppendLine(GetVisitor(operand, lexer, output));
-                builder.AppendLine();
-            }
             else
             {
                 builder.AppendLine(GetProduction(rule, parser));
@@ -70,17 +64,16 @@ namespace {nameSpace} {{
         return builder.ToString();
     }
 
-
-    private static string GetProduction(OperandRule operand, string lexer, string output)
-    {
-        return $@"
-        [Operand]
-        [Production(""operand_{operand.Name} : {operand.Name}"")]";
-    }
-    
+ 
     private static string GetProduction(Rule rule, string parser)
     {
-        return $"\t\t[Production(\"{GetRuleString(rule, parser)}\")]";
+        StringBuilder builder = new StringBuilder();
+        if (rule.IsOperand)
+        {
+            builder.AppendLine("\t\t[Operand]");
+        }
+        builder.Append($"\t\t[Production(\"{GetRuleString(rule, parser)}\")]");
+        return builder.ToString();
     }
     
     private static string GetProduction(InfixRule rule)
@@ -158,16 +151,6 @@ namespace {nameSpace} {{
     #region visitors
 
     
-    public static string GetVisitor(OperandRule operand, string lexer, string output)
-    {
-        // TODO : check if either token or value
-        var paramType = operand.IsToken ? $"Token<{lexer}>": output;
-        return $@"
-        public {output} operand_{operand.Name}({paramType} value) {{
-            return default({output});
-        }}";
-    }
-
     public static string GetVisitor(PrefixRule prefix, string lexer, string output)
     {
         return $@"

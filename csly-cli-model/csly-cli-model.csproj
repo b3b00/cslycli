@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <Compile Remove="parser\LeadingToken.cs" />
+      <Compile Remove="parser\OperandRule.cs" />
     </ItemGroup>
 
 </Project>

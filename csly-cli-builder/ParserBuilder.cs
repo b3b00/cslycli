@@ -237,10 +237,6 @@ public class ParserBuilder
         {
             AddInfix(builder, infix);
         }
-        if (rule.IsOperand && rule is OperandRule operand)
-        {
-            AddOperand(builder, operand);
-        }
     }
     
     
@@ -249,8 +245,11 @@ public class ParserBuilder
 
         var parameters = rule.Clauses.Select(x => BuildTypeParameter(x)).ToArray();
         
-        var methodBuilder = AddMethod(builder, rule.Key, parameters); 
-       
+        var methodBuilder = AddMethod(builder, rule.Key, parameters);
+        if (rule.IsOperand)
+        {
+            AddOperandAttribute(methodBuilder);
+        }
         _AddProductionAttribute(methodBuilder, rule.RuleString);
     }
     
@@ -301,24 +300,16 @@ public class ParserBuilder
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
     }
     
-    private void AddOperand(TypeBuilder builder, OperandRule operand)
+    private static void AddOperandAttribute(MethodBuilder methodBuilder)
     {
-
-         var paramtype = operand.IsToken ? TokenType : ObjectType;
-
-        var methodBuilder = AddMethod(builder, $"operand_{operand.Name}", paramtype);
         Type attributeType = typeof(OperandAttribute);
         ConstructorInfo constructorInfo = attributeType.GetConstructor(
-            new Type[] {  });
-        
-        CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
-            constructorInfo, new object[] {  });
-        
-        methodBuilder.SetCustomAttribute(customAttributeBuilder);
-        
-        _AddProductionAttribute(methodBuilder,$"operand_{operand.Name} : {operand.Name}");
+            new Type[] { });
 
-        
+        CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+            constructorInfo, new object[] { });
+
+        methodBuilder.SetCustomAttribute(customAttributeBuilder);
     }
 
     public MethodBuilder AddMethod(TypeBuilder builder, string name, params Type[] parameterTypes)

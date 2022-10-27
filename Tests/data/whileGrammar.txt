@@ -61,20 +61,18 @@ parser WhileParser;
 [Right 50] AND;
 [Prefix 100] NOT;
 
-# operands
 
-[Operand] INT;
-[Operand] TRUE;
-[Operand] FALSE;
-[Operand] STRING;
-[Operand] ID;
-[Operand] expressionGroup;
 
 # statements
 
 @ statement :  LPAREN statement RPAREN ;
 
+
 statement : sequence;
+
+
+[Operand] operand : [INT | TRUE | FALSE | STRING | ID];
+[Operand] operand : LPAREN WhileParser_expressions RPAREN;
 
 sequence : statementPrim additionalStatements*;
 
@@ -89,5 +87,3 @@ statementPrim: ID ASSIGN WhileParser_expressions;
 statementPrim: SKIP;
 
 statementPrim: PRINT WhileParser_expressions;
-
-expressionGroup : LPAREN WhileParser_expressions RPAREN;

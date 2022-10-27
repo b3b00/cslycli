@@ -1,6 +1,8 @@
 # csly-cli
 
 [![Coverage Status](https://coveralls.io/repos/github/b3b00/cslycli/badge.svg?branch=main)](https://coveralls.io/github/b3b00/cslycli?branch=main)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/b3b00/sly/blob/dev/LICENSE)
+[![NuGet](https://img.shields.io/nuget/v/csly-cli.svg?kill_cache=1)](https://www.nuget.org/packages/csly-cli)
 
 CSLY CLI is a tool to quickly test a CSLY lexer/parser without the need to code it.
 It describes the lexer/parser as a text file (ala yacc) with dedicated notations for CSLY specificities.

@@ -34,7 +34,7 @@ namespace csly.cli.model.parser
         
         public override string ToString()
         {
-            return $"group_{string.Join("_",Clauses.Select(x => x.ToString()))}_end";
+            return $"({string.Join(" ",Clauses.Select(x => x.ToString()))})";
         }
         
        

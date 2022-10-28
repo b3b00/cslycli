@@ -1,0 +1,99 @@
+
+genericLexer GrammarLexer;
+
+[KeyWord] LEXER:'genericLexer';
+[KeyWord] PARSER:'parser';
+[String] STRING : '''' ''''; 
+[Int] INT;
+[KeyWord] DOUBLE : 'Double';
+[KeyWord] ALPHAID : 'AlphaId'; 
+[KeyWord] KEYWORD : 'keyWord';
+[KeyWord] SUGAR : 'Sugar';
+[KeyWord] RIGHT : 'Right';
+[KeyWord] LEFT : 'Left';
+[KeyWord] PREFIX : 'Prefix';
+[KeyWord] OPERAND : 'Operand';
+[AlphaId] ID;
+[SingleLineComment] SINGLELINECOMMENT : '#';
+[MultiLineComment] MULTILINECOMMENT : '/*' '*/';
+
+[Sugar] OR : '|';
+
+
+parser GrammarParser;
+
+@ root: genericRoot parserRoot ;
+
+
+
+# Lexer
+
+
+genericRoot : LEXER ID ';'  token*;
+
+token :'[' [KEYWORD|SUGAR] ']' ID ':' STRING ';';
+
+token : '[' [STRING|INT|ALPHAID|DOUBLE] ']' ID ;
+
+
+
+# parser
+
+parserRoot : PARSER ID ';' rule*;
+
+
+rule  : '@'? '[OPERAND]'? ID ':' clause+ ';';
+
+
+# expressions
+
+rule : '[' OPERAND ']' ID ';';
+
+rule : '[' PREFIX INT ']' ID ';';
+
+rule : '[' [RIGHT|LEFT] INT ']' ID ';';
+
+
+
+# clauses
+
+item : [ ID | STRING ];
+
+clause : item '*';
+
+clause : item '+';
+
+clause : item '?';
+
+clause : item ;
+
+clause : choiceclause;
+
+clause : group;
+
+
+# choices
+
+choiceclause : '['  item ( OR item)* ']';
+
+clause : choiceclause '+';
+
+clause : choiceclause '*';
+
+clause : choiceclause '?';
+
+# groups
+
+group : '('  item* ')';
+
+clause : group '+';
+
+clause : group '*';
+
+clause : group '?';
+
+
+
+
+
+

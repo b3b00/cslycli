@@ -1,6 +1,7 @@
 using System.Text;
 using csly.cli.model;
 using csly.cli.model.parser;
+using sly.parser.syntax.grammar;
 
 namespace clsy.cli.builder;
 
@@ -22,6 +23,7 @@ public class ParserGenerator
 using sly.lexer;
 using sly.parser.generator;
 using System.Collections.Generic;
+using sly.parser.parser;
 
 namespace {nameSpace} {{
 
@@ -179,10 +181,39 @@ namespace {nameSpace} {{
             return default({output});
         }}";
     }
-    
+
+
+    private static Dictionary<string, int> visitorNames = new Dictionary<string, int>();
     public static string GetVisitorHeader(Rule rule, string parser, string lexer, string output)
     {
-        string name = rule.RuleString.Replace(" ","").Replace(":","_").Replace("*","");
+        StringBuilder name = new StringBuilder();
+        foreach (var c in rule.RuleString)
+        {
+            if (Char.IsDigit(c) || char.IsLetter(c))
+            {
+                name.Append(c);
+            }
+            else
+            {
+                name.Append('_');
+            }
+        }
+
+        int count = 0;
+        if (visitorNames.TryGetValue(name.ToString(), out count))
+        {
+            count++;
+            visitorNames[name.ToString()] = count;
+            name.Append($"_{count}");
+        }
+        else
+        {
+            visitorNames[name.ToString()] = count;    
+        }
+
+        
+        
+        //string name = rule.RuleString.Replace(" ","").Replace(":","_").Replace("*","").Replace("'","");
 
         string parameters = "";
         for (int i = 0; i < rule.Clauses.Count; i++)
@@ -220,11 +251,17 @@ namespace {nameSpace} {{
             }
             case ChoiceClause choice:
             {
-                StringBuilder builder = new StringBuilder();
-                builder.Append("[ ");
-                builder.Append(string.Join(" | ", choice.Choices.Select(x => GetClause(x, parser))));
-                builder.Append(" ]");
-                return builder.ToString();
+                var f = choice.Choices.First();
+                var isTerminal = f is TerminalClause;
+                if (isTerminal)
+                {
+                    return $"Token<{lexer}>";
+                }
+                else
+                {
+                    return output;
+                }
+                
             }
             case ManyClause many:
             {

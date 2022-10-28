@@ -13,7 +13,15 @@ namespace csly.cli.model.parser
 
         public override string ToString()
         {
-            return $"option_{Clause.ToString()}";
+            if (Clause is TerminalClause)
+            {
+                return Clause.ToString();
+            }
+            else
+            {
+                
+                return $"{Clause.ToString()}?";
+            }
         }
     }
 }

@@ -37,17 +37,32 @@ public class CLIParser
     }
 
     [Production(
-        "token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d]")]
-    public ICLIModel Token(Token<CLIToken> type, Token<CLIToken> id, Token<CLIToken> value, ParserContext context)
+        "token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN|SINGLELINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d]")]
+    public ICLIModel OneArgToken(Token<CLIToken> type, Token<CLIToken> id, Token<CLIToken> value, ParserContext context)
     {
         var tokenType = type.TokenID switch
         {
             CLIToken.KEYWORDTOKEN => GenericToken.KeyWord,
             CLIToken.SUGARTOKEN => GenericToken.SugarToken,
+            CLIToken.MULTILINECOMMENT => GenericToken.Comment,
             _ => GenericToken.SugarToken
         };
         context.AddEnumName(id.Value);
         return new TokenModel(tokenType,id.Value,value.StringWithoutQuotes);
+    }
+    
+    [Production(
+        "token :LEFTBRACKET[d] [STRINGTOKEN|MULTILINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING STRING SEMICOLON[d]")]
+    public ICLIModel TwoArgToken(Token<CLIToken> type, Token<CLIToken> id, Token<CLIToken> arg1, Token<CLIToken> arg2, ParserContext context)
+    {
+        var tokenType = type.TokenID switch
+        {
+            CLIToken.STRINGTOKEN => GenericToken.String,
+            CLIToken.MULTILINECOMMENT => GenericToken.Comment,
+            _ => GenericToken.SugarToken
+        };
+        context.AddEnumName(id.Value);
+        return new TokenModel(tokenType,id.Value,arg1.StringWithoutQuotes, arg2.StringWithoutQuotes);
     }
 
     [Production("token : LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d]")]

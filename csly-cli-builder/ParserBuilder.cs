@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 using csly.cli.model;
 using csly.cli.model.parser;
 using csly.cli.parser;
@@ -255,6 +256,7 @@ public class ParserBuilder
     
     private  void _AddProductionAttribute(MethodBuilder builder, string rule)
     {
+        Console.WriteLine($"add RULE ::: {rule}");
         Type attributeType = typeof(ProductionAttribute);
         
         ConstructorInfo constructorInfo = attributeType.GetConstructor(
@@ -314,8 +316,21 @@ public class ParserBuilder
 
     public MethodBuilder AddMethod(TypeBuilder builder, string name, params Type[] parameterTypes)
     {
+        StringBuilder normalizedName = new StringBuilder();
+        foreach (var c in name)
+        {
+            if (Char.IsDigit(c) || char.IsLetter(c))
+            {
+                normalizedName.Append(c);
+            }
+            else
+            {
+                normalizedName.Append('_');
+            }
+        }
         
-        var methodBuilder = builder.DefineMethod(name,
+        
+        var methodBuilder = builder.DefineMethod(normalizedName.ToString(),
             MethodAttributes.Public,
             CallingConventions.Standard,
             ObjectType, parameterTypes);

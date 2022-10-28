@@ -1,18 +1,19 @@
 
 genericLexer GrammarLexer;
 
-[KeyWord] LEXER:'genericLexer';
-[KeyWord] PARSER:'parser';
+[KeyWord] LEXER : 'genericLexer' ;
+[KeyWord] PARSER : 'parser' ;
 [String] STRING : '''' ''''; 
 [Int] INT;
 [KeyWord] DOUBLE : 'Double';
 [KeyWord] ALPHAID : 'AlphaId'; 
-[KeyWord] KEYWORD : 'keyWord';
+[KeyWord] KEYWORD : 'KeyWord';
 [KeyWord] SUGAR : 'Sugar';
 [KeyWord] RIGHT : 'Right';
 [KeyWord] LEFT : 'Left';
 [KeyWord] PREFIX : 'Prefix';
 [KeyWord] OPERAND : 'Operand';
+[KeyWord] STRINGTOKEN : 'String';
 [AlphaId] ID;
 [SingleLineComment] SINGLELINECOMMENT : '#';
 [MultiLineComment] MULTILINECOMMENT : '/*' '*/';
@@ -31,9 +32,11 @@ parser GrammarParser;
 
 genericRoot : LEXER ID ';'  token*;
 
-token :'[' [KEYWORD|SUGAR] ']' ID ':' STRING ';';
+token :'[' [KEYWORD|SUGAR|SINGLELINECOMMENT] ']' ID ':' STRING ';';
 
-token : '[' [STRING|INT|ALPHAID|DOUBLE] ']' ID ;
+token : '[' [STRINGTOKEN|INT|ALPHAID|DOUBLE] ']' ID ;
+
+token : '[' [STRINGTOKEN|MULTILINECOMMENT] ']' ID ':' STRING STRING;
 
 
 
@@ -41,13 +44,14 @@ token : '[' [STRING|INT|ALPHAID|DOUBLE] ']' ID ;
 
 parserRoot : PARSER ID ';' rule*;
 
+operand : '[' OPERAND ']';
 
-rule  : '@'? '[OPERAND]'? ID ':' clause+ ';';
+rule  : '@'? operand? ID ':' clause+ ';';
 
 
 # expressions
 
-rule : '[' OPERAND ']' ID ';';
+#rule : '[' OPERAND ']' ID ';';
 
 rule : '[' PREFIX INT ']' ID ';';
 

@@ -44,7 +44,7 @@ public class CLIParser
         {
             CLIToken.KEYWORDTOKEN => GenericToken.KeyWord,
             CLIToken.SUGARTOKEN => GenericToken.SugarToken,
-            CLIToken.MULTILINECOMMENT => GenericToken.Comment,
+            CLIToken.SINGLELINECOMMENT => GenericToken.Comment,
             _ => GenericToken.SugarToken
         };
         context.AddEnumName(id.Value);

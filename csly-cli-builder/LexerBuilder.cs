@@ -81,24 +81,61 @@ public class LexerBuilder
 
         private void Add(GenericToken genericToken, FieldBuilder builder, params string[] args)
         {
-            Type attributeType = typeof(LexemeAttribute);
-            
-            ConstructorInfo constructorInfo = attributeType.GetConstructor(
-                new Type[2] { typeof(GenericToken), typeof(string[]) });
-            
-            CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
-                constructorInfo, new object[] { genericToken, args });
+            if (genericToken == GenericToken.Comment)
+            {
+                bool isSingleLine = args.Length == 1;
+                Type attributeType = isSingleLine ? typeof(SingleLineCommentAttribute) : typeof(MultiLineCommentAttribute);
 
-            builder.SetCustomAttribute(customAttributeBuilder);
-            
-            attributeType = typeof(JsonConverterAttribute);
-            var enumConverterType = typeof(JsonStringEnumConverter);
-            constructorInfo = attributeType.GetConstructor(
-                new Type[1] { typeof(Type)});
-            customAttributeBuilder = new CustomAttributeBuilder(
-                constructorInfo, new object[] { enumConverterType });
-            
-            builder.SetCustomAttribute(customAttributeBuilder);
+                if (isSingleLine)
+                {
+                    ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                        new Type[3] { typeof(string), typeof(bool), typeof(int) });
+
+                    CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                        constructorInfo, new object[] { args[0],false,Channels.Comments });
+
+                    builder.SetCustomAttribute(customAttributeBuilder);
+                }
+                else
+                {
+                    ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                        new Type[4] { typeof(string), typeof(string), typeof(bool), typeof(int) });
+
+                    CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                        constructorInfo, new object[] { args[0],args[1],false,Channels.Comments  });
+
+                    builder.SetCustomAttribute(customAttributeBuilder);
+                }
+               
+                attributeType = typeof(JsonConverterAttribute);
+                var enumConverterType = typeof(JsonStringEnumConverter);
+                var serialConstructorInfo = attributeType.GetConstructor(
+                    new Type[1] { typeof(Type) });
+                var serialAttributeBuilder = new CustomAttributeBuilder(
+                    serialConstructorInfo, new object[] { enumConverterType });
+                builder.SetCustomAttribute(serialAttributeBuilder);
+            }
+            else
+            {
+                Type attributeType = typeof(LexemeAttribute);
+
+                ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                    new Type[2] { typeof(GenericToken), typeof(string[]) });
+
+                CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                    constructorInfo, new object[] { genericToken, args });
+
+                builder.SetCustomAttribute(customAttributeBuilder);
+
+                attributeType = typeof(JsonConverterAttribute);
+                var enumConverterType = typeof(JsonStringEnumConverter);
+                constructorInfo = attributeType.GetConstructor(
+                    new Type[1] { typeof(Type) });
+                customAttributeBuilder = new CustomAttributeBuilder(
+                    constructorInfo, new object[] { enumConverterType });
+
+                builder.SetCustomAttribute(customAttributeBuilder);
+            }
         }
 
 

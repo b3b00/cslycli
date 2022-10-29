@@ -269,17 +269,17 @@ namespace {nameSpace} {{
             }
             case OptionClause opt:
             {
-                if (opt.Clause is NonTerminalClause)
+                if (opt.Clause is NonTerminalClause nt)
                 {
-                    return $"ValueOption<{GetClauseType(clause,parser,lexer,output)}>";
+                    return $"ValueOption<{GetClauseType(nt,parser,lexer,output)}>";
                 }
-                else if (clause is TerminalClause)
+                else if (clause is TerminalClause t)
                 {
-                    return GetClauseType(clause, parser, lexer,output);
+                    return GetClauseType(t, parser, lexer,output);
                 }
-                else if (clause is GroupClause)
+                else if (clause is GroupClause grp)
                 {
-                    return $"ValueOption<{GetClauseType(clause, parser, lexer,output)}>";
+                    return $"ValueOption<{GetClauseType(grp, parser, lexer,output)}>";
                 }
 
                 return output;

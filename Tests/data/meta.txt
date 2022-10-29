@@ -6,7 +6,9 @@ genericLexer GrammarLexer;
 [String] STRING : '''' ''''; 
 [Int] INT;
 [KeyWord] DOUBLE : 'Double';
-[KeyWord] ALPHAID : 'AlphaId'; 
+[KeyWord] ALPHAID : 'AlphaId';
+[KeyWord] ALPHANUMID : 'AlphaNumId';
+[KeyWord] ALPHANUMDASHID : 'AlphaNumDashId';  
 [KeyWord] KEYWORD : 'KeyWord';
 [KeyWord] SUGAR : 'Sugar';
 [KeyWord] RIGHT : 'Right';
@@ -14,7 +16,8 @@ genericLexer GrammarLexer;
 [KeyWord] PREFIX : 'Prefix';
 [KeyWord] OPERAND : 'Operand';
 [KeyWord] STRINGTOKEN : 'String';
-[AlphaId] ID;
+[KeyWord] INTTOKEN : 'Int';
+[AlphaNumDashId] ID;
 [SingleLineComment] SINGLELINECOMMENT : '#';
 [MultiLineComment] MULTILINECOMMENT : '/*' '*/';
 
@@ -34,9 +37,9 @@ genericRoot : LEXER ID ';'  token*;
 
 token :'[' [KEYWORD|SUGAR|SINGLELINECOMMENT] ']' ID ':' STRING ';';
 
-token : '[' [STRINGTOKEN|INT|ALPHAID|DOUBLE] ']' ID ;
+token : '[' [STRINGTOKEN|INTTOKEN|ALPHAID|ALPHANUMID|ALPHANUMDASHID|DOUBLE] ']' ID ';';
 
-token : '[' [STRINGTOKEN|MULTILINECOMMENT] ']' ID ':' STRING STRING;
+token : '[' [STRINGTOKEN|MULTILINECOMMENT] ']' ID ':' STRING STRING ';';
 
 
 

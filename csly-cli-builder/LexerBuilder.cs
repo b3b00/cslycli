@@ -76,10 +76,11 @@ public class LexerBuilder
 
         private void AddAttribute(TokenModel model, FieldBuilder builder)
         {
-            Add(model.Type,builder, model.Args);
+            Add(model.Type, model.IdentifierType,builder, model.Args);
         }
 
-        private void Add(GenericToken genericToken, FieldBuilder builder, params string[] args)
+        private void Add(GenericToken genericToken, IdentifierType identifierType, FieldBuilder builder,
+            params string[] args)
         {
             if (genericToken == GenericToken.Comment)
             {
@@ -107,15 +108,28 @@ public class LexerBuilder
                     builder.SetCustomAttribute(customAttributeBuilder);
                 }
                
-                attributeType = typeof(JsonConverterAttribute);
-                var enumConverterType = typeof(JsonStringEnumConverter);
-                var serialConstructorInfo = attributeType.GetConstructor(
-                    new Type[1] { typeof(Type) });
-                var serialAttributeBuilder = new CustomAttributeBuilder(
-                    serialConstructorInfo, new object[] { enumConverterType });
-                builder.SetCustomAttribute(serialAttributeBuilder);
+                AddJsonAttribute(builder);
             }
-            else
+            else if (genericToken == GenericToken.Identifier)
+            {
+                var attributeType = identifierType switch
+                {
+                    IdentifierType.Alpha => typeof(AlphaIdAttribute),
+                    IdentifierType.AlphaNumeric => typeof(AlphaNumIdAttribute),
+                    IdentifierType.AlphaNumericDash => typeof(AlphaNumDashIdAttribute),
+                    _ => typeof(AlphaIdAttribute)
+                };
+                ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                    new Type[0] { });
+
+                CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                    constructorInfo, new object[] { });
+
+                builder.SetCustomAttribute(customAttributeBuilder);
+                
+                AddJsonAttribute(builder);
+            }
+            else 
             {
                 Type attributeType = typeof(LexemeAttribute);
 
@@ -127,15 +141,20 @@ public class LexerBuilder
 
                 builder.SetCustomAttribute(customAttributeBuilder);
 
-                attributeType = typeof(JsonConverterAttribute);
-                var enumConverterType = typeof(JsonStringEnumConverter);
-                constructorInfo = attributeType.GetConstructor(
-                    new Type[1] { typeof(Type) });
-                customAttributeBuilder = new CustomAttributeBuilder(
-                    constructorInfo, new object[] { enumConverterType });
-
-                builder.SetCustomAttribute(customAttributeBuilder);
+                AddJsonAttribute(builder);
             }
+        }
+
+        private static void AddJsonAttribute(FieldBuilder builder)
+        {
+            Type attributeType;
+            attributeType = typeof(JsonConverterAttribute);
+            var enumConverterType = typeof(JsonStringEnumConverter);
+            var serialConstructorInfo = attributeType.GetConstructor(
+                new Type[1] { typeof(Type) });
+            var serialAttributeBuilder = new CustomAttributeBuilder(
+                serialConstructorInfo, new object[] { enumConverterType });
+            builder.SetCustomAttribute(serialAttributeBuilder);
         }
 
 

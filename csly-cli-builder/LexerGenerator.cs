@@ -57,7 +57,29 @@ public class LexerGenerator
                 }
                 case GenericToken.Identifier:
                 {
-                    builder.AppendLine($"\t\t[AlphaId]");
+                    switch (token.IdentifierType)
+                    {
+                        case IdentifierType.Alpha:
+                        {
+                            builder.AppendLine($"\t\t[AlphaId]");
+                            break;
+                        }
+                        case IdentifierType.AlphaNumeric:
+                        {
+                            builder.AppendLine($"\t\t[AlphaNumId]");
+                            break;
+                        }
+                        case IdentifierType.AlphaNumericDash:
+                        {
+                            builder.AppendLine($"\t\t[AlphaNumDashId]");
+                            break;
+                        }
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                    
                     break;
                 }
             }

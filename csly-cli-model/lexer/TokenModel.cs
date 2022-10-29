@@ -7,19 +7,27 @@ public class TokenModel : ICLIModel
 {
     public GenericToken Type { get; set; }
     
+    public IdentifierType IdentifierType { get; set; }
+    
     public string Name { get; set; }
     
     public string[] Args { get; set; }
 
     
 
-    public TokenModel(GenericToken type, string name)
+    public TokenModel(GenericToken type, string name, IdentifierType identifierType = IdentifierType.Alpha)
     {
         Type = type;
         Name = name;
+        IdentifierType = identifierType;
         Args = new [] {""};
     }
-    public TokenModel(GenericToken type, string name, params string[] args) : this(type,name)
+    public TokenModel(GenericToken type, string name,  IdentifierType identifierType = IdentifierType.Alpha, params string[] args) : this(type,name,identifierType)
+    {
+        Args = args;
+    }
+    
+    public TokenModel(GenericToken type, string name,  params string[] args) : this(type,name,IdentifierType.Alpha)
     {
         Args = args;
     }

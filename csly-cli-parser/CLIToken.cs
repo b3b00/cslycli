@@ -16,6 +16,8 @@ public enum CLIToken
     [String("'","'")] STRING,
 
     [SingleLineComment("#")]
+    
+    [MultiLineComment("/*","*/")]
     COMMENT,
 
     [Sugar("[")] LEFTBRACKET,

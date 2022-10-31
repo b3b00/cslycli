@@ -17,9 +17,11 @@ genericLexer GrammarLexer;
 [KeyWord] OPERAND : 'Operand';
 [KeyWord] STRINGTOKEN : 'String';
 [KeyWord] INTTOKEN : 'Int';
+[KeyWord] SINGLELINECOMMENT : 'SingleLineComment';
+[KeyWord] MULTILINECOMMENT : 'MultiLineComment';
 [AlphaNumDashId] ID;
-[SingleLineComment] SINGLELINECOMMENT : '#';
-[MultiLineComment] MULTILINECOMMENT : '/*' '*/';
+[SingleLineComment] LINECOMMENT : '#';
+[MultiLineComment] BLOCKCOMMENT : '/*' '*/';
 
 [Sugar] OR : '|';
 
@@ -53,8 +55,6 @@ rule  : '@'? operand? ID ':' clause+ ';';
 
 
 # expressions
-
-#rule : '[' OPERAND ']' ID ';';
 
 rule : '[' PREFIX INT ']' ID ';';
 

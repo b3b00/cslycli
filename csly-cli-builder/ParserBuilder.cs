@@ -256,7 +256,6 @@ public class ParserBuilder
     
     private  void _AddProductionAttribute(MethodBuilder builder, string rule)
     {
-        Console.WriteLine($"add RULE ::: {rule}");
         Type attributeType = typeof(ProductionAttribute);
         
         ConstructorInfo constructorInfo = attributeType.GetConstructor(

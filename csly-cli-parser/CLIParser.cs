@@ -91,7 +91,7 @@ public class CLIParser
             return new TokenModel(tokenType, id.Value,idType, "\"", "\\");
         }
         
-        return new TokenModel(tokenType, id.Value, idType, "");
+        return new TokenModel(tokenType, id.Value, idType);
     } 
     
   #endregion

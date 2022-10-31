@@ -20,7 +20,6 @@ public class TokenModel : ICLIModel
         Type = type;
         Name = name;
         IdentifierType = identifierType;
-        Args = new [] {""};
     }
     public TokenModel(GenericToken type, string name,  IdentifierType identifierType = IdentifierType.Alpha, params string[] args) : this(type,name,identifierType)
     {

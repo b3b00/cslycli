@@ -15,7 +15,7 @@ namespace csly.cli.model.parser
         {
             if (Clause is TerminalClause)
             {
-                return Clause.ToString();
+                return Clause.ToString()+"?";
             }
             else
             {

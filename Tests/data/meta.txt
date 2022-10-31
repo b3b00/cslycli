@@ -24,7 +24,7 @@ genericLexer GrammarLexer;
 [MultiLineComment] BLOCKCOMMENT : '/*' '*/';
 
 [Sugar] OR : '|';
-
+[Sugar] START : '@';
 
 parser GrammarParser;
 
@@ -51,7 +51,7 @@ parserRoot : PARSER ID ';' rule*;
 
 operand : '[' OPERAND ']';
 
-rule  : '@'? operand? ID ':' clause+ ';';
+rule  : START? operand? ID ':' clause+ ';';
 
 
 # expressions

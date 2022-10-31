@@ -37,21 +37,36 @@ public class CLIParser
     }
 
     [Production(
-        "token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d]")]
-    public ICLIModel Token(Token<CLIToken> type, Token<CLIToken> id, Token<CLIToken> value, ParserContext context)
+        "token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN|SINGLELINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d]")]
+    public ICLIModel OneArgToken(Token<CLIToken> type, Token<CLIToken> id, Token<CLIToken> value, ParserContext context)
     {
         var tokenType = type.TokenID switch
         {
             CLIToken.KEYWORDTOKEN => GenericToken.KeyWord,
             CLIToken.SUGARTOKEN => GenericToken.SugarToken,
+            CLIToken.SINGLELINECOMMENT => GenericToken.Comment,
             _ => GenericToken.SugarToken
         };
         context.AddEnumName(id.Value);
         return new TokenModel(tokenType,id.Value,value.StringWithoutQuotes);
     }
+    
+    [Production(
+        "token :LEFTBRACKET[d] [STRINGTOKEN|MULTILINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING STRING SEMICOLON[d]")]
+    public ICLIModel TwoArgToken(Token<CLIToken> type, Token<CLIToken> id, Token<CLIToken> arg1, Token<CLIToken> arg2, ParserContext context)
+    {
+        var tokenType = type.TokenID switch
+        {
+            CLIToken.STRINGTOKEN => GenericToken.String,
+            CLIToken.MULTILINECOMMENT => GenericToken.Comment,
+            _ => GenericToken.SugarToken
+        };
+        context.AddEnumName(id.Value);
+        return new TokenModel(tokenType,id.Value,arg1.StringWithoutQuotes, arg2.StringWithoutQuotes);
+    }
 
-    [Production("token : LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d]")]
-    public ICLIModel StringToken(Token<CLIToken> type, Token<CLIToken> id, ParserContext context)
+    [Production("token : LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d]")]
+    public ICLIModel NoArgToken(Token<CLIToken> type, Token<CLIToken> id, ParserContext context)
     {
         var tokenType = type.TokenID switch
         {
@@ -59,14 +74,24 @@ public class CLIParser
             CLIToken.INTTOKEN => GenericToken.Int,
             CLIToken.DOUBLETOKEN => GenericToken.Double,
             CLIToken.ALPHAIDTOKEN => GenericToken.Identifier,
+            CLIToken.ALPHANUMIDTOKEN => GenericToken.Identifier,
+            CLIToken.ALPHANUMDASHIDTOKEN => GenericToken.Identifier,
             _ => GenericToken.SugarToken
+        };
+        var idType = type.TokenID switch
+        {
+            CLIToken.ALPHAIDTOKEN => IdentifierType.Alpha,
+            CLIToken.ALPHANUMIDTOKEN => IdentifierType.AlphaNumeric,
+            CLIToken.ALPHANUMDASHIDTOKEN => IdentifierType.AlphaNumericDash,
+            _ => IdentifierType.Alpha
         };
         context.AddEnumName(id.Value);
         if (type.TokenID == CLIToken.STRINGTOKEN)
         {
-            return new TokenModel(tokenType, id.Value,"\"", "\\");
+            return new TokenModel(tokenType, id.Value,idType, "\"", "\\");
         }
-        return new TokenModel(tokenType,id.Value, "");
+        
+        return new TokenModel(tokenType, id.Value, idType);
     } 
     
   #endregion

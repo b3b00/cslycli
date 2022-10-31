@@ -24,7 +24,7 @@
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup>      
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
@@ -34,6 +34,7 @@
       <EmbeddedResource Include="data\badGrammar.txt" />
       <EmbeddedResource Include="data\grammarWithImplicits.txt" />
       <EmbeddedResource Include="data\lexer.csharp" />
+      <EmbeddedResource Include="data\meta.txt" />
       <EmbeddedResource Include="data\minimalGrammar.txt" />
       <EmbeddedResource Include="data\parser.csharp" />
       <EmbeddedResource Include="data\whileGrammar.txt" />

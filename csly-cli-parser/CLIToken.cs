@@ -13,9 +13,11 @@ public enum CLIToken
     
     [Int] INT,
     
-    [String("'","\\")] STRING,
+    [String("'","'")] STRING,
 
     [SingleLineComment("#")]
+    
+    [MultiLineComment("/*","*/")]
     COMMENT,
 
     [Sugar("[")] LEFTBRACKET,
@@ -35,8 +37,12 @@ public enum CLIToken
     [Keyword("Int")] INTTOKEN,
     [Keyword("Double")] DOUBLETOKEN,
     [Keyword("AlphaId")] ALPHAIDTOKEN,
+    [Keyword("AlphaNumId")] ALPHANUMIDTOKEN,
+    [Keyword("AlphaNumDashId")] ALPHANUMDASHIDTOKEN,
     [Keyword("KeyWord")] KEYWORDTOKEN,
     [Keyword("Sugar")] SUGARTOKEN,
+    [Keyword("SingleLineComment")] SINGLELINECOMMENT,
+    [Keyword("MultiLineComment")] MULTILINECOMMENT,
     
     
     

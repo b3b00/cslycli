@@ -20,16 +20,6 @@ public class LexerBuilder
             DynamicLexerName = name;
         }
         
-        public (object lexerBuildResult, Type tokenType) BuildLexer(LexerModel model)
-        {
-            DynamicLexerName = model.Name;
-
-// Create the type and save the assembly.
-            var finished = BuildLexerEnum(model);
-                
-                return (BuildIt(finished.enumType), finished.enumType);
-        }
-        
         public (Type enumType, AssemblyBuilder assembly, ModuleBuilder moduleBuilder) BuildLexerEnum(LexerModel model)
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
@@ -144,16 +134,5 @@ public class LexerBuilder
         }
 
 
-        private object BuildIt(Type enumType)
-        {
-            var methods = typeof(sly.lexer.LexerBuilder).GetMethods().ToList();
-            var builders = methods.Where(x => x.Name.Contains("Build")).Where(x => x.GetParameters().Length == 2).ToList();
-            
-            MethodInfo method = typeof(sly.lexer.LexerBuilder).GetMethod("BuildLexer", new Type[] {typeof(BuildExtension<>),typeof(LexerPostProcess<>)});
-            method = builders[0];
-            MethodInfo genericMethod = method.MakeGenericMethod(enumType);
-            var built = genericMethod.Invoke(null, new object[] {null,null});
-            return built;
-        }
         
 }

@@ -273,11 +273,11 @@ namespace {nameSpace} {{
                 {
                     return $"ValueOption<{GetClauseType(nt,parser,lexer,output)}>";
                 }
-                else if (clause is TerminalClause t)
+                else if (opt.Clause is TerminalClause t)
                 {
-                    return GetClauseType(t, parser, lexer,output);
+                    return $"Token<{lexer}>";
                 }
-                else if (clause is GroupClause grp)
+                else if (opt.Clause is GroupClause grp)
                 {
                     return $"ValueOption<{GetClauseType(grp, parser, lexer,output)}>";
                 }

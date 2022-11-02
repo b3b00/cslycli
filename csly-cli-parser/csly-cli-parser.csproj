@@ -8,11 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>      
-      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />      
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="sly" Version="2.9.1.1" />
+      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
+        <PackageReference Include="sly" Version="2.9.2" />
     </ItemGroup>
 
 </Project>

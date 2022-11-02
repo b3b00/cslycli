@@ -49,10 +49,7 @@ token : '[' [STRINGTOKEN|MULTILINECOMMENT] ']' ID ':' STRING STRING ';';
 
 parserRoot : PARSER ID ';' rule*;
 
-operand : '[' OPERAND ']';
-
-rule  : START? operand? ID ':' clause+ ';';
-
+rule  : START? ('[' OPERAND ']')? ID ':' clause+ ';';
 
 # expressions
 

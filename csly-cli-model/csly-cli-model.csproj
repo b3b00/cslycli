@@ -8,12 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="sly" Version="2.9.1.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="parser\LeadingToken.cs" />
-      <Compile Remove="parser\OperandRule.cs" />
+        <PackageReference Include="sly" Version="2.9.2" />
     </ItemGroup>
 
 </Project>

@@ -158,26 +158,6 @@ public class Tests
         Check.That(source).IsEqualTo(expected);
     }
 
-    [Fact]
-    public void MetaTest()
-    {
-        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
-        var grammar = fs.ReadAllText("/data/meta.txt");
-        var builder = new ParserBuilder();
-        var model = builder.CompileModel(grammar, "GrammarParser");
-        Check.That(model.IsError).IsFalse();
-        Check.That(model.Value).IsNotNull();
-        var source = ParserGenerator.GenerateParser(model.Value, "grammar","object");
-        Check.That(source).IsNotNull();
-        Check.That(source).IsNotEmpty();
-        source = LexerGenerator.GenerateLexer(model.Value.LexerModel, "grammar");
-        Check.That(source).IsNotNull();
-        Check.That(source).IsNotEmpty();
-        var json = builder.Getz(grammar, grammar, "GrammarParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToJson)});
-        Check.That(json.IsError).IsFalse();
-        var content = json.Value.First().content;
-        Assert.NotNull(content);
-        Assert.NotEmpty(content);
-        
-    }
+    
+   
 }

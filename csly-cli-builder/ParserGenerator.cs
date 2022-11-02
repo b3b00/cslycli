@@ -281,6 +281,17 @@ namespace {nameSpace} {{
                 {
                     return $"ValueOption<{GetClauseType(grp, parser, lexer,output)}>";
                 }
+                else if (opt.Clause is ChoiceClause choice)
+                {
+                    if (choice.IsTerminalChoice)
+                    {
+                        return $"Token<{lexer}>";
+                    }
+                    else
+                    {
+                        return output;
+                    }
+                }
 
                 return output;
             }

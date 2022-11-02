@@ -373,6 +373,17 @@ public class ParserBuilder
                     {
                         return OptionGroupType;
                     }
+                    case ChoiceClause c : 
+                    {
+                        if (c.IsTerminalChoice)
+                        {
+                            return TokenType;
+                        }
+                        else
+                        {
+                            return ObjectType;
+                        }
+                    }
                     default:
                     {
                         return OptionType;
@@ -394,6 +405,14 @@ public class ParserBuilder
                     case GroupClause:
                     {
                         return GroupListType;
+                    }
+                    case ChoiceClause c:
+                    {
+                        if (c.IsTerminalChoice)
+                        {
+                            return TokenListType;
+                        }
+                        return ObjectListType;
                     }
                     default:
                     {

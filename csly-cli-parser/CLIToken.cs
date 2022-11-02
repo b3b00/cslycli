@@ -25,7 +25,7 @@ public enum CLIToken
     [Sugar("(")] LEFTPAREN,
     [Sugar(")")] RIGHTPAREN,
     [Sugar(":")] COLON,
-    [Sugar("@")] ROOT,
+    [Sugar("->")] ROOT,
     
     [Keyword("genericLexer")]
     GENERICLEXER,

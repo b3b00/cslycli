@@ -1,0 +1,35 @@
+genericLexer MyLexer1;
+
+[Int] INT;
+
+[Sugar] PLUS : '+';
+[Sugar] MINUS : '-';
+[Sugar] TIMES : '*';
+[Sugar] DIVIDE : '/';
+
+[Sugar] LPAREN : '(';
+[Sugar] RPAREN : ')';
+
+parser MyParser1;
+
+# operations 
+
+       
+[Right 10] PLUS;
+[Left 10] MINUS;
+[Right 50] TIMES;
+[Left 50]DIVIDE;
+
+[Prefix 100] MINUS;
+
+
+# operands
+
+[Operand] operand : INT;
+[Operand] operand : LPAREN MyParser1_expressions RPAREN; 
+
+# statements
+
+@ expression :  MyParser1_expressions ;
+
+

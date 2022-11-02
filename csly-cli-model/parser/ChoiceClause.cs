@@ -32,6 +32,10 @@ namespace csly.cli.model.parser
             return builder.ToString();
         }
 
+        public bool IsTerminalChoice => Choices.Any(x => x is TerminalClause);
+        public bool IsNonTerminalChoice => Choices.Any(x => x is NonTerminalClause);
+        
+
 
     }
 }

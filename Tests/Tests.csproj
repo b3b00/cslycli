@@ -33,6 +33,7 @@
     <ItemGroup>
       <EmbeddedResource Include="data\badGrammar.txt" />
       <EmbeddedResource Include="data\grammarWithImplicits.txt" />
+      <EmbeddedResource Include="data\grammarX.txt" />
       <EmbeddedResource Include="data\lexer.csharp" />
       <EmbeddedResource Include="data\meta.txt" />
       <EmbeddedResource Include="data\minimalGrammar.txt" />

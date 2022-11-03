@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -158,6 +160,46 @@ public class Tests
         Check.That(source).IsEqualTo(expected);
     }
 
+    [Fact]
+    public void TestChoices()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/grammarX.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "grammarX");
+        if (model.IsError)
+        {
+            model.Error.ForEach(Console.WriteLine);
+        }
+        Check.That(model.IsError).IsFalse();
+        Check.That(model.Value).IsNotNull();
+        var json = builder.Getz(grammar, "( * / - + ]", "grammarX", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToJson)});
+        if (json.IsError)
+        {
+            json.Error.ForEach(x => Debug.WriteLine(x));
+        }
+        Check.That(json.IsError).IsFalse();
+        var content = json.Value.First().content;
+        Assert.NotNull(content);
+        Assert.NotEmpty(content);
+    }
     
+    
+    [Fact]
+    public void TestGenerateChoices()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/grammarX.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "grammarX");
+        Check.That(model.IsError).IsFalse();
+        Check.That(model.Value).IsNotNull();
+        var source = ParserGenerator.GenerateParser(model.Value, "ns","object");
+        Check.That(source).IsNotNull();
+        Check.That(source).IsNotEmpty();
+        Check.That(source)
+            .Contains(
+                "public object root_____LPAREN___RPAREN______PLUS___MINUS___TIMES___DIVIDE______LBRACK___RBRACK___(Token<MyLexer1> p0, List<Token<MyLexer1>> p1, List<Token<MyLexer1>> p2)");
+    }
    
 }

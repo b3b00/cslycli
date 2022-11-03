@@ -30,6 +30,6 @@ parser MyParser1;
 
 # statements
 
-@ expression :  MyParser1_expressions ;
+-> expression :  MyParser1_expressions ;
 
 

@@ -10,7 +10,7 @@ parser MyParser1;
 
 # statements
 
-@ expression :  term ['+' | '-'] expression ;
+-> expression :  term ['+' | '-'] expression ;
 
 expression : term;
 

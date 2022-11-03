@@ -65,7 +65,7 @@ parser WhileParser;
 
 # statements
 
-@ statement :  LPAREN statement RPAREN ;
+-> statement :  LPAREN statement RPAREN ;
 
 
 statement : sequence;

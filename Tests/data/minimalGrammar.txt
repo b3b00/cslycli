@@ -4,4 +4,4 @@ genericLexer MinimalLexer;
 
 parser MinimalParser;
 
-@ root : INT;
+-> root : INT;

@@ -24,11 +24,11 @@ genericLexer GrammarLexer;
 [MultiLineComment] BLOCKCOMMENT : '/*' '*/';
 
 [Sugar] OR : '|';
-[Sugar] START : '@';
+[Sugar] START : '->';
 
 parser GrammarParser;
 
-@ root: genericRoot parserRoot ;
+-> root: genericRoot parserRoot ;
 
 
 

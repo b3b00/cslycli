@@ -43,6 +43,7 @@ public class Program
         var model = builder.CompileModel(grammar);
         if (model.IsError)
         {
+            Console.WriteLine("Errors in grammar specification file:");
             foreach (var error in model.Error)
             {
                 Console.WriteLine(error);
@@ -50,6 +51,9 @@ public class Program
 
             return 1;
         }
+        
+        Console.WriteLine("Model compilation succeeded.");
+        
         var enumCode = LexerGenerator.GenerateLexer(model.Value.LexerModel, generate.NameSpace);
         var path = Path.Combine(fi.Directory.FullName, model.Value.LexerModel.Name + ".cs");
         File.WriteAllText(path,enumCode);
@@ -74,6 +78,7 @@ public class Program
         var mod = builder.CompileModel(grammarSource);
         if (mod.IsError)
         {
+            Console.WriteLine("Errors in grammar specification file:");
             foreach (var error in mod.Error)
             {
                 Console.WriteLine(error);
@@ -106,6 +111,7 @@ public class Program
 
         if (result.IsError)
         {
+            Console.WriteLine("Errors in source file:");
             foreach (var error in result.Error)
             {
                 Console.WriteLine(error);

@@ -6,7 +6,13 @@ namespace clsy.cli.builder;
 
 public class LexerGenerator
 {
-    public static string GenerateLexer(LexerModel model, string nameSpace)
+
+    public LexerGenerator()
+    {
+        
+    }
+    
+    public string GenerateLexer(LexerModel model, string nameSpace)
     {
         var head = GetHeader(model.Name, nameSpace);
         var body = GetBody(model);
@@ -14,7 +20,7 @@ public class LexerGenerator
         return head+"\n"+body+"\n"+foot;
     }
 
-    private static string GetBody(LexerModel model)
+    private string GetBody(LexerModel model)
     {
         StringBuilder builder = new StringBuilder();
         builder.AppendLine();
@@ -91,7 +97,7 @@ public class LexerGenerator
         return builder.ToString();
     }
 
-    private static string GetHeader(string name, string nameSpace)
+    private string GetHeader(string name, string nameSpace)
     {
         return $@"
 using sly.lexer;
@@ -102,7 +108,7 @@ namespace {nameSpace} {{
 ";
     }
 
-    private static string getFooter()
+    private string getFooter()
     {
         return @"
     }

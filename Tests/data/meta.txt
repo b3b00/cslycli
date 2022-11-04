@@ -14,6 +14,7 @@ genericLexer GrammarLexer;
 [KeyWord] RIGHT : 'Right';
 [KeyWord] LEFT : 'Left';
 [KeyWord] PREFIX : 'Prefix';
+[KeyWord] POSTFIX : 'Postfix';
 [KeyWord] OPERAND : 'Operand';
 [KeyWord] STRINGTOKEN : 'String';
 [KeyWord] INTTOKEN : 'Int';
@@ -53,9 +54,9 @@ rule  : START? ('[' OPERAND ']')? ID ':' clause+ ';';
 
 # expressions
 
-rule : '[' PREFIX INT ']' ID ';';
-
-rule : '[' [RIGHT|LEFT] INT ']' ID ';';
+rule : '[' PREFIX INT ']' [ID|STRING] ';';
+rule : '[' POSTFIX INT ']' [ID|STRING] ';';
+rule : '[' [RIGHT|LEFT] INT ']' [ID|STRING] ';';
 
 
 

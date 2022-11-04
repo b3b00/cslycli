@@ -63,16 +63,16 @@ parser MyParser;
 
 # operands
 
-[Operand] INT;
-[Operand] TRUE;
-[Operand] FALSE;
-[Operand] STRING;
-[Operand] ID;
-[Operand] expressionGroup;
+[Operand] int : INT;
+[Operand] true : TRUE;
+[Operand] false : FALSE;
+[Operand] string : STRING;
+[Operand] id : ID;
+[Operand] group : expressionGroup;
 
 # statements
 
-@ statement :  LPAREN statement RPAREN ;
+-> statement :  LPAREN statement RPAREN ;
 
 statement : sequence;
 
@@ -90,4 +90,4 @@ statementPrim: SKIP;
 
 statementPrim: PRINT MyParser_expressions;
 
-expressionGroup : LPAREN MyParser_expressions RPAREN
+expressionGroup : LPAREN MyParser_expressions RPAREN;

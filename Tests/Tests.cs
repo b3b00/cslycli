@@ -40,7 +40,8 @@ public class Tests
         var model = builder.CompileModel(grammar, "MyParser1");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
-        var source = ParserGenerator.GenerateParser(model.Value, "ns","int");
+        var parserGenerator = new ParserGenerator();
+        var source = parserGenerator.GenerateParser(model.Value, "ns","int");
         Check.That(source).IsNotNull();
         Check.That(source).IsNotEmpty();
 
@@ -82,7 +83,8 @@ public class Tests
         var model = builder.CompileModel(grammar, "WhileParser");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
-        var source = ParserGenerator.GenerateParser(model.Value, "ns","int");
+        var parserGenerator = new ParserGenerator();
+        var source = parserGenerator.GenerateParser(model.Value, "ns","int");
         Check.That(source).IsNotNull();
         Check.That(source).IsNotEmpty();
     }
@@ -133,7 +135,8 @@ public class Tests
         var model = builder.CompileModel(grammar, "MinimalParser");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
-        var source = LexerGenerator.GenerateLexer(model.Value.LexerModel, "ns");
+        var lexerGenerator = new LexerGenerator();
+        var source = lexerGenerator.GenerateLexer(model.Value.LexerModel, "ns");
         Check.That(source).IsNotNull();
         Check.That(source).IsNotEmpty();
         source = source.Replace("\r\n", "\n");
@@ -152,7 +155,8 @@ public class Tests
         var model = builder.CompileModel(grammar, "MinimalParser");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
-        var source = ParserGenerator.GenerateParser(model.Value, "ns","int");
+        var parserGenerator = new ParserGenerator();
+        var source = parserGenerator.GenerateParser(model.Value, "ns","int");
         Check.That(source).IsNotNull();
         Check.That(source).IsNotEmpty();
         source = source.Replace("\r\n", "\n");
@@ -194,7 +198,8 @@ public class Tests
         var model = builder.CompileModel(grammar, "grammarX");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
-        var source = ParserGenerator.GenerateParser(model.Value, "ns","object");
+        var parserGenerator = new ParserGenerator();
+        var source = parserGenerator.GenerateParser(model.Value, "ns","object");
         Check.That(source).IsNotNull();
         Check.That(source).IsNotEmpty();
         Check.That(source)

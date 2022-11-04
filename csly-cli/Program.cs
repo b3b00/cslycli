@@ -53,13 +53,14 @@ public class Program
         }
         
         Console.WriteLine("Model compilation succeeded.");
-        
-        var enumCode = LexerGenerator.GenerateLexer(model.Value.LexerModel, generate.NameSpace);
+
+        var lexerGenerator = new LexerGenerator();
+        var enumCode = lexerGenerator.GenerateLexer(model.Value.LexerModel, generate.NameSpace);
         var path = Path.Combine(fi.Directory.FullName, model.Value.LexerModel.Name + ".cs");
         File.WriteAllText(path,enumCode);
-        
 
-        var parserCode = ParserGenerator.GenerateParser(model.Value,  generate.NameSpace, generate.ParserOutput);
+        var parserGenerator = new ParserGenerator();
+        var parserCode = parserGenerator.GenerateParser(model.Value,  generate.NameSpace, generate.ParserOutput);
         path = Path.Combine(fi.Directory.FullName, model.Value.ParserModel.Name + ".cs");
         File.WriteAllText(path,parserCode);
         return 0;

@@ -122,16 +122,22 @@ public class CLIParser
         //     return new OperandRule(id.Value, context.IsTerminal(id.Value));
         // }
         
-        [Production("rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] ID SEMICOLON[d]")]
+        [Production("rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
         public ICLIModel PrefixRule(Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
         {
-            return new PrefixRule(id.Value,precedence.IntValue);
+            return new PrefixRule(id.Value, id.TokenID == CLIToken.STRING, precedence.IntValue);
         }
         
-        [Production("rule : LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] ID SEMICOLON[d]")]
+        [Production("rule : LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
+        public ICLIModel PostfixRule(Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
+        {
+            return new PostfixRule(id.Value, id.TokenID == CLIToken.STRING, precedence.IntValue);
+        }
+        
+        [Production("rule : LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
         public ICLIModel InfixRule(Token<CLIToken> rightOrLeft, Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
         {
-            return new InfixRule(id.Value,rightOrLeft.TokenID == CLIToken.LEFT ? Associativity.Left : Associativity.Right, precedence.IntValue);
+            return new InfixRule(id.Value, id.TokenID == CLIToken.STRING, rightOrLeft.TokenID == CLIToken.LEFT ? Associativity.Left : Associativity.Right, precedence.IntValue);
         }
 
 

@@ -21,6 +21,7 @@ parser MyParser1;
 [Left 50]DIVIDE;
 
 [Prefix 100] MINUS;
+[Postfix 110] '--'; 
 
 
 # operands

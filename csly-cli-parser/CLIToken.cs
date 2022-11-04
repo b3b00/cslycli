@@ -73,6 +73,7 @@ public enum CLIToken
     [Keyword("Left")] LEFT,
     [Keyword("Operand")] OPERAND,
     [Keyword("Prefix")] PREFIX,
+    [Keyword("Postfix")] POSTFIX,
     
     
 }

@@ -12,11 +12,14 @@ namespace csly.cli.model.parser
         public override bool IsPrefix => true;
         public override bool IsOperand => false;
         public override bool IsInfix => false;
+        
+        public bool IsExplicit { get; set; } = false;
   
-        public PrefixRule(string name,  int precedence)
+        public PrefixRule(string name, bool isExplicit,  int precedence)
         {
             Name = name;
             Precedence = precedence;
+            IsExplicit = isExplicit;
         }
 
         public string Name { get; set;  }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json.Serialization;
 using sly.parser.generator;
 
 namespace csly.cli.model.parser
@@ -13,14 +14,17 @@ namespace csly.cli.model.parser
         public override bool IsOperand => false;
         public override bool IsInfix => true;
      
-        public InfixRule(string name, Associativity assoc, int precedence)
+        public InfixRule(string name, bool isExplicit, Associativity assoc, int precedence)
         {
             Name = name;
             Associativity = assoc;
             Precedence = precedence;
+            IsExplicit = isExplicit;
         }
 
         public string Name { get; set;  }
+        
+        public bool IsExplicit { get; set; } = false;
         public Associativity  Associativity{ get; set;  }
         public int Precedence { get; set; }
 

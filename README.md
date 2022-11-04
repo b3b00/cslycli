@@ -144,23 +144,28 @@ the generated expression "sub-parser" root rule is named <PARSER_NAME>_expressio
 *** operations ***
 
 Infix operations are specified by either :
-   - [Right] <PRECEDENCE(integer)> <TOKEN_NAME> for right associative operation
-   - [Left] <PRECEDENCE(integer)> <TOKEN_NAME> for left associative operation
+   - [Right <PRECEDENCE(integer)>]  <TOKEN_NAME> for right associative operation
+   - [Left <PRECEDENCE(integer)>] <TOKEN_NAME> for left associative operation
 
 where <PRECEDENCE> is the priority level of the operation and <TOKEN_NAME> is the name of the sugar token for the operator. an explicit token may be used instead of the token name:
 ```
 # left associative addition using token PLUS
-[Left] 10 ADD;
+[Left 10] ADD;
 
 # right associative exponentiation using explicit token
-[Right] 100 '^';
+[Right 100] '^';
 ```
 
 Prefix operations are defined quite the same way :
- - [Prefix] <PRECEDENCE> <TOKEN_NAME>
+ - [Prefix <PRECEDENCE>] <TOKEN_NAME>
 
 ```
-[Prefix] 150 '-';
+[Prefix 150] '-';
+```
+
+Postfix operations are exactly the same as prefix except the use of the [Postfix] attribute : 
+```
+[Postfix 100] '--';
 ```
 
 *** operands ***
@@ -170,7 +175,7 @@ Operands are rules tagged with the special ```[Operand]``` attribute at the begi
 ```
 [Operand] intOperand : INT;
 [Operand] stringOperand : STRING;
-[Operand] groupOperand : '(' nonTerminal ')';
+[Operand] groupOperand : '(' myParser_expressions ')'; # referencing root rule for expressions.
 
 ```
 

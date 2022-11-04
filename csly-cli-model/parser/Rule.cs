@@ -15,6 +15,8 @@ namespace csly.cli.model.parser
 
         public virtual bool IsRule => true;
         public virtual bool IsPrefix => false;
+        
+        public virtual bool IsPostfix => false;
 
         private bool _isOperand = false;
         public virtual bool IsOperand => _isOperand;

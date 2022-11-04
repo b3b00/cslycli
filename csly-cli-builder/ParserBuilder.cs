@@ -234,6 +234,10 @@ public class ParserBuilder
         {
             AddPrefix(builder, prefix);
         }
+        if (rule.IsPostfix && rule is PostfixRule postfix)
+        {
+            AddPostfix(builder, postfix);
+        }
         if (rule.IsInfix && rule is InfixRule infix)
         {
             AddInfix(builder, infix);
@@ -267,10 +271,18 @@ public class ParserBuilder
         builder.SetCustomAttribute(customAttributeBuilder);
     }
     
+    private int explicitPrefixCounter = 0;
+    
     private  void AddPrefix(TypeBuilder builder, PrefixRule prefix)
     {
+        string name = prefix.Name;
+        if (prefix.IsExplicit)
+        {
+            name = explicitPrefixCounter.ToString();
+            explicitPrefixCounter++;
+        }
 
-        var methodBuilder = AddMethod(builder, $"prefix_{prefix.Name}", TokenType, ObjectType);
+        var methodBuilder = AddMethod(builder, $"prefix_{name}", TokenType, ObjectType);
         
         Type attributeType = typeof(PrefixAttribute);
             
@@ -279,6 +291,30 @@ public class ParserBuilder
             
         CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
             constructorInfo, new object[] { prefix.Name,Associativity.Left,prefix.Precedence });
+
+        methodBuilder.SetCustomAttribute(customAttributeBuilder);
+    }
+
+    private int explicitPostfixCounter = 0;
+    
+    private  void AddPostfix(TypeBuilder builder, PostfixRule postfix)
+    {
+        string name = postfix.Name;
+        if (postfix.IsExplicit)
+        {
+            name = explicitPostfixCounter.ToString();
+            explicitPostfixCounter++;
+        }
+        
+        var methodBuilder = AddMethod(builder, $"postfix_{name}", ObjectType,TokenType);
+        
+        Type attributeType = typeof(PostfixAttribute);
+            
+        ConstructorInfo constructorInfo = attributeType.GetConstructor(
+            new Type[3] { typeof(string),typeof(Associativity),typeof(int) });
+            
+        CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+            constructorInfo, new object[] { postfix.Name,Associativity.Left,postfix.Precedence });
 
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
     }

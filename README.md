@@ -63,6 +63,9 @@ the test command tries to parse a source file according to a grammar specificati
 
 ## parser specification file format
 
+### Grammar main structure 
+
+
 a grammar specification consists of two parts : 
   - the lexer specification starting with ```genericLexer <NAME_OF_THE_LEXER>;```
   - the parser grammar specification starting with ```pasrer <NAME_OF_THE_PARSER>```
@@ -109,6 +112,83 @@ Each token starts with a token type and ends with a `;` :
 ```
 
 ### parser
+
+
+#### ***basic rules***
+
+Grammar rules follow the classic EBNF syntax:
+
+```terminal_name : clauses ; #ended by a semicolone ';'```
+
+each clause is separated by spaces.
+
+clauses can be (all examples will use the simple lexer defined above)
+
+ - simple terminal or non terminal references : the name of the terminal or non terminal (case sensitive) ```nonTerm : OPEN_BRACE otherNonTerm CLOSE_BRACE```
+ - a group of clauses surrounded by parantheses : ```group : ( first ID third );```
+ - an alternate of terminal or non terminal surounded by square brackets : ```alt : [IF|THEN|ELSE];```
+ - a repetition of clauses (simple, groups or alternate)
+   - one or more with '+' : ``` oneOrMore : (ID STRING)+;```
+   - zero or more with '*' : ``` zeroOrMore : ID*;```
+ - a optional clause with '?' : ```option : [IF|THEN|ELSE]?``` 
+ - an explicit token as a string surrounded by ' : ```comma : ',';```
+
+For full documentation refer to [CSLY EBNF parser](https://github.com/b3b00/csly/wiki/EBNF-parser)
+
+#### ***expression parsing***
+
+CSLY offers extension to ease the parse of expression (see [expression parsing](https://github.com/b3b00/csly/wiki/expression-parsing)).
+
+the generated expression "sub-parser" root rule is named <PARSER_NAME>_expressions. <PARSER_NAME> is the parser name defined at the begining of the parser definitions (see https://github.com/b3b00/cslycli#grammar-main-structure)
+
+*** operations ***
+
+Infix operations are specified by either :
+   - [Right] <PRECEDENCE(integer)> <TOKEN_NAME> for right associative operation
+   - [Left] <PRECEDENCE(integer)> <TOKEN_NAME> for left associative operation
+
+where <PRECEDENCE> is the priority level of the operation and <TOKEN_NAME> is the name of the sugar token for the operator. an explicit token may be used instead of the token name:
+```
+# left associative addition using token PLUS
+[Left] 10 ADD;
+
+# right associative exponentiation using explicit token
+[Right] 100 '^';
+```
+
+Prefix operations are defined quite the same way :
+ - [Prefix] <PRECEDENCE> <TOKEN_NAME>
+
+```
+[Prefix] 150 '-';
+```
+
+*** operands ***
+
+Operands are rules tagged with the special ```[Operand]``` attribute at the begining of the rule :
+
+```
+[Operand] intOperand : INT;
+[Operand] stringOperand : STRING;
+[Operand] groupOperand : '(' nonTerminal ')';
+
+```
+
+*** simple arithmetic parser ***
+
+```
+genericLexer arithLexer;
+
+parser arithParser;
+
+
+```
+
+#### ***root rule***
+
+the root rule of the grammar is defined by '->' at the begining of the rule :
+```-> root : other clauses;```
+
 
 ### specification formal grammar using csly-cli specification file (going meta :) )
 

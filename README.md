@@ -59,106 +59,158 @@ the test command tries to parse a source file according to a grammar specificati
 
    - -g --grammar * : path to grammar specification file
    - -n --namespace * : parser namespace   
-   - -o --output * : parser output type 
-
-
-
+   - -o --output * : parser output type (see [parser typing](https://github.com/b3b00/csly/wiki/defining-your-parser#parser-types) for CSLY parser typing)
 
 ## parser specification file format
+
+a grammar specification consists of two parts : 
+  - the lexer specification starting with ```genericLexer <NAME_OF_THE_LEXER>;```
+  - the parser grammar specification starting with ```pasrer <NAME_OF_THE_PARSER>```
+
+comments are :
+   - sinle line : starting with # (ala shell script)
+   - multi line : starting with /* and ending with */ (ala C) 
+
+### lexer 
+
+CSLY-CLI only implements the CSLY [generic lexer](https://github.com/b3b00/csly/wiki/GenericLexer). Each token is defined as a pair of token predefined type and token identifier. Some token may need additional parameters.
+Each token starts with a token type and ends with a `;` :
+
+ - identifiers
+    - ```[AlphaId] <ID_TOKEN_NAME>;``` : Only alpha characters 
+    - ```[AlphaNumId] <ID_TOKEN_NAME>;``` : Starting with an alpha char and then alpha or numeric char. 
+    - ```[AlphaNumDashId] <ID_TOKEN_NAME>;``` : Starting with an alpha or ` _` (underscore) char and then alphanumeric or `-`(minus) or `_` (underscore) char.
+  - Integer : ```[Int] <INT_TOKEN_NAME>;```
+  - Double / Decimal : ```[Double] <DOUBLE_TOKEN_NAME>;```
+  - Keywords : ```[KeyWord] <KEYWORD_TOKEN_NAME> : '<KEYWORD_VALUE>';```
+  - syntaxic sugar : ```[SUGAR] <SUGAR_TOKEN_NAME> : '<SUGAR_VALUE>';```
+  - String : ```[String] <STRING_TOKEN_NAME> : '<string_delim_char>' '<string_escape_char>;```
+  - Single line comments : ```[SingleLineComment] LINECOMMENT : '#'```;
+  - multi line comments : ```[MultiLineComment] BLOCKCOMMENT : '/*' '*/'```;
+  
+  **simple lexer examples**
+
+  ```
+  genericLexer sample;
+
+# only use alpha chars for identifier
+  [AlphaId] ID;
+# integer token
+  [Int] INT;
+# keywords for if ... then ... else
+  [KeyWord] IF : 'if';
+  [KeyWord] THEN : 'then';
+  [KeyWord] ELSE : 'else';
+# sugar for opening and closing braces
+  [Sugar] OPEN_BRACE : '{';
+  [Sugar] CLOSE_BRACE : '}';
+# string with " as delimiter and \ as escaper
+  [String] STRING : '"' '\';
+```
+
+### parser
 
 ### specification formal grammar using csly-cli specification file (going meta :) )
 
 ```
-genericLexer; 
-  
- [String] STRING; 
- [Int] INT; 
- [AlphaId] ID; # to be derived for every identifier types 
-  
-  
- [KeyWord] IF:'if'; 
- [KeyWord] THEN:'then'; 
- [KeyWord] ELSE:'else'; 
- [KeyWord] WHILE:'while'; 
- [KeyWord] DO:'do'; 
- [KeyWord] SKIP:'skip'; 
- [KeyWord] TRUE:'true'; 
- [KeyWord] FALSE:'false'; 
- [KeyWord] NOT:'not'; 
- [KeyWord] AND:'and'; 
- [KeyWord] OR:'or'; 
- [KeyWord] PRINT:'print'; 
-  
- [Sugar] GREATER : '>'; 
-  
- [Sugar] LESSER : '<'; 
-  
- [Sugar] EQUALS : '=='; 
-  
- [Sugar] DIFFERENT : '!='; 
-  
- [Sugar] CONCAT : '.'; 
-  
- [Sugar] ASSIGN : ':='; 
-  
- [Sugar] PLUS : '+'; 
- [Sugar] MINUS : '-'; 
- [Sugar] TIMES : '*'; 
- [Sugar] DIVIDE : '/'; 
-  
- [Sugar] LPAREN : '('; 
- [Sugar] RPAREN : ')'; 
- [Sugar] SEMICOLON : ';'; 
-  
- parser; 
-  
- # operations  
-  
- [Right 50] LESSER; 
- [Right 50] GREATER; 
- [Right 50] EQUALS; 
- [Right 50]DIFFERENT; 
-  
- [Right 10] CONCAT; 
-         
- [Right 10] PLUS; 
- [Left 10] MINUS; 
- [Right 50] TIMES; 
- [Left 50]DIVIDE; 
-  
- [Prefix 100] MINUS; 
-  
- [Right 10] OR; 
- [Right 50] AND; 
- [Prefix 100] NOT; 
-  
- # operands 
-  
- [Operand] INT; 
- [Operand] TRUE; 
- [Operand] FALSE; 
- [Operand] STRING; 
- [Operand] ID; 
-  
- # statements 
-  
- @ statement :  LPAREN statement RPAREN ; 
-  
- statement : sequence; 
-  
- sequence : statementPrim additionalStatements*; 
-  
- additionalStatements : SEMICOLON statementPrim; 
-  
- statementPrim: IF dynamicParser_expressions THEN statement ELSE statement; 
-  
- statementPrim: WHILE dynamicParser_expressions DO statement; 
-  
- statementPrim: ID ASSIGN dynamicParser_expressions; 
-  
- statementPrim: SKIP; 
-  
- statementPrim: PRINT dynamicParser_expressions;
+
+genericLexer GrammarLexer;
+
+[KeyWord] LEXER : 'genericLexer' ;
+[KeyWord] PARSER : 'parser' ;
+[String] STRING : '''' ''''; 
+[Int] INT;
+[KeyWord] DOUBLE : 'Double';
+[KeyWord] ALPHAID : 'AlphaId';
+[KeyWord] ALPHANUMID : 'AlphaNumId';
+[KeyWord] ALPHANUMDASHID : 'AlphaNumDashId';  
+[KeyWord] KEYWORD : 'KeyWord';
+[KeyWord] SUGAR : 'Sugar';
+[KeyWord] RIGHT : 'Right';
+[KeyWord] LEFT : 'Left';
+[KeyWord] PREFIX : 'Prefix';
+[KeyWord] OPERAND : 'Operand';
+[KeyWord] STRINGTOKEN : 'String';
+[KeyWord] INTTOKEN : 'Int';
+[KeyWord] SINGLELINECOMMENT : 'SingleLineComment';
+[KeyWord] MULTILINECOMMENT : 'MultiLineComment';
+[AlphaNumDashId] ID;
+[SingleLineComment] LINECOMMENT : '#';
+[MultiLineComment] BLOCKCOMMENT : '/*' '*/';
+
+[Sugar] OR : '|';
+[Sugar] START : '->';
+
+parser GrammarParser;
+
+-> root: genericRoot parserRoot ;
+
+
+
+# Lexer
+
+
+genericRoot : LEXER ID ';'  token*;
+
+token :'[' [KEYWORD|SUGAR|SINGLELINECOMMENT] ']' ID ':' STRING ';';
+
+token : '[' [STRINGTOKEN|INTTOKEN|ALPHAID|ALPHANUMID|ALPHANUMDASHID|DOUBLE] ']' ID ';';
+
+token : '[' [STRINGTOKEN|MULTILINECOMMENT] ']' ID ':' STRING STRING ';';
+
+
+
+# parser
+
+parserRoot : PARSER ID ';' rule*;
+
+rule  : START? ('[' OPERAND ']')? ID ':' clause+ ';';
+
+# expressions
+
+rule : '[' PREFIX INT ']' ID ';';
+
+rule : '[' [RIGHT|LEFT] INT ']' ID ';';
+
+
+
+# clauses
+
+item : [ ID | STRING ];
+
+clause : item '*';
+
+clause : item '+';
+
+clause : item '?';
+
+clause : item ;
+
+clause : choiceclause;
+
+clause : group;
+
+
+# choices
+
+choiceclause : '['  item ( OR item)* ']';
+
+clause : choiceclause '+';
+
+clause : choiceclause '*';
+
+clause : choiceclause '?';
+
+# groups
+
+group : '('  item* ')';
+
+clause : group '+';
+
+clause : group '*';
+
+clause : group '?';
+
 ```
 
 

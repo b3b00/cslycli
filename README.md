@@ -53,6 +53,8 @@ the test command tries to parse a source file according to a grammar specificati
   ```
   try to parse mySource.txt according to grammar myGrammar.txt and output success or errors.
 
+
+
   ### generating C# sources
 
   ```csly-cli generate``` : 
@@ -61,18 +63,36 @@ the test command tries to parse a source file according to a grammar specificati
    - -n --namespace * : parser namespace   
    - -o --output * : parser output type (see [parser typing](https://github.com/b3b00/csly/wiki/defining-your-parser#parser-types) for CSLY parser typing)
 
+This command will output 2 .cs files :
+  - a lexer enum file named after the generic Lexer name given in the grammar specification file see (seed [grammar main structure](https://github.com/b3b00/cslycli#grammar-main-structur 
+
 ## parser specification file format
+
+The grammar specification uses many of the CSLY existing concepts notations. So you can refer to [CSLY wiki](https://github.com/b3b00/csly/wiki) for more details. Specifically :
+   - [generic lexer](https://github.com/b3b00/csly/wiki/GenericLexer)
+   - [parser](https://github.com/b3b00/csly/wiki/EBNF-parser)
 
 ### Grammar main structure 
 
 
 a grammar specification consists of two parts : 
-  - the lexer specification starting with ```genericLexer <NAME_OF_THE_LEXER>;```
-  - the parser grammar specification starting with ```pasrer <NAME_OF_THE_PARSER>```
+  - the lexer specification starting with ```genericLexer <NAME_OF_THE_LEXER>;``` : the ``<NAME_OF_THE_LEXER>`` will be use to name the generated lexer .cs file when using the generate command
+  - the parser grammar specification starting with ```parser <NAME_OF_THE_PARSER>;``` :  : the ``<NAME_OF_THE_PARSER>`` will be use to name the generated parser .cs file when using the generate command
 
 comments are :
    - sinle line : starting with # (ala shell script)
    - multi line : starting with /* and ending with */ (ala C) 
+
+**example**
+```
+genericLexer MyAwesomeLexer;
+
+# here goes the lexer specification
+
+parser MyTerrificParser;
+
+# here goes the parser specification
+```
 
 ### lexer 
 
@@ -122,24 +142,31 @@ Grammar rules follow the classic EBNF syntax:
 
 each clause is separated by spaces.
 
-clauses can be (all examples will use the simple lexer defined above)
+clauses can be (all examples will use the simple lexer defined above) :
 
- - simple terminal or non terminal references : the name of the terminal or non terminal (case sensitive) ```nonTerm : OPEN_BRACE otherNonTerm CLOSE_BRACE```
- - a group of clauses surrounded by parantheses : ```group : ( first ID third );```
- - an alternate of terminal or non terminal surounded by square brackets : ```alt : [IF|THEN|ELSE];```
+ - simple terminal or non terminal references sequence : the name of the terminal or non terminal (case sensitive) 
+    <br>```sequence : OPEN_BRACE otherNonTerm CLOSE_BRACE```
+ - a group of clauses surrounded by parantheses : 
+  <br>```group : ( first ID third );```
+ - an alternate of terminal or non terminal surounded by square brackets : 
+   <br>```alternate : [IF|THEN|ELSE];```
  - a repetition of clauses (simple, groups or alternate)
-   - one or more with '+' : ``` oneOrMore : (ID STRING)+;```
-   - zero or more with '*' : ``` zeroOrMore : ID*;```
- - a optional clause with '?' : ```option : [IF|THEN|ELSE]?``` 
- - an explicit token as a string surrounded by ' : ```comma : ',';```
+   - one or more with '+' : 
+     <br>``` oneOrMore : (ID STRING)+;```
+   - zero or more with '*' : 
+     <br>``` zeroOrMore : ID*;```
+ - a optional clause with '?' : 
+   <br>```optional : [IF|THEN|ELSE]?``` 
+ - an explicit token as a string surrounded by ' : 
+   <br>```comma : ',';```
 
 For full documentation refer to [CSLY EBNF parser](https://github.com/b3b00/csly/wiki/EBNF-parser)
 
 #### ***expression parsing***
 
-CSLY offers extension to ease the parse of expression (see [expression parsing](https://github.com/b3b00/csly/wiki/expression-parsing)).
+CSLY offers extension to ease [expression parsing](https://github.com/b3b00/csly/wiki/expression-parsing).
 
-the generated expression "sub-parser" root rule is named <PARSER_NAME>_expressions. <PARSER_NAME> is the parser name defined at the begining of the parser definitions (see https://github.com/b3b00/cslycli#grammar-main-structure)
+The generated expression root rule is named <PARSER_NAME>_expressions. <PARSER_NAME> is the parser name defined at the begining of the parser definitions (see [grammar main structure](https://github.com/b3b00/cslycli#grammar-main-structure))
 
 *** operations ***
 
@@ -156,14 +183,14 @@ where <PRECEDENCE> is the priority level of the operation and <TOKEN_NAME> is th
 [Right 100] '^';
 ```
 
-Prefix operations are defined quite the same way :
- - [Prefix <PRECEDENCE>] <TOKEN_NAME>
+Prefix nd postfix operations are defined quite the same way :
+ - [Prefix <PRECEDENCE(integer)>] <TOKEN_NAME>
 
 ```
 [Prefix 150] '-';
 ```
 
-Postfix operations are exactly the same as prefix except the use of the [Postfix] attribute : 
+  - [Postfix <PRECEDENCE(integer)>] <TOKEN_NAME> : 
 ```
 [Postfix 100] '--';
 ```
@@ -175,27 +202,46 @@ Operands are rules tagged with the special ```[Operand]``` attribute at the begi
 ```
 [Operand] intOperand : INT;
 [Operand] stringOperand : STRING;
-[Operand] groupOperand : '(' myParser_expressions ')'; # referencing root rule for expressions.
+[Operand] groupOperand : '(' MyParser_expressions ')'; # referencing root rule for expressions.
 
 ```
 
-*** simple arithmetic parser ***
+*** simple integer arithmetic parser ***
 
 ```
 genericLexer arithLexer;
 
-parser arithParser;
+-> root : arithParser_expressions; # root rule
 
+[Int int]
+
+parser arithParser; # root rule will be arithParser_expressions
+
+[Right 50] '+';
+[Left 50] '-';
+
+[Right 50] '*';
+[Left 50] '/';
+
+[Prefix 100] '-';
+[Postfix 100] '!' ; # factorial
+
+[Operand]
+operand : INT; # an integer operand
+
+[operand]
+operand : '(' arithParser ')'; # a parenthetical expression
 
 ```
 
 #### ***root rule***
 
 the root rule of the grammar is defined by '->' at the begining of the rule :
-```-> root : other clauses;```
+```
+-> root : other clauses;
+```
 
-
-### specification formal grammar using csly-cli specification file (going meta :) )
+### Specification formal grammar using csly-cli specification file (going meta 😃 )
 
 ```
 

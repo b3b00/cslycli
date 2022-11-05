@@ -21,7 +21,7 @@ dotnet too install csly-cli
 
 ## usage
 
-There is 2 usages of csly-cli :
+There are 2 usages of csly-cli :
    - 
 
 

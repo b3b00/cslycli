@@ -11,6 +11,8 @@ It describes the lexer/parser as a text file (ala yacc) with dedicated notations
 
 C# sources can also be generated to bootstrap real development using the prototyped parser. 
 
+CSLYCLI will only generate à lexerparser pair It will never be able to interpret the course code,this is entirely your responsibility.
+
 ## installation
 
 ```

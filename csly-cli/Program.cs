@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using CommandLine;
 using sly.cli.options;
+using SpecificationExtractor;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-        Parser.Default.ParseArguments<TestOptions, GenerateOptions/*, TestGenerate */>(args)
+        Parser.Default.ParseArguments<TestOptions, GenerateOptions, ExtractOptions>(args)
             .MapResult(
                 (TestOptions test) => { return Test(test); },
                 (GenerateOptions generate) => { return Generate(generate); },
-                // (TestGenerate testGen) => { return TestGen(testGen);},
+                (ExtractOptions extract) => { return Extract(extract);},
                 errors =>
                 {
                     foreach (var error in errors)
@@ -28,6 +30,29 @@ public class Program
             );
 
 
+    }
+
+    private static int Extract(ExtractOptions extract)
+    {
+        StringBuilder builder = new StringBuilder();
+        LexerSpecificationExtractor lexExtractor = new LexerSpecificationExtractor();
+        var lexerSpec = lexExtractor.ExtractFromFile(extract.LexerPath);
+        builder.AppendLine(lexerSpec);
+        builder.AppendLine();
+        
+        ParserSpecificationExtractor parsExtractor = new ParserSpecificationExtractor();
+        var parserSpec = parsExtractor.ExtractFromFile(extract.ParserPath);
+        builder.AppendLine(parserSpec);
+        builder.AppendLine();
+
+        if (File.Exists(extract.SpecificationOutputFile))
+        {
+        File.Delete(extract.SpecificationOutputFile);    
+        }
+
+        File.WriteAllText(extract.SpecificationOutputFile, builder.ToString());
+
+        return 0;
     }
 
     private static int Generate(GenerateOptions generate)

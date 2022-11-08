@@ -12,6 +12,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecificationExtractor", "SpecificationExtractor\SpecificationExtractor.csproj", "{1F5E80FE-3B71-46E3-A85F-DA8D6AFFFEB0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Decompiler", "Decompiler\Decompiler.csproj", "{E0D50EBD-D72F-4351-B8D7-8A15EF83D8DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Go", "Go\Go.csproj", "{79913D96-4604-4185-BBFD-6205CB2173BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +46,13 @@ Global
 		{1F5E80FE-3B71-46E3-A85F-DA8D6AFFFEB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F5E80FE-3B71-46E3-A85F-DA8D6AFFFEB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F5E80FE-3B71-46E3-A85F-DA8D6AFFFEB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0D50EBD-D72F-4351-B8D7-8A15EF83D8DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0D50EBD-D72F-4351-B8D7-8A15EF83D8DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0D50EBD-D72F-4351-B8D7-8A15EF83D8DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0D50EBD-D72F-4351-B8D7-8A15EF83D8DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79913D96-4604-4185-BBFD-6205CB2173BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79913D96-4604-4185-BBFD-6205CB2173BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79913D96-4604-4185-BBFD-6205CB2173BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79913D96-4604-4185-BBFD-6205CB2173BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -22,6 +22,7 @@
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
+      <ProjectReference Include="..\Decompiler\Decompiler.csproj" />
       <ProjectReference Include="..\SpecificationExtractor\SpecificationExtractor.csproj" />
     </ItemGroup>
 

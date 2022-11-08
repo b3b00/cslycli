@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using CommandLine;
+using decompiler;
 using sly.cli.options;
 using specificationExtractor;
 
@@ -13,11 +13,12 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Parser.Default.ParseArguments<TestOptions, GenerateOptions, ExtractOptions>(args)
+        Parser.Default.ParseArguments<TestOptions, GenerateOptions, ExtractOptions, DecompileOptions>(args)
             .MapResult(
                 (TestOptions test) => { return Test(test); },
                 (GenerateOptions generate) => { return Generate(generate); },
                 (ExtractOptions extract) => { return Extract(extract);},
+                (DecompileOptions decompile) => { return Decompile(decompile);},
                 errors =>
                 {
                     foreach (var error in errors)
@@ -30,6 +31,21 @@ public class Program
             );
 
 
+    }
+
+    private static int Decompile(DecompileOptions decompile)
+    {
+        Decompiler decompiler = new Decompiler();
+        var specification = decompiler.Decompile(decompile.LexerFqn, decompile.ParserFqn, decompile.AssemblyPath);
+        
+        if (File.Exists(decompile.SpecificationOutputFile))
+        {
+            File.Delete(decompile.SpecificationOutputFile);    
+        }
+
+        File.WriteAllText(decompile.SpecificationOutputFile, specification);
+
+        return 0;
     }
 
     private static int Extract(ExtractOptions extract)

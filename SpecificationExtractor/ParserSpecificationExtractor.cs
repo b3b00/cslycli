@@ -45,19 +45,16 @@ public class ParserSpecificationExtractor
         if (type == "Prefix")
         {
             return Operation("PreFix", "", args[2], args[0]);
-            return "prefix;";
         }
         // Postfix
         if (type == "Postfix")
         {
             return Operation("PostFix", "", args[2], args[0]);
-            return "postfix;";
         }
         // Infix
         if (type == "Infix")
         {
             return Operation("InFix", args[1], args[2], args[0]);
-            return "infix;";
         }
         // Operation
         if (type == "Operation")

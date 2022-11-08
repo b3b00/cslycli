@@ -33,7 +33,7 @@ public static class ExpressionExtensions
             case CastExpressionSyntax cast:
             {
                 var typeSyntax = cast.Type;
-                if (typeSyntax is PredefinedTypeSyntax predef && predef.Keyword != null) 
+                if (typeSyntax is PredefinedTypeSyntax predef && predef.Keyword.ToString() == "int") 
                 {
                     return cast.Expression.ExprToString();    
                 }

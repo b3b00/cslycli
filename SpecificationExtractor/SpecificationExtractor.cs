@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace specificationExtractor;
 
 public class SpecificationExtractor
@@ -13,6 +15,7 @@ public class SpecificationExtractor
         _parserSpecificationExtractor = new ParserSpecificationExtractor();
     }
 
+    [ExcludeFromCodeCoverage]
     public string ExtractFromFiles(string lexerFileName, string parserFileName)
     {
         var lexerSource = File.ReadAllText(lexerFileName);
@@ -24,9 +27,6 @@ public class SpecificationExtractor
     {
         
         var parserSpec = _parserSpecificationExtractor.ExtractFromSource(parserSource);
-        
-        
-        
         
         var lexerSpec = _lexerSpecificationExtractor.ExtractFromSource(lexerSource);
 

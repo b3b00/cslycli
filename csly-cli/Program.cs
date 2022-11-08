@@ -7,7 +7,7 @@ using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using CommandLine;
 using sly.cli.options;
-using SpecificationExtractor;
+using specificationExtractor;
 
 public class Program
 {
@@ -34,23 +34,18 @@ public class Program
 
     private static int Extract(ExtractOptions extract)
     {
-        StringBuilder builder = new StringBuilder();
-        LexerSpecificationExtractor lexExtractor = new LexerSpecificationExtractor();
-        var lexerSpec = lexExtractor.ExtractFromFile(extract.LexerPath);
-        builder.AppendLine(lexerSpec);
-        builder.AppendLine();
+
+        var extractor = new SpecificationExtractor();
+        var specification = extractor.ExtractFromFiles(extract.LexerPath, extract.ParserPath);
         
-        ParserSpecificationExtractor parsExtractor = new ParserSpecificationExtractor();
-        var parserSpec = parsExtractor.ExtractFromFile(extract.ParserPath);
-        builder.AppendLine(parserSpec);
-        builder.AppendLine();
+        
 
         if (File.Exists(extract.SpecificationOutputFile))
         {
         File.Delete(extract.SpecificationOutputFile);    
         }
 
-        File.WriteAllText(extract.SpecificationOutputFile, builder.ToString());
+        File.WriteAllText(extract.SpecificationOutputFile, specification);
 
         return 0;
     }

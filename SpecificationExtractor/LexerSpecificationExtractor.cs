@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using sly.lexer;
 
-namespace SpecificationExtractor;
+namespace specificationExtractor;
 
 public class LexerSpecificationExtractor
 {
@@ -154,6 +154,7 @@ public class LexerSpecificationExtractor
     }
 
 
+    
     public string ExtractFromFile(string lexerCsFileName)
     {
         var programText = File.ReadAllText(lexerCsFileName);

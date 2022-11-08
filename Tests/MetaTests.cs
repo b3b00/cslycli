@@ -1,14 +1,11 @@
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using NFluent;
 using SharpFileSystem.FileSystems;
-using SpecificationExtractor;
+using specificationExtractor;
 using Xunit;
 
 namespace Tests;
@@ -111,17 +108,13 @@ public class MetaTests
         Check.That(lexerSource).IsNotNull();
         Check.That(lexerSource).IsNotEmpty();
 
-        ParserSpecificationExtractor parserSpecificationExtractor = new ParserSpecificationExtractor();
-        var parserSpec = parserSpecificationExtractor.ExtractFromSource(parserSource);
-        Check.That(parserSpec).IsNotNull();
-        Check.That(parserSpec).IsNotEmpty();
+        var extractor = new SpecificationExtractor();
+        var specification = extractor.ExtractFromSource(lexerSource, parserSource);
         
-        LexerSpecificationExtractor lexerSpecificationExtractor = new LexerSpecificationExtractor();
-        var lexerSpec = lexerSpecificationExtractor.ExtractFromSource(lexerSource);
-        Check.That(lexerSpec).IsNotNull();
-        Check.That(lexerSpec).IsNotEmpty();
+        Check.That(specification).IsNotNull();
+        Check.That(specification).IsNotEmpty();
         
-        model = builder.CompileModel(lexerSpec+"\n"+parserSpec, "GrammarParser");
+        model = builder.CompileModel(specification, "GrammarParser");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
 
@@ -145,19 +138,35 @@ public class MetaTests
         Check.That(lexerSource).IsNotNull();
         Check.That(lexerSource).IsNotEmpty();
 
-        ParserSpecificationExtractor parserSpecificationExtractor = new ParserSpecificationExtractor();
-        var parserSpec = parserSpecificationExtractor.ExtractFromSource(parserSource);
-        Check.That(parserSpec).IsNotNull();
-        Check.That(parserSpec).IsNotEmpty();
+        var extractor = new SpecificationExtractor();
+        var specification = extractor.ExtractFromSource(lexerSource, parserSource);
         
-        LexerSpecificationExtractor lexerSpecificationExtractor = new LexerSpecificationExtractor();
-        var lexerSpec = lexerSpecificationExtractor.ExtractFromSource(lexerSource);
-        Check.That(lexerSpec).IsNotNull();
-        Check.That(lexerSpec).IsNotEmpty();
+        Check.That(specification).IsNotNull();
+        Check.That(specification).IsNotEmpty();
         
-        model = builder.CompileModel(lexerSpec+"\n"+parserSpec, "GrammarParser");
+        model = builder.CompileModel(specification, "SimpleExpressionParser");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
 
+    }
+
+    [Fact]
+    public void TestSimpleExpressionExtraction()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var lexerSource = fs.ReadAllText("/data/simpleexpr/simpleexpressiontoken.csharp");
+        var parserSource = fs.ReadAllText("/data/simpleexpr/simpleexpressionparser.csharp");
+
+
+        var extractor = new SpecificationExtractor();
+        var specification = extractor.ExtractFromSource(lexerSource, parserSource);
+        
+        Check.That(specification).IsNotNull();
+        Check.That(specification).IsNotEmpty();
+        
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(specification, "SimpleExpressionParser");
+        Check.That(model.IsError).IsFalse();
+        Check.That(model.Value).IsNotNull();
     }
 }

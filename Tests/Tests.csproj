@@ -46,6 +46,10 @@
       <EmbeddedResource Include="data\minimalJSON.json" />
       <None Remove="data\simpleExpression.txt" />
       <EmbeddedResource Include="data\simpleExpression.txt" />
+      <None Remove="data\simpleexpr\simpleexpressionparser.csharp" />
+      <EmbeddedResource Include="data\simpleexpr\simpleexpressionparser.csharp" />
+      <None Remove="data\simpleexpr\simpleexpressiontoken.csharp" />
+      <EmbeddedResource Include="data\simpleexpr\simpleexpressiontoken.csharp" />
     </ItemGroup>
 
 </Project>

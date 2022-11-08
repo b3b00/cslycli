@@ -10,7 +10,7 @@ genericLexer SimpleExpressionToken;
 [Sugar] DIVIDE : '/';
 [Sugar] LPAREN : '(';
 [Sugar] RPAREN : ')';
-
+[AlphaNumId] ID;
 
 parser SimpleExpressionParser;
 
@@ -23,6 +23,7 @@ parser SimpleExpressionParser;
 [Operand] operand : primary_value;
 primary_value : DOUBLE;
 primary_value : INT;
+primary_value : ID;
 primary_value : LPAREN SimpleExpressionParser_expressions RPAREN;
 
 

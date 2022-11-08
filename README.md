@@ -16,7 +16,13 @@ CSLYCLI will only generate à lexerparser pair It will never be able to interpre
 ## installation
 
 ```
-dotnet too install csly-cli
+dotnet tool install csly-cli
+```
+
+update :
+
+```
+dotnet tool update csly-cli
 ```
 
 ## usage

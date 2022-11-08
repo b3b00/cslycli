@@ -28,6 +28,18 @@ public class LexerGenerator
         {
             switch (token.Type)
             {
+                case GenericToken.Comment:
+                {
+                    if (token.Args.Length == 1)
+                    {
+                        builder.AppendLine($@"      [SingleLineComment(""{token.Args[0]}"")]");
+                    }
+                    else if (token.Args.Length == 2)
+                    {
+                        builder.AppendLine($@"      [MultiLineComment(""{token.Args[0]}"",""{token.Args[1]}"")]");
+                    }
+                    break;
+                }
                 case GenericToken.Int:
                 {
                     builder.AppendLine("\t\t[Int]");
@@ -40,15 +52,15 @@ public class LexerGenerator
                 } 
                 case GenericToken.String:
                 {
-                    //string args = token.Args.Any()? string.Join(", ",token.Args.Select(x => $@"""{x}""")) : "";
-                    // if (string.IsNullOrEmpty(args))
-                    // {
+                    string args = token.Args.Any()? string.Join(", ",token.Args.Select(x => $@"""{x}""")) : "";
+                     if (string.IsNullOrEmpty(args))
+                     {
                         builder.AppendLine("\t\t[String]");
-                    // }
-                    // else
-                    // {
-                    //     builder.AppendLine($"\t\t[String({args})]");
-                    // }
+                    }
+                    else
+                    {
+                        builder.AppendLine($"\t\t[String({args})]");
+                    }
                     break;
                 }
                 case GenericToken.KeyWord:

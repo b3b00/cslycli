@@ -126,4 +126,38 @@ public class MetaTests
         Check.That(model.Value).IsNotNull();
 
     }
+    
+    [Fact]
+    public void GenerateThenExtractSimpleExpressionTest()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/simpleExpression.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "SimpleExpressionParser");
+        Check.That(model.IsError).IsFalse();
+        Check.That(model.Value).IsNotNull();
+        var parserGenerator = new ParserGenerator();
+        var parserSource = parserGenerator.GenerateParser(model.Value, "expression","int");
+        Check.That(parserSource).IsNotNull();
+        Check.That(parserSource).IsNotEmpty();
+        var lexerGenerator = new LexerGenerator();
+        var lexerSource = lexerGenerator.GenerateLexer(model.Value.LexerModel, "expression");
+        Check.That(lexerSource).IsNotNull();
+        Check.That(lexerSource).IsNotEmpty();
+
+        ParserSpecificationExtractor parserSpecificationExtractor = new ParserSpecificationExtractor();
+        var parserSpec = parserSpecificationExtractor.ExtractFromSource(parserSource);
+        Check.That(parserSpec).IsNotNull();
+        Check.That(parserSpec).IsNotEmpty();
+        
+        LexerSpecificationExtractor lexerSpecificationExtractor = new LexerSpecificationExtractor();
+        var lexerSpec = lexerSpecificationExtractor.ExtractFromSource(lexerSource);
+        Check.That(lexerSpec).IsNotNull();
+        Check.That(lexerSpec).IsNotEmpty();
+        
+        model = builder.CompileModel(lexerSpec+"\n"+parserSpec, "GrammarParser");
+        Check.That(model.IsError).IsFalse();
+        Check.That(model.Value).IsNotNull();
+
+    }
 }

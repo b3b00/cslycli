@@ -1,0 +1,28 @@
+genericLexer SimpleExpressionToken;
+
+[Double] DOUBLE;
+[Int] INT;
+
+[Sugar] PLUS : '+';
+[Sugar] INCREMENT : '++';
+[Sugar] MINUS : '-';
+[Sugar] TIMES : '*';
+[Sugar] DIVIDE : '/';
+[Sugar] LPAREN : '(';
+[Sugar] RPAREN : ')';
+
+
+parser SimpleExpressionParser;
+
+[Right 10] PLUS;
+[Left 10] MINUS;
+[Right 50] TIMES;
+[Left 50] DIVIDE;
+[Prefix 100] MINUS;
+[Postfix 100] FACTORIAL;
+[Operand] operand : primary_value;
+primary_value : DOUBLE;
+primary_value : INT;
+primary_value : LPAREN SimpleExpressionParser_expressions RPAREN;
+
+

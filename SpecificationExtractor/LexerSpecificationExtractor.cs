@@ -14,19 +14,15 @@ public class LexerSpecificationExtractor
     {
         switch (type)
         {
-            case GenericToken.Char:
-            {
-                break;
-            }
             case GenericToken.Comment:
             {
                 if (args.Length == 1)
                 {
-                    return $"[SingleLineComment] {name} : '{args[0]}';";
+                    return $"[SingleLineComment] {name} : '{args[0].Replace("'","''")}';";
                 }
                 else if (args.Length == 2)
                 {
-                    return $"[MultiLineComment] {name} : '{args[0]}' '{args[1]}';";
+                    return $"[MultiLineComment] {name} : '{args[0].Replace("'","''")}' '{args[1].Replace("'","''")}';";
                 }
 
                 break;
@@ -77,7 +73,7 @@ public class LexerSpecificationExtractor
                 b.Append("[String] ").Append(name);
                 if (args.Length == 2)
                 {
-                    b.Append($" : '{args[0]}' '{args[1]}'");
+                    b.Append($" : '{args[0].Replace("'","''")}' '{args[1].Replace("'","''")}'");
                 }
 
                 b.Append(";");
@@ -85,11 +81,11 @@ public class LexerSpecificationExtractor
             }
             case GenericToken.KeyWord:
             {
-                return $"[KeyWord] {name} : '{args[0]}';";
+                return $"[KeyWord] {name} : '{args[0].Replace("'","''")}';";
             }
             case GenericToken.SugarToken:
             {
-                return $"[Sugar] {name} : '{args[0]}';";
+                return $"[Sugar] {name} : '{args[0].Replace("'","''")}';";
             }
             default:
             {

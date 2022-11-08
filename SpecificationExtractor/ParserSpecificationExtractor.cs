@@ -115,7 +115,7 @@ public class ParserSpecificationExtractor
 
                         if (operand != null)
                         {
-                            builder.Append("[operand] ");
+                            builder.Append("[Operand] ");
                         }
 
                         builder.AppendLine(Rule(attr.Name.ToString(), pstrings));

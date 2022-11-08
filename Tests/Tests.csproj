@@ -44,6 +44,8 @@
       <EmbeddedResource Include="data\grammar1.txt" />
       <None Remove="data\minimalJSON.json" />
       <EmbeddedResource Include="data\minimalJSON.json" />
+      <None Remove="data\simpleExpression.txt" />
+      <EmbeddedResource Include="data\simpleExpression.txt" />
     </ItemGroup>
 
 </Project>

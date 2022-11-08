@@ -74,6 +74,10 @@ the test command tries to parse a source file according to a grammar specificati
 This command will output 2 .cs files :
   - a lexer enum file named after the generic Lexer name given in the grammar specification file see (seed [grammar main structure](https://github.com/b3b00/cslycli#grammar-main-structur 
 
+```
+csly-cli generate -g /path/to/grammar.txt -n my.name.space -o object
+```
+
 
   ### extracting the specification from existing lexer/parser C# files.
   Given a lexer parser CSLY C# files pair, csly-cli can extract a specification file.
@@ -84,7 +88,7 @@ This command will output 2 .cs files :
   - -o -output : path and filename of the generated specification file
 
 ```
-csly-cli generate -l /path/to/lexer.cs -p /path/to/parser.cs -o /path/to/grammar.txt
+csly-cli extract -l /path/to/lexer.cs -p /path/to/parser.cs -o /path/to/grammar.txt
 ```
 
 ## parser specification file format

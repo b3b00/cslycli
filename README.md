@@ -16,13 +16,13 @@ CSLYCLI will only generate à lexerparser pair It will never be able to interpre
 ## installation
 
 ```
-dotnet tool install csly-cli
+dotnet tool install -g csly-cli
 ```
 
 update :
 
 ```
-dotnet tool update csly-cli
+dotnet tool update -g csly-cli
 ```
 
 ## usage
@@ -84,7 +84,7 @@ This command will output 2 .cs files :
   - -o -output : path and filename of the generated specification file
 
 ```
-csly-cli -l /path/to/lexer.cs -p /path/to/parser.cs -o /path/to/grammar.txt
+csly-cli generate -l /path/to/lexer.cs -p /path/to/parser.cs -o /path/to/grammar.txt
 ```
 
 ## parser specification file format

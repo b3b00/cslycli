@@ -9,20 +9,21 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>csly-cli</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-        <version>1.5.0</version>
-        <PackageVersion>1.5.0</PackageVersion>
+        <version>1.6.0</version>
+        <PackageVersion>1.6.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="CommandLineParser" Version="2.9.1" />
-        <PackageReference Include="sly" Version="2.9.2" />
+        <PackageReference Include="sly" Version="2.9.2.1" />
     </ItemGroup>
 
     <ItemGroup>      
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
-      <ProjectReference Include="..\SpecificationExtractor\SpecificationExtractor.csproj" />
+      <ProjectReference Include="..\csly-cli-decompiler\csly-cli-decompiler.csproj" />
+      <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj" />
     </ItemGroup>
 
 </Project>

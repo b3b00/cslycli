@@ -24,84 +24,93 @@ public class LexerGenerator
     {
         StringBuilder builder = new StringBuilder();
         builder.AppendLine();
-        foreach (var token in model.Tokens)
+        foreach (var tokens in model.TokensByName)
         {
-            switch (token.Type)
+            foreach (var token in tokens.Value)
             {
-                case GenericToken.Comment:
+
+
+
+                switch (token.Type)
                 {
-                    if (token.Args.Length == 1)
+                    case GenericToken.Comment:
                     {
-                        builder.AppendLine($@"      [SingleLineComment(""{token.Args[0]}"")]");
+                        if (token.Args.Length == 1)
+                        {
+                            builder.AppendLine($@"      [SingleLineComment(""{token.Args[0]}"")]");
+                        }
+                        else if (token.Args.Length == 2)
+                        {
+                            builder.AppendLine($@"      [MultiLineComment(""{token.Args[0]}"",""{token.Args[1]}"")]");
+                        }
+
+                        break;
                     }
-                    else if (token.Args.Length == 2)
+                    case GenericToken.Int:
                     {
-                        builder.AppendLine($@"      [MultiLineComment(""{token.Args[0]}"",""{token.Args[1]}"")]");
+                        builder.AppendLine("\t\t[Int]");
+                        break;
                     }
-                    break;
-                }
-                case GenericToken.Int:
-                {
-                    builder.AppendLine("\t\t[Int]");
-                    break;
-                } 
-                case GenericToken.Double:
-                {
-                    builder.AppendLine("\t\t[Double]");
-                    break;
-                } 
-                case GenericToken.String:
-                {
-                    string args = token.Args.Any()? string.Join(", ",token.Args.Select(x => $@"""{x}""")) : "";
-                     if (string.IsNullOrEmpty(args))
-                     {
-                        builder.AppendLine("\t\t[String]");
-                    }
-                    else
+                    case GenericToken.Double:
                     {
-                        builder.AppendLine($"\t\t[String({args})]");
+                        builder.AppendLine("\t\t[Double]");
+                        break;
                     }
-                    break;
-                }
-                case GenericToken.KeyWord:
-                {
-                    builder.AppendLine($"\t\t[Keyword(\"{token.Args[0]}\")]");
-                    break;
-                }
-                case GenericToken.SugarToken:
-                {
-                    builder.AppendLine($"\t\t[Sugar(\"{token.Args[0]}\")]");
-                    break;
-                }
-                case GenericToken.Identifier:
-                {
-                    switch (token.IdentifierType)
+                    case GenericToken.String:
                     {
-                        case IdentifierType.Alpha:
+                        string args = token.Args.Any() ? string.Join(", ", token.Args.Select(x => $@"""{x}""")) : "";
+                        if (string.IsNullOrEmpty(args))
                         {
-                            builder.AppendLine($"\t\t[AlphaId]");
-                            break;
+                            builder.AppendLine("\t\t[String]");
                         }
-                        case IdentifierType.AlphaNumeric:
+                        else
                         {
-                            builder.AppendLine($"\t\t[AlphaNumId]");
-                            break;
+                            builder.AppendLine($"\t\t[String({args})]");
                         }
-                        case IdentifierType.AlphaNumericDash:
-                        {
-                            builder.AppendLine($"\t\t[AlphaNumDashId]");
-                            break;
-                        }
-                        default:
-                        {
-                            break;
-                        }
+
+                        break;
                     }
-                    
-                    break;
+                    case GenericToken.KeyWord:
+                    {
+                        builder.AppendLine($"\t\t[Keyword(\"{token.Args[0]}\")]");
+                        break;
+                    }
+                    case GenericToken.SugarToken:
+                    {
+                        builder.AppendLine($"\t\t[Sugar(\"{token.Args[0]}\")]");
+                        break;
+                    }
+                    case GenericToken.Identifier:
+                    {
+                        switch (token.IdentifierType)
+                        {
+                            case IdentifierType.Alpha:
+                            {
+                                builder.AppendLine($"\t\t[AlphaId]");
+                                break;
+                            }
+                            case IdentifierType.AlphaNumeric:
+                            {
+                                builder.AppendLine($"\t\t[AlphaNumId]");
+                                break;
+                            }
+                            case IdentifierType.AlphaNumericDash:
+                            {
+                                builder.AppendLine($"\t\t[AlphaNumDashId]");
+                                break;
+                            }
+                            default:
+                            {
+                                break;
+                            }
+                        }
+
+                        break;
+                    }
                 }
             }
-            builder.AppendLine($"\t\t{token.Name},");
+
+            builder.AppendLine($"\t\t{tokens.Key},");
             builder.AppendLine();
         }
 

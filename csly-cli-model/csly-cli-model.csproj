@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="sly" Version="2.9.2" />
+        <PackageReference Include="sly" Version="2.9.2.1" />
     </ItemGroup>
 
 </Project>

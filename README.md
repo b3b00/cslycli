@@ -27,7 +27,11 @@ dotnet tool update -g csly-cli
 
 ## usage
 
-There are 2 usages of csly-cli :
+There are 4 usages of csly-cli :
+  - test a parser specification against a source code.
+  - generate C# source files for CSLY.
+  - extract parser specification file from an existing lexer/parser pair C# source file.
+  - extract parser specification file from an existing .Net assembly containing a lexer/parser pair.
     
 
 
@@ -89,6 +93,19 @@ csly-cli generate -g /path/to/grammar.txt -n my.name.space -o object
 
 ```
 csly-cli extract -l /path/to/lexer.cs -p /path/to/parser.cs -o /path/to/grammar.txt
+```
+
+### extracting the specification from an existing .net assembly containing lexer/parser C# files.
+  Given an .Net assembly (.dll) containing a CSLY lexer/parser  pair, csly-cli can extract a specification file.
+
+  ```csly-cli decompile``` : 
+  - -l --lexer : fully qualified name of the lexer enum.
+  - -p --parser : fully qualified name of the parser class.
+  - -a --assembly : path to the assembly
+  - -o -output : path and filename of the generated specification file
+
+```
+csly-cli decompile -l my.asembly.lexer -p my.assembly.Parser --assembly /path/to/assembly.dll -o /path/to/grammar.txt
 ```
 
 ## parser specification file format

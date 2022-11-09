@@ -182,38 +182,6 @@ public class Program
     }
     
     
-    // private static int TestGen(TestGenerate testGen)
-    // {
-    //     my.MyParser instance = new my.MyParser();
-    //     var builder = new ParserBuilder<my.MyLexer, object>();
-    //     var Parser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, "statement");
-    //     
-    //     if (Parser.IsOk)
-    //     {
-    //         var source = File.ReadAllText(testGen.Source);
-    //         var r =Parser.Result.Parse(source);
-    //         if (r.IsError)
-    //         {
-    //             foreach (var error in r.Errors)
-    //             {
-    //                 Console.WriteLine(error.ErrorMessage);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             Console.WriteLine("parse OK !");
-    //             Console.WriteLine("result :: "+r.Result);
-    //         }
-    //     }
-    //     else
-    //     {
-    //         foreach (var error in Parser.Errors)
-    //         {
-    //             Console.WriteLine(error.Message);
-    //         }
-    //     }
-    //     return 0;
-    // }
 }
 
 

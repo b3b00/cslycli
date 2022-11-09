@@ -18,13 +18,6 @@ public class LexerDecompiler
         return lex;
     }
 
-    public string DecompileLexer(string assemblyFileName, string lexerFqn)
-    {
-        var assembly = Assembly.LoadFrom(assemblyFileName);
-        var l = assembly.GetType(lexerFqn);
-        var lex = GetLexer(l);
-        return lex;
-    }
       private  string GetToken(string name, LexemeAttribute lexem)
         {
             

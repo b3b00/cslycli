@@ -40,17 +40,29 @@ public class ParserDecompiler
         
     }
 
+    public string DecompileParser(Type lexerType, Type parserType)
+    {
+        var parser = GetParser(parserType,lexerType);
+        return parser;
+    }
+    
     public string DecompileParser(string assemblyFileName, string parserFqn, string lexerFqn)
     {
         var assembly = Assembly.LoadFrom(assemblyFileName);
         var p = assembly.GetType(parserFqn);
         var lexerType = assembly.GetType(lexerFqn);
-        var parser = GetParser(p,lexerType);
+        var parser = DecompileParser(lexerType, p);
         return parser;
     }
 
     private string GetParser(Type type, Type lexerType)
     {
+        string root = null;
+        var parserRootAttribute = type.GetCustomAttribute<ParserRootAttribute>();
+        if (parserRootAttribute != null)
+        {
+            root = parserRootAttribute.RootRule;
+        }
         StringBuilder builder = new StringBuilder();
         builder.AppendLine($"parser {type.Name};").AppendLine();
         var methods = type.GetMethods().ToList();
@@ -68,16 +80,19 @@ public class ParserDecompiler
             bool isOperand = operands.Any();
             foreach (var production in productions)
             {
-                builder.AppendLine(GetProduction(production, isOperand));
+                builder.AppendLine(GetProduction(production, isOperand, root));
             }
         }
 
         return builder.ToString();
     }
 
-    private string GetProduction(ProductionAttribute production, bool isOperand)
+    private string GetProduction(ProductionAttribute production, bool isOperand, string? rootRule)
     {
-        return $"{(isOperand ? "[Operand]":"")} {production.RuleString};";
+        var split =  production.RuleString.Split(new[] { ':' });
+        var nonTerminal = split[0].Trim();
+        bool isRoot = nonTerminal == rootRule;   
+        return $"{(isRoot ? "-> ":"")}{(isOperand ? "[Operand] ":"")}{production.RuleString};";
     }
 
     private string GetOperation(OperationAttribute operation, Type lexerType)

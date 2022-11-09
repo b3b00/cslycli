@@ -10,9 +10,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-builder", "csly-cl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{4C2CB9C5-48E8-4B4A-82F5-5366D959F694}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecificationExtractor", "SpecificationExtractor\SpecificationExtractor.csproj", "{1F5E80FE-3B71-46E3-A85F-DA8D6AFFFEB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-extractor", "csly-cli-extractor\csly-cli-extractor.csproj", "{1F5E80FE-3B71-46E3-A85F-DA8D6AFFFEB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Decompiler", "Decompiler\Decompiler.csproj", "{E0D50EBD-D72F-4351-B8D7-8A15EF83D8DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-decompiler", "csly-cli-decompiler\csly-cli-decompiler.csproj", "{E0D50EBD-D72F-4351-B8D7-8A15EF83D8DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Go", "Go\Go.csproj", "{79913D96-4604-4185-BBFD-6205CB2173BC}"
 EndProject

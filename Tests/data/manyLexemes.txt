@@ -1,0 +1,8 @@
+genericLexer ManyLex;
+
+[KeyWord] IF : 'if';
+[KeyWord] IF : 'IF';
+
+parser ManyParse;
+
+-> root : IF*;

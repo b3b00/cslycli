@@ -12,6 +12,12 @@ public class LexerDecompiler
         
     }
 
+    public string DecompileLexer(Type lexerType)
+    {
+        var lex = GetLexer(lexerType);
+        return lex;
+    }
+
     public string DecompileLexer(string assemblyFileName, string lexerFqn)
     {
         var assembly = Assembly.LoadFrom(assemblyFileName);
@@ -73,8 +79,13 @@ public class LexerDecompiler
                 }
                 case GenericToken.String:
                 {
-                    var args =lexem.GenericTokenParameters.Select(x => $"'{x.Replace("'", "''")}'").ToList();
-                    return $"[String] {name} : {string.Join(" ", args)};";
+                    
+                    if (lexem.GenericTokenParameters.Any())
+                    {
+                        var args =lexem.GenericTokenParameters.Select(x => $"'{x.Replace("'", "''")}'").ToList();
+                        return $"[String] {name} : {string.Join(" ", args)};";
+                    }
+                    return $"[String] {name};";
                 }
             }
             return $"[] {name}";
@@ -95,8 +106,12 @@ public class LexerDecompiler
                     var attributes = value.GetAttributesOfType<LexemeAttribute>();
                     if (attributes.Any())
                     {
-                        var lexem = (attributes[0] as LexemeAttribute);
-                        builder.AppendLine(GetToken(value.ToString(), lexem));
+                        foreach (var attribute in attributes)
+                        {
+                            var lexem = (attribute as LexemeAttribute);
+                            builder.AppendLine(GetToken(value.ToString(), lexem));    
+                        }
+                        
                     }
                 }
 

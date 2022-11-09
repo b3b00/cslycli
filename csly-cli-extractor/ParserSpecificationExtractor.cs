@@ -34,12 +34,16 @@ public class ParserSpecificationExtractor
     }
     
     
-    private string Rule(string type, params string[] args)
+    private string Rule(string type, string rootRule, params string[] args)
     {
         // Production
         if (type == "Production")
         {
-            return $"{args[0]};";
+            var rule = args[0];
+            var split =  rule.Split(new[] { ':' });
+            var nonTerminal = split[0].Trim();
+            bool isRoot = nonTerminal == rootRule;
+            return $"{(isRoot? "-> ":"")}{args[0]};";
         }
         // Prefix
         if (type == "Prefix")
@@ -85,6 +89,14 @@ public class ParserSpecificationExtractor
 
         if (root.DescendantNodes().FirstOrDefault(x => x.IsKind(SyntaxKind.ClassDeclaration)) is ClassDeclarationSyntax parserDecl)
         {
+            string rootRule = null;
+            var parserAttributes = parserDecl.AttributeLists.SelectMany(x => x.Attributes).ToList();
+            var parserRootAttribute = parserAttributes.FirstOrDefault(x => x.Name.ToString() == "ParserRoot");
+            if (parserRootAttribute != null)
+            {
+                rootRule = parserRootAttribute.ArgumentList.Arguments[0].ToString().Replace("\"","");
+            }
+            
             builder.AppendLine($"parser {parserDecl.Identifier.Text};").AppendLine();
             var methods= parserDecl.Members.Where(x => x is MethodDeclarationSyntax).Cast<MethodDeclarationSyntax>().ToList();
             foreach (var method in methods)
@@ -115,7 +127,7 @@ public class ParserSpecificationExtractor
                             builder.Append("[Operand] ");
                         }
 
-                        builder.AppendLine(Rule(attr.Name.ToString(), pstrings));
+                        builder.AppendLine(Rule(attr.Name.ToString(),rootRule, pstrings));
                     }
                 }
             }

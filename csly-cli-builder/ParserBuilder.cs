@@ -56,7 +56,7 @@ public class ParserBuilder
     /// </summary>
     /// <param name="model">the parser model built from parser description file</param>
     /// <returns>a Parser</returns>
-    private (object parserBuildResult, Type parserType, Type lexerType) BuildParser(Model model)
+    public (object parserBuildResult, Type parserType, Type lexerType) BuildParser(Model model)
     {
         DynamicParserName = model.ParserModel.Name;
         var lexerBuilder = new LexerBuilder(model.LexerModel.Name);
@@ -75,7 +75,7 @@ public class ParserBuilder
         LexerPostProcessType = typeof(LexerPostProcess<>).MakeGenericType(EnumType);
 
         TypeBuilder typeBuilder = moduleBuilder.DefineType(DynamicParserName, TypeAttributes.Public, typeof(object));
-
+        AddParserRoot(typeBuilder,model.ParserModel.Root);
         foreach (var rule in model.ParserModel.Rules)
         {
             BuildVisitor(typeBuilder,rule);
@@ -88,9 +88,22 @@ public class ParserBuilder
         
         
         Type compiledType = typeBuilder.CreateType();
-        return (BuildIt(compiledType, model.ParserModel.Root), compiledType, EnumType);
+        return (BuildIt(compiledType, model?.ParserModel?.Root), compiledType, EnumType);
     }
 
+    public void AddParserRoot(TypeBuilder builder, string root)
+    {
+        Type attributeType = typeof(ParserRootAttribute);
+        
+        ConstructorInfo constructorInfo = attributeType.GetConstructor(
+            new Type[1] { typeof(string) });
+            
+        CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+            constructorInfo, new object[] { root });
+
+        builder.SetCustomAttribute(customAttributeBuilder);
+    }
+    
     public Result<Model,List<string>> CompileModel(string modelSource, string parserName = "dynamicParser")
     {
         ParserBuilder<CLIToken, ICLIModel> builder = new ParserBuilder<CLIToken, ICLIModel>();
@@ -119,7 +132,7 @@ public class ParserBuilder
     
    
     
-      public Result<List<(string format,string content)>,List<string>> Getz(string modelSource, string source, string parserName, List<(string format,SyntaxTreeProcessor processor)> processors)
+      public Result<List<(string format,string content)>,List<string>> Getz(string modelSource, string source, string parserName, List<(string format,SyntaxTreeProcessor processor)> processors, string rootRule = null)
     {
         var model = CompileModel(modelSource, parserName);
         

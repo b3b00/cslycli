@@ -45,16 +45,7 @@ public class ParserDecompiler
         var parser = GetParser(parserType,lexerType);
         return parser;
     }
-    
-    public string DecompileParser(string assemblyFileName, string parserFqn, string lexerFqn)
-    {
-        var assembly = Assembly.LoadFrom(assemblyFileName);
-        var p = assembly.GetType(parserFqn);
-        var lexerType = assembly.GetType(lexerFqn);
-        var parser = DecompileParser(lexerType, p);
-        return parser;
-    }
-
+  
     private string GetParser(Type type, Type lexerType)
     {
         string root = null;

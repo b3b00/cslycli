@@ -8,9 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Reference Include="sly">
-        <HintPath>..\..\csly\samples\SimpleExpressionParser\bin\Debug\net6.0\sly.dll</HintPath>
-      </Reference>
+      <PackageReference Include="sly" Version="2.9.2.1" />
     </ItemGroup>
 
 </Project>

@@ -35,11 +35,11 @@ public class LexerBuilder
 
             int i = 0;
 
-            foreach (var tokenModel in model.Tokens )
+            foreach (var tokenModel in model.TokensByName )
             {
-                var enumValueBuilder = enumBuilder.DefineLiteral(tokenModel.Name, i);
+                var enumValueBuilder = enumBuilder.DefineLiteral(tokenModel.Key, i);
 
-                AddAttribute(tokenModel, enumValueBuilder);
+                AddAttributes(tokenModel.Value, enumValueBuilder);
     
                 
                 i++;
@@ -50,9 +50,12 @@ public class LexerBuilder
             return (finished,dynamicAssembly,moduleBuilder);
         }
 
-        private void AddAttribute(TokenModel model, FieldBuilder builder)
+        private void AddAttributes(List<TokenModel> models, FieldBuilder builder)
         {
-            Add(model.Type, model.IdentifierType,builder, model.Args);
+            foreach (var model in models)
+            {
+                Add(model.Type, model.IdentifierType,builder, model.Args);    
+            }
         }
 
         private void Add(GenericToken genericToken, IdentifierType identifierType, FieldBuilder builder,

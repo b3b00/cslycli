@@ -58,10 +58,9 @@ public class LexerSpecificationExtractor
                         }
                     }
 
-                    return $"[{attr}] {name};";
+                    
                 }
-
-                break;
+                return $"[{attr}] {name};";
             }
             case GenericToken.Int:
             {

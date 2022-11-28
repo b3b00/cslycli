@@ -31,7 +31,7 @@ public class CLIParser
   
     
     [Production("genericRoot : GENERICLEXER[d] ID SEMICOLON[d]  token*")]
-    public ICLIModel lexer(Token<CLIToken> name, List<ICLIModel> tokens, ParserContext context)
+    public ICLIModel Lexer(Token<CLIToken> name, List<ICLIModel> tokens, ParserContext context)
     {
         return new LexerModel(tokens.Cast<TokenModel>().ToList(), name.Value);
     }
@@ -172,7 +172,7 @@ public class CLIParser
         [Production("clause : item ")]
         public IClause SimpleClause(IClause item, ParserContext context)
         {
-            return item as IClause;
+            return item;
         }
         
         #endregion

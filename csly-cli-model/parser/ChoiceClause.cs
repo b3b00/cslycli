@@ -8,9 +8,12 @@ namespace csly.cli.model.parser
     public class ChoiceClause : IClause
     {
         public  List<IClause> Choices { get; set; }
-        public ChoiceClause(IClause clause)
+        public ChoiceClause(IClause? clause)
         {
-            Choices = new List<IClause> {clause};
+            Choices = new List<IClause>();
+            if (clause != null) {
+                 Choices.Add(clause);
+            }
         }
         
         public ChoiceClause(List<IClause> choices)

@@ -8,6 +8,8 @@ using sly.parser.parser;
 
 namespace csly.cli.parser;
 
+
+
 public class CLIParser
 {
     [Production("root: genericRoot parserRoot ")] 
@@ -92,7 +94,67 @@ public class CLIParser
         }
         
         return new TokenModel(tokenType, id.Value, idType);
-    } 
+    }
+
+    [Production("token : LEFTBRACKET[d] EXTENSIONTOKEN[d] RIGHTBRACKET[d] ID extension ")]
+    public ICLIModel ExtensionToken(Token<CLIToken> id, ICLIModel extension, ParserContext context)
+    {
+        return null;
+    }
+
+
+    [Production("extension : OPEN_EXT[d] transition* CLOSE_EXT[d]")]
+    public ICLIModel Extension(List<ICLIModel> transitions, ParserContext context)
+    {
+        return null;
+    }
+    
+    [Production("transition : ARROW[d] pattern repeater? (AT[d] ID)?")]
+    public ICLIModel Transition(ICLIModel pattern, ValueOption<ICLIModel> repeater, ValueOption<Group<CLIToken, ICLIModel>> id, ParserContext context)
+    {
+        return null;
+    }
+    
+    
+
+    [Production("repeater : ZEROORMORE[d]")]
+    public ICLIModel RepeatZeroOrMore(ParserContext context)
+    {
+        return null;
+    }
+    
+    [Production("repeater : ZEROORMORE[d]")]
+    public ICLIModel RepeatOneOrMore(ParserContext context)
+    {
+        return null;
+    }
+    
+    [Production("repeater : LEFTCURL[d] INT RIGHTCURL[d]")]
+    public ICLIModel RepeatMany(Token<CLIToken> many, ParserContext context)
+    {
+        return null;
+    }
+    
+
+    [Production("pattern : CHAR")]
+    public ICLIModel SinglePattern(Token<CLIToken> single, ParserContext context)
+    {
+        return null;
+    }
+    
+    
+    [Production("pattern : LEFTBRACKET[d] range (COMMA[d] range)* RIGHTBRACKET[d]")]
+    public ICLIModel RangePattern(ICLIModel headRange, List<Group<CLIToken, ICLIModel>> tailsRanges, ParserContext context)
+    {
+        return null;
+    }
+    
+    [Production("range : CHAR DASH[d] CHAR")]
+    public ICLIModel Range(Token<CLIToken> start, Token<CLIToken> end, ParserContext context)
+    {
+        return null;
+    }
+    
     
   #endregion
 

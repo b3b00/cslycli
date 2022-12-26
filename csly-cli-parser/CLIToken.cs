@@ -15,17 +15,23 @@ public enum CLIToken
     
     [String("'","'")] STRING,
 
-    [SingleLineComment("#")]
-    
-    [MultiLineComment("/*","*/")]
-    COMMENT,
+    // [Mode]
+    // [SingleLineComment("#")]
+    //
+    // [Mode]
+    // [MultiLineComment("/*","*/")]
+    // COMMENT,
 
+    [Mode("default","EXT")]
     [Sugar("[")] LEFTBRACKET,
+    [Mode("default","EXT")]
     [Sugar("]")] RIGHTBRACKET,
     [Sugar("(")] LEFTPAREN,
     [Sugar(")")] RIGHTPAREN,
+    [Mode("default","EXT")]
     [Sugar(":")] COLON,
     [Sugar("->")] ROOT,
+    [Sugar("^")] NOT,
     
     [Keyword("genericLexer")]
     GENERICLEXER,
@@ -43,19 +49,23 @@ public enum CLIToken
     [Keyword("Sugar")] SUGARTOKEN,
     [Keyword("SingleLineComment")] SINGLELINECOMMENT,
     [Keyword("MultiLineComment")] MULTILINECOMMENT,
+    [Keyword("Extension")] EXTENSIONTOKEN,
     
     
     
     
     [AlphaNumDashId] 
+    [Mode("default")]
     ID,
         
     
         
     [Sugar("*")]
+    [Mode("default","EXT")]
     ZEROORMORE,
         
     [Sugar("+")]
+    [Mode("default","EXT")]
     ONEORMORE,
         
     [Sugar("?")]
@@ -75,5 +85,47 @@ public enum CLIToken
     [Keyword("Prefix")] PREFIX,
     [Keyword("Postfix")] POSTFIX,
     
+    [Push("EXT")]
+    [Mode]
+    [Sugar(">>>")]
+    OPEN_EXT,
     
+    [Mode("EXT")]
+    [Sugar("->")]
+    ARROW,
+    
+    [Mode("EXT")]
+    [Sugar("@")]
+    AT,
+    
+    [Mode("EXT")]
+    [Sugar("-")]
+    DASH,
+    
+    
+    [Mode("EXT")]
+    [Sugar("{")]
+    LEFTCURL,
+    
+    [Mode("EXT")]
+    [Sugar("}")]
+    RIGHTCURL,
+    
+    [Mode("EXT")]
+    [Sugar(",")]
+    COMMA,
+    
+    [Mode("EXT")]
+    [Keyword("END")]
+    END,
+    
+    
+    [Pop]
+    [Mode("EXT")]
+    [Sugar("<<<")]
+    CLOSE_EXT,
+    
+    [Extension]
+    [Mode("EXT")]
+    CHAR
 }

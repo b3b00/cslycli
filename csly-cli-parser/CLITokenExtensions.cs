@@ -93,6 +93,29 @@ public static class CLITokenExtensions
     
     public static void AddExtension(CLIToken token, LexemeAttribute lexem, GenericLexer<CLIToken> lexer)
     {
+        if (token == CLIToken.RANGE)
+        {
+            NodeCallback<GenericToken> call = match =>
+            {
+                match.Properties[GenericLexer<CLIToken>.DerivedToken] = CLIToken.RANGE;
+                match.Result.Channel = Channels.Main;
+                return match;
+            };
+            
+            var fsmBuilder = lexer.FSMBuilder;
+            fsmBuilder.GoTo(GenericLexer<CLIToken>.start)
+                .ExceptTransition(new[] {' ','\t'})
+                .Transition(new []{' ','\t'})
+                .Mark("white")
+                .TransitionTo(new []{' ','\t'},"white")
+                .Transition('-')
+                .Transition(new []{' ','\t'})
+                .Mark("white2")
+                .TransitionTo(new []{' ','\t'},"white2")
+                .ExceptTransition(new[] {' ','\t'})
+                .End(GenericToken.Extension).CallBack(call);
+        }
+        
         if (token == CLIToken.CHAR)
         {
             NodeCallback<GenericToken> callback = match =>

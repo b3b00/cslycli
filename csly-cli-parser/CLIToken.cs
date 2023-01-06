@@ -11,6 +11,7 @@ public enum CLIToken
     [Sugar(";")]
     SEMICOLON = 1,
     
+    [Mode("default","EXT")]
     [Int] INT,
     
     [String("'","'")] STRING,
@@ -26,6 +27,8 @@ public enum CLIToken
     [Sugar("[")] LEFTBRACKET,
     [Mode("default","EXT")]
     [Sugar("]")] RIGHTBRACKET,
+    
+    
     [Sugar("(")] LEFTPAREN,
     [Sugar(")")] RIGHTPAREN,
     [Mode("default","EXT")]
@@ -55,9 +58,21 @@ public enum CLIToken
     
     
     [AlphaNumDashId] 
-    [Mode("default")]
+    [Mode("default","EXT")]
     ID,
         
+    
+    [Mode("EXT")]
+    [Push("RANGE")]
+    [Sugar("[[")] LEFTBRACKETBRACKET,
+    [Mode("EXT")]
+    [Pop]
+    [Mode("RANGE")]
+    [Sugar("]]")] RIGHTBRACKETBRACKET,
+    
+    [Mode("RANGE")]
+    [Extension]
+    RANGE,
     
         
     [Sugar("*")]
@@ -111,7 +126,7 @@ public enum CLIToken
     [Sugar("}")]
     RIGHTCURL,
     
-    [Mode("EXT")]
+    [Mode("EXT","RANGE")]
     [Sugar(",")]
     COMMA,
     

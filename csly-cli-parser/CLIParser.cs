@@ -103,7 +103,7 @@ public class CLIParser
     }
 
 
-    [Production("extension : OPEN_EXT[d] transition* CLOSE_EXT[d]")]
+    [Production("extension : OPEN_EXT[d] transition* ARROW[d] END[d] CLOSE_EXT[d]")]
     public ICLIModel Extension(List<ICLIModel> transitions, ParserContext context)
     {
         return null;
@@ -114,24 +114,25 @@ public class CLIParser
     {
         return null;
     }
-    
-    
 
     [Production("repeater : ZEROORMORE[d]")]
     public ICLIModel RepeatZeroOrMore(ParserContext context)
     {
+        Console.WriteLine("Zero Or More");
         return null;
     }
     
     [Production("repeater : ZEROORMORE[d]")]
     public ICLIModel RepeatOneOrMore(ParserContext context)
     {
+        Console.WriteLine("One Or More");
         return null;
     }
     
     [Production("repeater : LEFTCURL[d] INT RIGHTCURL[d]")]
     public ICLIModel RepeatMany(Token<CLIToken> many, ParserContext context)
     {
+        Console.WriteLine($"Count {{>{many.IntValue}<}}");
         return null;
     }
     
@@ -139,19 +140,28 @@ public class CLIParser
     [Production("pattern : CHAR")]
     public ICLIModel SinglePattern(Token<CLIToken> single, ParserContext context)
     {
+        Console.WriteLine($"single pattern >{single.Value}<");
         return null;
     }
     
     
-    [Production("pattern : LEFTBRACKET[d] range (COMMA[d] range)* RIGHTBRACKET[d]")]
-    public ICLIModel RangePattern(ICLIModel headRange, List<Group<CLIToken, ICLIModel>> tailsRanges, ParserContext context)
+    [Production("pattern : LEFTBRACKETBRACKET[d] RANGE (COMMA[d] RANGE)* RIGHTBRACKETBRACKET[d]")]
+    public ICLIModel RangePattern(Token<CLIToken> headRange, List<Group<CLIToken, ICLIModel>> tailsRanges, ParserContext context)
     {
+        Console.Write("range pattern>");
+        Console.Write(headRange.Value);
+        foreach (var range in tailsRanges)
+        {
+            Console.Write($" , {range.Token(0).Value}");
+        }
+        Console.WriteLine("<");
         return null;
     }
     
     [Production("range : CHAR DASH[d] CHAR")]
     public ICLIModel Range(Token<CLIToken> start, Token<CLIToken> end, ParserContext context)
     {
+        Console.WriteLine($"range pattern {start.Value} - {end.Value}");
         return null;
     }
     

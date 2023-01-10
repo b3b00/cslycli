@@ -16,6 +16,7 @@ public enum CLIToken
     
     [String("'","'")] STRING,
 
+    
     // [Mode]
     // [SingleLineComment("#")]
     //

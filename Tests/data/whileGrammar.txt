@@ -2,7 +2,7 @@ genericLexer WhileLexer;
 
 [String] STRING;
 [Int] INT;
-[AlphaId] ID; # to be derived for every identifier types
+[AlphaId] ID; 
 
 
 [ KeyWord] IF:'if';
@@ -41,7 +41,6 @@ genericLexer WhileLexer;
 
 parser WhileParser;
 
-# operations 
 
 [Right 50] LESSER;
 [Right 50] GREATER;
@@ -61,9 +60,6 @@ parser WhileParser;
 [Right 50] AND;
 [Prefix 100] NOT;
 
-
-
-# statements
 
 -> statement :  LPAREN statement RPAREN ;
 

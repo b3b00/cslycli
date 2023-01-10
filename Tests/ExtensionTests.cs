@@ -26,7 +26,7 @@ public class ExtensionTests
         Check.That(lexed.IsError).IsFalse();
         var tokens = lexed.Tokens.Tokens;
         Check.That(tokens).Not.IsNullOrEmpty();
-        Check.That(tokens).CountIs(24);
+        Check.That(tokens).CountIs(20);
 
     }
     
@@ -37,7 +37,7 @@ public class ExtensionTests
 
 [Extension] TEST
 >>>
--> #  -> [[0 - 9,A - F]] {16} -> END
+-> ù  -> [[0 - 9,A - F]] {16} -> END
 <<<
 ";
 

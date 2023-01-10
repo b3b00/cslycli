@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using clsy.cli.builder;
+using csly.cli.model;
 using NFluent;
 using NFluent.Extensibility;
 using sly.buildresult;
@@ -10,6 +12,19 @@ namespace Tests;
 
 public static class NFluentParseExtensions
     {
+        
+        
+        public static ICheckLink<ICheck<Result<Model,List<string>>>> IsOkModel(this ICheck<Result<Model,List<string>>> context) 
+        {
+            ExtensibilityHelper.BeginCheck(context)
+                .FailWhen(sut => sut.IsError, $"parse failed")
+                .FailWhen(sut => sut.Value == null, "parse result is null")
+                .OnNegate("model expected to be wrong.")
+                .EndCheck();
+            return ExtensibilityHelper.BuildCheckLink(context);
+        }
+
+        
         public static ICheckLink<ICheck<ParseResult<IN,OUT>>> IsOkParsing<IN,OUT>(this ICheck<ParseResult<IN,OUT>> context) where IN : struct
         {
             ExtensibilityHelper.BeginCheck(context)

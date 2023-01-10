@@ -2,15 +2,7 @@
   "Children": [
     {
       "Token": {
-        "StringDelimiter": "\u0000",
-        "DecimalSeparator": "\u0000",
-        "CharDelimiter": "'",
-        "Notignored": false,
         "Channel": 0,
-        "SpanValue": {
-          "Length": 1,
-          "IsEmpty": false
-        },
         "Position": {
           "IsStartOfLine": true,
           "Indentations": [],
@@ -22,7 +14,7 @@
         },
         "PositionInTokenVisibleFlow": 0,
         "PositionInTokenFlow": 0,
-        "TokenID": 0,
+        "TokenID": "INT",
         "IsComment": false,
         "Discarded": false,
         "IsEOS": false,
@@ -32,10 +24,8 @@
         "IsWhiteSpace": false,
         "IsEOL": false,
         "IsImplicit": false,
-        "CommentType": 0,
+        "CommentType": "Single",
         "IsEmpty": false,
-        "IsMultiLineComment": false,
-        "IsSingleLineComment": true,
         "Value": "2",
         "End": true,
         "IsLineEnding": false

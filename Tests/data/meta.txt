@@ -32,10 +32,6 @@ parser GrammarParser;
 -> root: genericRoot parserRoot ;
 
 
-
-# Lexer
-
-
 genericRoot : LEXER ID ';'  token*;
 
 token :'[' [KEYWORD|SUGAR|SINGLELINECOMMENT] ']' ID ':' STRING ';';
@@ -45,22 +41,16 @@ token : '[' [STRINGTOKEN|INTTOKEN|ALPHAID|ALPHANUMID|ALPHANUMDASHID|DOUBLE] ']' 
 token : '[' [STRINGTOKEN|MULTILINECOMMENT] ']' ID ':' STRING STRING ';';
 
 
-
-# parser
-
 parserRoot : PARSER ID ';' rule*;
 
 rule  : START? ('[' OPERAND ']')? ID ':' clause+ ';';
 
-# expressions
 
 rule : '[' PREFIX INT ']' [ID|STRING] ';';
 rule : '[' POSTFIX INT ']' [ID|STRING] ';';
 rule : '[' [RIGHT|LEFT] INT ']' [ID|STRING] ';';
 
 
-
-# clauses
 
 item : [ ID | STRING ];
 
@@ -77,8 +67,6 @@ clause : choiceclause;
 clause : group;
 
 
-# choices
-
 choiceclause : '['  item ( OR item)* ']';
 
 clause : choiceclause '+';
@@ -86,8 +74,6 @@ clause : choiceclause '+';
 clause : choiceclause '*';
 
 clause : choiceclause '?';
-
-# groups
 
 group : '('  item* ')';
 

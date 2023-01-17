@@ -13,7 +13,6 @@ public class TokenModel : ICLIModel
     
     public string[] Args { get; set; }
 
-    
 
     public TokenModel(GenericToken type, string name, IdentifierType identifierType = IdentifierType.Alpha)
     {

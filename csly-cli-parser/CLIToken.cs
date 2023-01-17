@@ -16,13 +16,14 @@ public enum CLIToken
     
     [String("'","'")] STRING,
 
+
+    [Mode]
+    [SingleLineComment("#")]
     
-    // [Mode]
-    // [SingleLineComment("#")]
-    //
-    // [Mode]
-    // [MultiLineComment("/*","*/")]
-    // COMMENT,
+    [Mode]
+    [MultiLineComment("/*","*/")]
+    COMMENT,
+
 
     [Mode("default","EXT")]
     [Sugar("[")] LEFTBRACKET,
@@ -63,17 +64,21 @@ public enum CLIToken
     ID,
         
     
-    [Mode("EXT")]
-    [Push("RANGE")]
-    [Sugar("[[")] LEFTBRACKETBRACKET,
-    [Mode("EXT")]
-    [Pop]
-    [Mode("RANGE")]
-    [Sugar("]]")] RIGHTBRACKETBRACKET,
+    // [Mode("EXT")]
+    // [Push("RANGE")]
+    // [Sugar("[[")] LEFTBRACKETBRACKET,
+    // [Mode("EXT")]
+    // [Pop]
+    // [Mode("RANGE")]
+    // [Sugar("]]")] RIGHTBRACKETBRACKET,
     
-    [Mode("RANGE")]
-    [Extension]
-    RANGE,
+    [Mode("EXT")]
+    [Character("'","\\")]
+    CHAR,
+    
+    // [Mode("RANGE")]
+    // [Extension]
+    // RANGE,
     
         
     [Sugar("*")]
@@ -141,7 +146,7 @@ public enum CLIToken
     [Sugar("<<<")]
     CLOSE_EXT,
     
-    [Extension]
-    [Mode("EXT")]
-    CHAR
+    // [Extension]
+    // [Mode("EXT")]
+    // CHAR
 }

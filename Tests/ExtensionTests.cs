@@ -17,7 +17,7 @@ public class ExtensionTests
         EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
         var grammar = fs.ReadAllText("/data/ext.txt");
 
-        var lexbuild = LexerBuilder.BuildLexer<CLIToken>(CLITokenExtensions.AddExtension);
+        var lexbuild = LexerBuilder.BuildLexer<CLIToken>();
         Check.That(lexbuild.IsError).IsFalse();
         Check.That(lexbuild.Result).IsNotNull();
         var lexer = lexbuild.Result;
@@ -26,7 +26,7 @@ public class ExtensionTests
         Check.That(lexed.IsError).IsFalse();
         var tokens = lexed.Tokens.Tokens;
         Check.That(tokens).Not.IsNullOrEmpty();
-        Check.That(tokens).CountIs(20);
+        Check.That(tokens).CountIs(24);
 
     }
     
@@ -37,7 +37,7 @@ public class ExtensionTests
 
 [Extension] TEST
 >>>
--> ù  -> [[0 - 9,A - F]] {16} -> END
+-> '#'  -> ['0'-'9','A'-'F'] {6} -> END
 <<<
 ";
 
@@ -46,8 +46,7 @@ public class ExtensionTests
         ParserContext context = new ParserContext("glop");
 
         var builder = new ParserBuilder<CLIToken, ICLIModel>();
-        var pb = builder.BuildParser(new CLIParser(), ParserType.EBNF_LL_RECURSIVE_DESCENT, "token",
-            CLITokenExtensions.AddExtension, lexerPostProcess:CLITokenExtensions.LexerPostProcess);
+        var pb = builder.BuildParser(new CLIParser(), ParserType.EBNF_LL_RECURSIVE_DESCENT, "token");
         Check.That(pb).IsOk();
         var r = pb.Result.ParseWithContext(grammar,context);
         Check.That(r.IsError).IsFalse();

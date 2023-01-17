@@ -5,6 +5,7 @@ using csly.cli.model.parser;
 using sly.lexer;
 using sly.parser.generator;
 using sly.parser.parser;
+using Range = csly.cli.model.lexer.Range;
 
 namespace csly.cli.parser;
 
@@ -99,72 +100,80 @@ public class CLIParser
     [Production("token : LEFTBRACKET[d] EXTENSIONTOKEN[d] RIGHTBRACKET[d] ID extension ")]
     public ICLIModel ExtensionToken(Token<CLIToken> id, ICLIModel extension, ParserContext context)
     {
-        return null;
+        (extension as ExtensionTokenModel).Name = id.Value;
+        return (extension as ExtensionTokenModel);
     }
 
+    #region lexer extensions
 
     [Production("extension : OPEN_EXT[d] transition* ARROW[d] END[d] CLOSE_EXT[d]")]
     public ICLIModel Extension(List<ICLIModel> transitions, ParserContext context)
     {
-        return null;
+        var ext = new ExtensionTokenModel(null, transitions.Cast<ITransition>().ToList());
+        return ext;
     }
     
     [Production("transition : ARROW[d] pattern repeater? (AT[d] ID)?")]
     public ICLIModel Transition(ICLIModel pattern, ValueOption<ICLIModel> repeater, ValueOption<Group<CLIToken, ICLIModel>> id, ParserContext context)
     {
-        return null;
+        var transition = pattern as ITransition;
+        var t = repeater.Match((x) =>
+            {
+                transition.Repeater = x as TransitionRepeater;
+                return transition;
+            },
+            () => transition);
+        return t;
     }
 
     [Production("repeater : ZEROORMORE[d]")]
     public ICLIModel RepeatZeroOrMore(ParserContext context)
     {
-        Console.WriteLine("Zero Or More");
-        return null;
+        return new TransitionRepeater(RepeaterType.ZeroOrMore);
     }
     
-    [Production("repeater : ZEROORMORE[d]")]
+    [Production("repeater : ONEORMORE[d]")]
     public ICLIModel RepeatOneOrMore(ParserContext context)
     {
-        Console.WriteLine("One Or More");
-        return null;
+        return new TransitionRepeater(RepeaterType.OneOrMore);
     }
     
     [Production("repeater : LEFTCURL[d] INT RIGHTCURL[d]")]
     public ICLIModel RepeatMany(Token<CLIToken> many, ParserContext context)
     {
-        Console.WriteLine($"Count {{>{many.IntValue}<}}");
-        return null;
+        return new TransitionRepeater(RepeaterType.Count, many.IntValue);
     }
     
 
     [Production("pattern : CHAR")]
     public ICLIModel SinglePattern(Token<CLIToken> single, ParserContext context)
     {
-        Console.WriteLine($"single pattern >{single.Value}<");
-        return null;
+        return new CharacterTransition(single.CharValue);
     }
     
     
-    [Production("pattern : LEFTBRACKETBRACKET[d] RANGE (COMMA[d] RANGE)* RIGHTBRACKETBRACKET[d]")]
-    public ICLIModel RangePattern(Token<CLIToken> headRange, List<Group<CLIToken, ICLIModel>> tailsRanges, ParserContext context)
+    [Production("pattern : LEFTBRACKET[d] range (COMMA[d] range)* RIGHTBRACKET[d]")]
+    public ICLIModel RangePattern(ICLIModel headRange, List<Group<CLIToken, ICLIModel>> tailsRanges, ParserContext context)
     {
-        Console.Write("range pattern>");
-        Console.Write(headRange.Value);
-        foreach (var range in tailsRanges)
+        List<Range> ranges = new List<Range>() { headRange as Range };
+        var tail = tailsRanges.Select(x =>
         {
-            Console.Write($" , {range.Token(0).Value}");
-        }
-        Console.WriteLine("<");
-        return null;
+            var xx = x.Value(0) as Range;
+            return xx;
+        }).ToList();
+        ranges.AddRange(tail);
+
+        return new RangeTransition(ranges);
+
     }
     
     [Production("range : CHAR DASH[d] CHAR")]
-    public ICLIModel Range(Token<CLIToken> start, Token<CLIToken> end, ParserContext context)
+    public ICLIModel RangeDefinition(Token<CLIToken> start, Token<CLIToken> end, ParserContext context)
     {
-        Console.WriteLine($"range pattern {start.Value} - {end.Value}");
-        return null;
+        return new Range(start.CharValue, end.CharValue);
     }
     
+    #endregion
     
   #endregion
 

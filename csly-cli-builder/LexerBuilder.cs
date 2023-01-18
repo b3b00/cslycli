@@ -46,9 +46,121 @@ public class LexerBuilder
             }
 
             Type finished = enumBuilder.CreateType();
-                
+
+            BuildExtensionIfNeeded(model);
+
             return (finished,dynamicAssembly,moduleBuilder);
         }
+
+        private void BuildExtensionIfNeeded(LexerModel model)
+        {
+            var extensions = model.Tokens.Where(x => x.Type == GenericToken.Extension).Cast<ExtensionTokenModel>().ToList();
+            foreach (var extensionTokenModel in extensions)
+            {
+                BuildFsmForExtension(extensionTokenModel);
+            }
+        }
+
+        private void BuildFsmForExtension(ExtensionTokenModel token)
+        {
+            Action<FSMLexerBuilder<GenericToken>> action = builder =>
+            {
+                builder = builder.GoTo(GenericLexer<GenericToken>.start);
+                foreach (var transition in token.Transitions)
+                {
+                    builder = Transition(builder, transition);
+                }
+            };
+        }
+
+        private FSMLexerBuilder<GenericToken> Repeat(FSMLexerBuilder<GenericToken> builder, Func<FSMLexerBuilder<GenericToken> , string , FSMLexerBuilder<GenericToken>> DoTransition,
+            ITransition transition)
+        {
+            switch (transition.Repeater.RepeaterType)
+            {
+                case RepeaterType.Count:
+                {
+                    for (int i = 0; i < transition.Repeater.Count; i++)
+                    {
+                        builder = DoTransition(builder, null);
+                    }
+                    break;
+                }
+                case RepeaterType.ZeroOrMore:
+                {
+                    string loopingNode = Guid.NewGuid().ToString();
+                    builder.Mark(loopingNode);
+                    builder = DoTransition(builder, loopingNode);
+                    break;
+                }
+                case RepeaterType.OneOrMore:
+                {
+                    string loopingNode = Guid.NewGuid().ToString();
+                    builder = DoTransition(builder, null)
+                        .Mark(loopingNode);
+                    builder = DoTransition(builder, loopingNode);
+                    
+                    break;
+                }
+                case RepeaterType.Option:
+                {
+                    throw new NotImplementedException("optional transitions are not yet implemented.");
+                    break;
+                }
+            }
+
+            return builder;
+        }
+        
+        private FSMLexerBuilder<GenericToken> Transition(FSMLexerBuilder<GenericToken> builder , ITransition transition)
+        {
+            Func<FSMLexerBuilder<GenericToken>, string, FSMLexerBuilder<GenericToken>> DoTransition = null;
+            
+            
+            if (transition is CharacterTransition charTransition)
+            {
+                DoTransition = (lexerBuilder, toNode) =>
+                {
+                    if (string.IsNullOrEmpty(toNode))
+                    {
+                        lexerBuilder.Transition(charTransition.Character);
+                    }
+                    else
+                    {
+                        lexerBuilder.TransitionTo(charTransition.Character,toNode);
+                    }
+                    return lexerBuilder;
+                };
+
+            }
+            else if (transition is RangeTransition rangeTransition)
+            {
+                DoTransition = (lexerBuilder, toNode) =>
+                {
+                    if (string.IsNullOrEmpty(toNode))
+                    {
+                        builder.MultiRangeTransition(rangeTransition.Ranges
+                            .Select(x => (x.StartCharacter, x.EndCharacter))
+                            .ToArray());
+                    }
+                    else
+                    {
+                        lexerBuilder.MultiRangeTransitionTo(toNode,rangeTransition.Ranges.Select(x => (x.StartCharacter, x.EndCharacter))
+                            .ToArray());
+                    }
+                    return lexerBuilder;
+                };
+            }
+            else if (transition is ExceptTransition exceptTransition)
+            {
+                throw new NotImplementedException("except transitions are not yet implemented.");
+            }
+
+            return builder;
+        }
+
+
+
 
         private void AddAttributes(List<TokenModel> models, FieldBuilder builder)
         {
@@ -104,6 +216,17 @@ public class LexerBuilder
                 CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
                     constructorInfo, new object[] { });
 
+                builder.SetCustomAttribute(customAttributeBuilder);
+                
+                AddJsonAttribute(builder);
+            }
+            else if (genericToken == GenericToken.Extension)
+            {
+                var attributeType = typeof(ExtensionAttribute);
+                ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                    new Type[0] { });
+                CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                    constructorInfo, new object[] { });
                 builder.SetCustomAttribute(customAttributeBuilder);
                 
                 AddJsonAttribute(builder);

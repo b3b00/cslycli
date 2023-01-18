@@ -5,11 +5,7 @@ namespace csly.cli.model.lexer;
 
 public class ExtensionTokenModel : TokenModel
 {
-    public GenericToken Type { get; set; }
     
-    public string Name { get; set; }
-    
-    public string[] Args { get; set; }
 
     public IList<ITransition> Transitions { get; set; }
 

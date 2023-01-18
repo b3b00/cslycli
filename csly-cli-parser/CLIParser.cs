@@ -101,6 +101,7 @@ public class CLIParser
     public ICLIModel ExtensionToken(Token<CLIToken> id, ICLIModel extension, ParserContext context)
     {
         (extension as ExtensionTokenModel).Name = id.Value;
+        context.AddEnumName(id.Value);
         return (extension as ExtensionTokenModel);
     }
 
@@ -109,7 +110,7 @@ public class CLIParser
     [Production("extension : OPEN_EXT[d] transition* ARROW[d] END[d] CLOSE_EXT[d]")]
     public ICLIModel Extension(List<ICLIModel> transitions, ParserContext context)
     {
-        var ext = new ExtensionTokenModel(null, transitions.Cast<ITransition>().ToList());
+        var ext = new ExtensionTokenModel(null, transitions.Cast<ITransition>().ToList());        
         return ext;
     }
     

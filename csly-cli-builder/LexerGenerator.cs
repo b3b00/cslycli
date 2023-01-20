@@ -1,5 +1,6 @@
 using System.Text;
 using clsy.cli.builder.parser.cli.model;
+using csly.cli.model.lexer;
 using sly.lexer;
 
 namespace clsy.cli.builder;
@@ -17,7 +18,21 @@ public class LexerGenerator
         var head = GetHeader(model.Name, nameSpace);
         var body = GetBody(model);
         var foot = getFooter();
+
+        var extensions = model.Tokens.Where(x => x.Type == GenericToken.Extension).ToList();
+        if (extensions.Any())
+        {
+            var extender = GetExtender(extensions);
+        }
         return head+"\n"+body+"\n"+foot;
+        
+        
+    }
+
+    private object GetExtender(List<TokenModel> extensions)
+    {
+        // TODO
+        return null;
     }
 
     private string GetBody(LexerModel model)

@@ -57,22 +57,18 @@ public class ExtensionTests
     [Fact]
     public void TestExtLexerSourceGen()
     {
-        var grammar = @"
-
-[Extension] TEST
->>>
--> '#'  -> ['0'-'9','A'-'F'] {6} -> END
-<<<
-";
-
-        var modelBuilder = new ParserBuilder();
-        var model = modelBuilder.CompileModel(grammar, "MinimalParser");
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/minimalGrammarWithExt.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MinimalParser");
         Check.That(model).IsOkModel();
         var lexerGenerator = new LexerGenerator();
         var source = lexerGenerator.GenerateLexer(model.Value.LexerModel, "ns");
         Check.That(source).IsNotNull();
         Check.That(source).IsNotEmpty();
         source = source.Replace("\r\n", "\n");
+        var expected = fs.ReadAllText("/data/lexerWithExt.csharp").Replace("\r\n","\n");
+        Check.That(source).IsEqualTo(expected);
         
         
     }

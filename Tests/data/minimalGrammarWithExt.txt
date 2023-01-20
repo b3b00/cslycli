@@ -1,0 +1,10 @@
+genericLexer MinimalLexer;
+
+[Extension] TEST
+>>>
+-> '#'  -> ['0'-'9','A'-'F'] {6} -> END
+<<<
+
+parser MinimalParser;
+
+-> root : TEST;

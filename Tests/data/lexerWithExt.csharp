@@ -1,0 +1,15 @@
+
+using sly.lexer;
+
+namespace ns {
+
+    public enum MinimalLexer {
+
+
+		[Extension]
+		TEST,
+
+
+
+    }
+}

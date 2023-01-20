@@ -1,4 +1,6 @@
 using System.Reflection;
+using clsy.cli.builder;
+using clsy.cli.builder.parser;
 using csly.cli.model;
 using csly.cli.parser;
 using NFluent;
@@ -50,6 +52,29 @@ public class ExtensionTests
         Check.That(pb).IsOk();
         var r = pb.Result.ParseWithContext(grammar,context);
         Check.That(r.IsError).IsFalse();
+    }
+    
+    [Fact]
+    public void TestExtLexerSourceGen()
+    {
+        var grammar = @"
+
+[Extension] TEST
+>>>
+-> '#'  -> ['0'-'9','A'-'F'] {6} -> END
+<<<
+";
+
+        var modelBuilder = new ParserBuilder();
+        var model = modelBuilder.CompileModel(grammar, "MinimalParser");
+        Check.That(model).IsOkModel();
+        var lexerGenerator = new LexerGenerator();
+        var source = lexerGenerator.GenerateLexer(model.Value.LexerModel, "ns");
+        Check.That(source).IsNotNull();
+        Check.That(source).IsNotEmpty();
+        source = source.Replace("\r\n", "\n");
+        
+        
     }
     
     

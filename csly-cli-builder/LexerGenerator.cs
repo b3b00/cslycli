@@ -80,6 +80,11 @@ public class LexerGenerator
                         builder.AppendLine($"\t\t[Sugar(\"{token.Args[0]}\")]");
                         break;
                     }
+                    case GenericToken.Extension:
+                    {
+                        builder.AppendLine($"\t\t[Extension]");
+                        break;
+                    }
                     case GenericToken.Identifier:
                     {
                         switch (token.IdentifierType)

@@ -21,7 +21,8 @@ public class LexerBuilder
             DynamicLexerName = name;
         }
         
-        public (Type enumType, AssemblyBuilder assembly, ModuleBuilder moduleBuilder) BuildLexerEnum(LexerModel model)
+    
+        public (Type enumType, Delegate extensionBuilder, AssemblyBuilder assembly, ModuleBuilder moduleBuilder) BuildLexerEnum(LexerModel model)
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
 
@@ -48,37 +49,19 @@ public class LexerBuilder
 
             Type finished = enumBuilder.CreateType();
 
-            BuildExtensionIfNeeded(model, finished);
+            var extensionBuilder = BuildExtensionIfNeeded(model, finished);
 
-            return (finished,dynamicAssembly,moduleBuilder);
+            return (finished,extensionBuilder,dynamicAssembly,moduleBuilder);
         }
 
         private Delegate BuildExtensionIfNeeded(LexerModel model, Type? enumType)
         {
-            
-            Func<Type, string, object> GetValue = (Type type, string name) =>
+           
+            Func<Func<FSMMatch<GenericToken>, FSMMatch<GenericToken>>, NodeCallback<GenericToken>> ConvertLambdaCallbackToDelegate = func =>
             {
-                var values = Enum.GetValues(type);
-                foreach (var value in values)
-                {
-                    if (value.ToString() == name)
-                    {
-                        return value;
-                    }
-                }
-
-                return null;
+                return new NodeCallback<GenericToken>(func);
             };
 
-
-            Func<Type, string, object, bool> IsEqual = (Type type, string name, object v) =>
-            {
-                var value = GetValue(type, name);
-                return value.Equals(v);
-            };
-            
-            
-            
             var extensions = model.Tokens.Where(x => x.Type == GenericToken.Extension).Cast<ExtensionTokenModel>().ToList();
 
             IList<Expression> ifs = new List<Expression>();
@@ -88,7 +71,7 @@ public class LexerBuilder
             var lexerType = typeof(GenericLexer<>).MakeGenericType(enumType);
             var lexerParameter = Expression.Parameter(lexerType);
             var fsmbuildertype = typeof(FSMLexerBuilder<GenericToken>);
-            var fsmmatchType = typeof(FSMMatch<>).MakeGenericType(enumType);
+            var fsmmatchType = typeof(FSMMatch<GenericToken>);
             var fsmmatchParameter = Expression.Parameter(fsmmatchType);
 
             
@@ -99,9 +82,6 @@ public class LexerBuilder
                 var e = Expression.Constant(enumType);
                 var n = Expression.Constant(extensionTokenModel.Name);
                 
-                // var lambdaTest = Expression.Invoke(Expression.Constant(IsEqual), e,n,tokenParameter);
-
-                var methods = enumType.GetMethods();
                 var tostr = enumType.GetMethod("ToString", new Type[]{});
                 var eq = Expression.Equal(n, Expression.Call(tokenParameter,tostr));
                 
@@ -117,18 +97,17 @@ public class LexerBuilder
                 var getProps = Expression.Property(fsmmatchParameter, "Properties");
                 var addMethod = typeof(Dictionary<,>).MakeGenericType(typeof(string), typeof(object)).GetMethod("Add",new []{typeof(string),typeof(object)});
 
-                var assign = Expression.Call(getProps, addMethod,Expression.Constant(GenericLexer<GenericToken>.DerivedToken),
-                    tokenParameter);
                 
-                // var derived = Expression.Property(getProps, "Item",
-                //     Expression.Constant(GenericLexer<GenericToken>.DerivedToken));
-                // var assign =Expression.Assign(derived, tokenParameter);
-
+                // note  : the needed cast (Convert(type(object)). otherwise Expression fails to build as it thinks that the generated enum is not assignable from Object ! 
+                var assign = Expression.Call(getProps, addMethod,Expression.Constant(GenericLexer<GenericToken>.DerivedToken),
+                    Expression.Convert(tokenParameter,typeof(object)));
+                
                 var callbackBody = Expression.Block(assign, fsmmatchParameter);
 
-                var callback = Expression.Lambda(callbackBody, false, fsmmatchParameter);
-
-                var nodecallbacktype = typeof(NodeCallback<>).MakeGenericType(enumType);
+                var callbackLambda = Expression.Lambda(callbackBody, false, fsmmatchParameter);
+                var nodecallbacktype = typeof(NodeCallback<GenericToken>);
+                var callback = Expression.Invoke(Expression.Constant(ConvertLambdaCallbackToDelegate), callbackLambda);
+                
                 var callbackMethod = fsmbuildertype.GetMethod("CallBack", new Type[] {nodecallbacktype});
                 var setCallBack = Expression.Call(b, callbackMethod, callback);
 
@@ -144,7 +123,14 @@ public class LexerBuilder
             var block = Expression.Block(ifs);
             var l = Expression.Lambda(block, false, tokenParameter, lexemeParameter, lexerParameter);
             var d = l.Compile();
-            return d;
+            
+            // TODO convert to BuildExtension
+            // System.Action<ExtensionLexer,sly.lexer.LexemeAttribute,sly.lexer.GenericLexer<ExtensionLexer>>
+            //     sly.lexer.fsm.BuildExtension<ExtensionLexer>
+            
+            return d as Delegate;
+            
+            
         }
 
         private Action<FSMLexerBuilder<GenericToken>> BuildFsmForExtension(ExtensionTokenModel token)
@@ -156,6 +142,7 @@ public class LexerBuilder
                 {
                     builder = Transition(builder, transition);
                 }
+                
             };
             return fmsTransitioner;
         }
@@ -163,39 +150,46 @@ public class LexerBuilder
         private FSMLexerBuilder<GenericToken> Repeat(FSMLexerBuilder<GenericToken> builder, Func<FSMLexerBuilder<GenericToken> , string , FSMLexerBuilder<GenericToken>> DoTransition,
             ITransition transition)
         {
-            switch (transition.Repeater.RepeaterType)
+            if (transition.Repeater != null)
             {
-                case RepeaterType.Count:
+                switch (transition.Repeater.RepeaterType)
                 {
-                    for (int i = 0; i < transition.Repeater.Count; i++)
+                    case RepeaterType.Count:
                     {
-                        builder = DoTransition(builder, null);
+                        for (int i = 0; i < transition.Repeater.Count; i++)
+                        {
+                            builder = DoTransition(builder, null);
+                        }
+
+                        break;
                     }
-                    break;
-                }
-                case RepeaterType.ZeroOrMore:
-                {
-                    string loopingNode = Guid.NewGuid().ToString();
-                    builder.Mark(loopingNode);
-                    builder = DoTransition(builder, loopingNode);
-                    break;
-                }
-                case RepeaterType.OneOrMore:
-                {
-                    string loopingNode = Guid.NewGuid().ToString();
-                    builder = DoTransition(builder, null)
-                        .Mark(loopingNode);
-                    builder = DoTransition(builder, loopingNode);
-                    
-                    break;
-                }
-                case RepeaterType.Option:
-                {
-                    throw new NotImplementedException("optional transitions are not yet implemented.");
-                    break;
+                    case RepeaterType.ZeroOrMore:
+                    {
+                        string loopingNode = Guid.NewGuid().ToString();
+                        builder.Mark(loopingNode);
+                        builder = DoTransition(builder, loopingNode);
+                        break;
+                    }
+                    case RepeaterType.OneOrMore:
+                    {
+                        string loopingNode = Guid.NewGuid().ToString();
+                        builder = DoTransition(builder, null)
+                            .Mark(loopingNode);
+                        builder = DoTransition(builder, loopingNode);
+
+                        break;
+                    }
+                    case RepeaterType.Option:
+                    {
+                        throw new NotImplementedException("optional transitions are not yet implemented.");
+                        break;
+                    }
                 }
             }
-
+            else
+            {
+                builder = DoTransition(builder, null);
+            }
             return builder;
         }
         

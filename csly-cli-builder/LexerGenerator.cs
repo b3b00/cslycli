@@ -20,19 +20,149 @@ public class LexerGenerator
         var foot = getFooter();
 
         var extensions = model.Tokens.Where(x => x.Type == GenericToken.Extension).ToList();
+        string extender = "";
         if (extensions.Any())
         {
-            var extender = GetExtender(extensions);
+            extender = GetExtender(model);
         }
-        return head+"\n"+body+"\n"+foot;
+        return head+"\n"+body+"\n"+foot+"\n\n"+extender+"\n\n}";
         
         
     }
 
-    private object GetExtender(List<TokenModel> extensions)
+    private string GetExtender(LexerModel model)
     {
-        // TODO
-        return null;
+        var head = GetExtenderHeader(model);
+        var foot = GetExtenderFooter(model);
+        var body = "";
+        foreach (var extension in model.Tokens.Where(x => x.Type == GenericToken.Extension).Cast<ExtensionTokenModel>())
+        {
+            body += GetExtension(extension);
+        }
+        
+        return head+"\n"+body+"\n"+foot;
+    }
+
+    private string GetExtension(ExtensionTokenModel extension)
+    {
+        var source = "";
+        var tab = "            ";
+        source = "builder.Goto(\"start\")\n";
+        foreach (var transition in extension.Transitions)
+        {
+            source += Transition(transition) + "\n";
+        }
+        return source;
+    }
+
+    private string Transition(ITransition transition)
+    {
+        Func< string, string> DoTransition = null;
+            
+        if (transition is CharacterTransition charTransition)
+        {
+            DoTransition = (string toNode) =>
+            {
+                if (string.IsNullOrEmpty(toNode))
+                {
+                    return $".Transition('{charTransition.Character}')";
+                }
+                else
+                {
+                    return $".TransitionTo('{charTransition.Character}',{toNode})";
+                }
+                return "";
+            };
+
+        }
+        else if (transition is RangeTransition rangeTransition)
+        {
+            DoTransition = (string toNode) =>
+            {
+                var ranges = string.Join(", ", rangeTransition.Ranges
+                    .Select(x => ($"('{x.StartCharacter}', '{x.EndCharacter}')")));
+                if (string.IsNullOrEmpty(toNode))
+                {   
+                    return $".MultiRangeTransition({ranges})";
+                }
+                else
+                {
+                    return $".MultiRangeTransitionTo({toNode},{ranges})";
+                }
+
+                return "";
+            };
+        }
+        else if (transition is ExceptTransition exceptTransition)
+        {
+            throw new NotImplementedException("except transitions are not yet implemented.");
+        }
+
+        if (DoTransition != null)
+        {
+            var trans = Repeat(DoTransition, transition);
+            return trans;
+        }
+
+        return "";
+    }
+
+    private string Repeat(Func<string, string> doTransition, ITransition transition)
+    {
+        StringBuilder builder = new StringBuilder();
+        string tab = "                    ";
+        if (transition.Repeater != null)
+        {
+            switch (transition.Repeater.RepeaterType)
+            {
+                case RepeaterType.Count:
+                {
+                    for (int i = 0; i < transition.Repeater.Count; i++)
+                    {
+                        builder.AppendLine(doTransition(null));
+                    }
+
+                    break;
+                }
+                case RepeaterType.ZeroOrMore:
+                {
+                    string loopingNode = Guid.NewGuid().ToString();
+                    builder.AppendLine($".Mark({loopingNode})");
+                    builder.AppendLine(doTransition(loopingNode));
+                    break;
+                }
+                case RepeaterType.OneOrMore:
+                {
+                    string loopingNode = Guid.NewGuid().ToString();
+                    builder.AppendLine(doTransition(null))
+                        .AppendLine($".Mark({loopingNode})")
+                        .AppendLine($"{doTransition(loopingNode)}");
+
+                    break;
+                }
+                case RepeaterType.Option:
+                {
+                    throw new NotImplementedException("optional transitions are not yet implemented.");
+                    break;
+                }
+            }
+        }
+        else
+        {
+            builder.AppendLine(doTransition(null));
+        }
+        return builder.ToString();
+    }
+
+    private string GetExtenderHeader(LexerModel model)
+    {
+    return $@"    public class Extended{model.Name} {{
+            ";  
+    }
+    
+    private string GetExtenderFooter(LexerModel model)
+    {
+        return $@"    }}";  
     }
 
     private string GetBody(LexerModel model)
@@ -153,6 +283,6 @@ namespace {nameSpace} {{
     {
         return @"
     }
-}";
+";
     }
 }

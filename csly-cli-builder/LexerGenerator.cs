@@ -37,24 +37,59 @@ public class LexerGenerator
         var body = "";
         foreach (var extension in model.Tokens.Where(x => x.Type == GenericToken.Extension).Cast<ExtensionTokenModel>())
         {
-            body += GetExtension(extension);
+            body += GetExtension(model, extension);
         }
         
         return head+"\n"+body+"\n"+foot;
     }
 
-    private string GetExtension(ExtensionTokenModel extension)
+    private string GetExtenderHeader(LexerModel model)
+    {
+        return $@"    public class Extended{model.Name} {{
+
+        public static void Extend{model.Name}({model.Name} token, LexemeAttribute lexem, GenericLexer<{model.Name}> lexer) {{
+            ";  
+    }
+    
+    private string GetExtenderFooter(LexerModel model)
+    {
+        return $@"
+        }}    
+    }}";  
+    }
+    
+    #region extension
+
+    private string GetGenericCallBack(string enumType, string tokenName)
+    {
+        return $@"NodeCallback<GenericToken> callback{tokenName} = (FSMMatch<GenericToken> match) => 
+   	{{
+        // this store the token id the the FSMMatch object to be later returned by GenericLexer.Tokenize 
+        match.Properties[GenericLexer<{enumType}>.DerivedToken] = {enumType}.{tokenName};
+        return match;
+            }};";
+    }
+    
+    private string GetExtension(LexerModel lexerModel, ExtensionTokenModel extension)
     {
         var source = "";
         var tab = "            ";
-        source = "builder.Goto(\"start\")\n";
+        source = $"if (token == {lexerModel.Name}.{extension.Name}) {{\n\n";
+        source += GetGenericCallBack(lexerModel.Name,extension.Name);
+        source += "\n\nvar builder = lexer.FSMBuilder;\n\n";
+        source += "builder.GoTo(\"start\")\n";
         foreach (var transition in extension.Transitions)
         {
             source += Transition(transition) + "\n";
         }
+
+        source += $".CallBack(callback{extension.Name});";
+        source += "\n\n}";
         return source;
     }
 
+    #region transitions
+    
     private string Transition(ITransition transition)
     {
         Func< string, string> DoTransition = null;
@@ -107,6 +142,7 @@ public class LexerGenerator
         return "";
     }
 
+    
     private string Repeat(Func<string, string> doTransition, ITransition transition)
     {
         StringBuilder builder = new StringBuilder();
@@ -154,16 +190,10 @@ public class LexerGenerator
         return builder.ToString();
     }
 
-    private string GetExtenderHeader(LexerModel model)
-    {
-    return $@"    public class Extended{model.Name} {{
-            ";  
-    }
+
+    #endregion
     
-    private string GetExtenderFooter(LexerModel model)
-    {
-        return $@"    }}";  
-    }
+   #endregion
 
     private string GetBody(LexerModel model)
     {
@@ -272,6 +302,7 @@ public class LexerGenerator
     {
         return $@"
 using sly.lexer;
+using sly.lexer.fsm;
 
 namespace {nameSpace} {{
 

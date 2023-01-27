@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Reflection;
+using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using csly.cli.model;
 using csly.cli.parser;
@@ -38,6 +39,11 @@ genericLexer ExtensionLexer;
 -> '#'  -> ['0'-'9','A'-'F'] {6} -> END
 <<<
 
+[Extension] AT
+>>>
+-> '@' -> END
+<<<
+
 
 parser ExtensionParser;
 
@@ -60,6 +66,14 @@ parser ExtensionParser;
             var content = json.Value.First().content;
             Console.WriteLine(content);
         }
-        ;
+        
+        
+        
+        
+        
+        var lexerGenerator = new LexerGenerator();
+        var source = lexerGenerator.GenerateLexer(model.Value.LexerModel, "ns");
+        source = source.Replace("\r\n", "\n");
+        File.WriteAllText("C:/Users/olduh/dev/csly-cli/Tests/data/lexerWithExt.cs",source);
     }
 }

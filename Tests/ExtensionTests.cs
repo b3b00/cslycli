@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
@@ -36,22 +37,34 @@ public class ExtensionTests
     public void TestExtLexer2()
     {
         var grammar = @"
+genericLexer MinimalLexer;
 
 [Extension] TEST
 >>>
 -> '#'  -> ['0'-'9','A'-'F'] {6} -> END
 <<<
+
+[Extension] AT
+>>>
+-> '@' -> END
+<<<
+
+parser MinimalParser;
+
+-> root : TEST;
 ";
 
 
 
         ParserContext context = new ParserContext("glop");
 
-        var builder = new ParserBuilder<CLIToken, ICLIModel>();
-        var pb = builder.BuildParser(new CLIParser(), ParserType.EBNF_LL_RECURSIVE_DESCENT, "token");
-        Check.That(pb).IsOk();
-        var r = pb.Result.ParseWithContext(grammar,context);
-        Check.That(r.IsError).IsFalse();
+        var modelBuilder = new ParserBuilder();
+        var model = modelBuilder.CompileModel(grammar, "colorParser");
+        Check.That(model).IsOkModel();
+        
+        var dot = modelBuilder.Getz(grammar, "#132456", "colorParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
+        Check.That(dot.IsError).IsFalse();
+        
     }
     
     [Fact]
@@ -69,8 +82,6 @@ public class ExtensionTests
         source = source.Replace("\r\n", "\n");
         var expected = fs.ReadAllText("/data/lexerWithExt.csharp").Replace("\r\n","\n");
         Check.That(source).IsEqualTo(expected);
-        
-        
     }
     
     

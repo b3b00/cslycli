@@ -1,58 +1,69 @@
+
 using sly.lexer;
 using sly.lexer.fsm;
 
-namespace ns
-{
-    public enum ExtensionLexer
-    {
-        [Extension] TEST,
+namespace ns {
 
-        [Extension] AT,
+    public enum MinimalLexer {
+
+
+		[Extension]
+		TEST,
+
+		[Extension]
+		AT,
+
+
+
     }
 
 
-    public class ExtendedExtensionLexer
-    {
-        public static void ExtendExtensionLexer(ExtensionLexer token, LexemeAttribute lexem,
-            GenericLexer<ExtensionLexer> lexer)
-        {
-            if (token == ExtensionLexer.TEST)
-            {
-                NodeCallback<GenericToken> callbackTEST = (FSMMatch<GenericToken> match) =>
-                {
-                    // this store the token id the the FSMMatch object to be later returned by GenericLexer.Tokenize 
-                    match.Properties[GenericLexer<ExtensionLexer>.DerivedToken] = ExtensionLexer.TEST;
-                    return match;
-                };
+    public class ExtendedMinimalLexer {
 
-                var builder = lexer.FSMBuilder;
+        public static void ExtendMinimalLexer(MinimalLexer token, LexemeAttribute lexem, GenericLexer<MinimalLexer> lexer) {
+            
+if (token == MinimalLexer.TEST) {
 
-                builder.GoTo("start")
-                    .Transition('#')
-                    .MultiRangeTransition(('0', '9'), ('A', 'F'))
-                    .MultiRangeTransition(('0', '9'), ('A', 'F'))
-                    .MultiRangeTransition(('0', '9'), ('A', 'F'))
-                    .MultiRangeTransition(('0', '9'), ('A', 'F'))
-                    .MultiRangeTransition(('0', '9'), ('A', 'F'))
-                    .MultiRangeTransition(('0', '9'), ('A', 'F'))
-                    .CallBack(callbackTEST);
-            }
+NodeCallback<GenericToken> callbackTEST = (FSMMatch<GenericToken> match) => 
+   	{
+        // this store the token id the the FSMMatch object to be later returned by GenericLexer.Tokenize 
+        match.Properties[GenericLexer<MinimalLexer>.DerivedToken] = MinimalLexer.TEST;
+        return match;
+            };
 
-            if (token == ExtensionLexer.AT)
-            {
-                NodeCallback<GenericToken> callbackAT = (FSMMatch<GenericToken> match) =>
-                {
-                    // this store the token id the the FSMMatch object to be later returned by GenericLexer.Tokenize 
-                    match.Properties[GenericLexer<ExtensionLexer>.DerivedToken] = ExtensionLexer.AT;
-                    return match;
-                };
+var builder = lexer.FSMBuilder;
 
-                var builder = lexer.FSMBuilder;
+builder.GoTo("start")
+.Transition('#')
 
-                builder.GoTo("start")
-                    .Transition('@')
-                    .CallBack(callbackAT);
-            }
-        }
+.MultiRangeTransition(('0', '9'), ('A', 'F'))
+.MultiRangeTransition(('0', '9'), ('A', 'F'))
+.MultiRangeTransition(('0', '9'), ('A', 'F'))
+.MultiRangeTransition(('0', '9'), ('A', 'F'))
+.MultiRangeTransition(('0', '9'), ('A', 'F'))
+.MultiRangeTransition(('0', '9'), ('A', 'F'))
+
+.CallBack(callbackTEST);
+
+}if (token == MinimalLexer.AT) {
+
+NodeCallback<GenericToken> callbackAT = (FSMMatch<GenericToken> match) => 
+   	{
+        // this store the token id the the FSMMatch object to be later returned by GenericLexer.Tokenize 
+        match.Properties[GenericLexer<MinimalLexer>.DerivedToken] = MinimalLexer.AT;
+        return match;
+            };
+
+var builder = lexer.FSMBuilder;
+
+builder.GoTo("start")
+.Transition('@')
+
+.CallBack(callbackAT);
+
+}
+
+        }    
     }
+
 }

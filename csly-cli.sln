@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-extractor", "csly-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-decompiler", "csly-cli-decompiler\csly-cli-decompiler.csproj", "{E0D50EBD-D72F-4351-B8D7-8A15EF83D8DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sly", "..\csly\sly\sly.csproj", "{3657ACB0-C1B6-4172-9D62-D0D81A82ED4E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{CECA9DD8-5BC9-4196-A8A1-C6D2D27AC3CC}"
 EndProject
 Global

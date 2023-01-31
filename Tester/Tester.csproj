@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="sly" Version="2.9.4.2-alpha" />
+      <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
+      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
+      <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
+    </ItemGroup>
+
+</Project>

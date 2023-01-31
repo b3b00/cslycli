@@ -30,16 +30,20 @@
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
       <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj" />
+        <PackageReference Include="sly" Version="2.9.4.2-alpha" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Include="data\badGrammar.txt" />
+      <EmbeddedResource Include="data\ext.txt" />
       <EmbeddedResource Include="data\grammarWithImplicits.txt" />
       <EmbeddedResource Include="data\grammarX.txt" />
       <EmbeddedResource Include="data\lexer.csharp" />
+      <EmbeddedResource Include="data\lexerWithExt.csharp" />
       <EmbeddedResource Include="data\manyLexemes.txt" />
       <EmbeddedResource Include="data\meta.txt" />
       <EmbeddedResource Include="data\minimalGrammar.txt" />
+      <EmbeddedResource Include="data\minimalGrammarWithExt.txt" />
       <EmbeddedResource Include="data\parser.csharp" />
       <EmbeddedResource Include="data\whileGrammar.txt" />
       <None Remove="data\gammar1.txt" />

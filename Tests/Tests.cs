@@ -23,8 +23,7 @@ public class Tests
         var grammar = fs.ReadAllText("/data/grammar1.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "MyParser1");
-        Check.That(model.IsError).IsFalse();
-        Check.That(model.Value).IsNotNull();
+        Check.That(model).IsOkModel();
         var dot = builder.Getz(grammar, "2 + 2", "MyParser1", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
         Check.That(dot.IsError).IsFalse();
 
@@ -38,8 +37,7 @@ public class Tests
         var grammar = fs.ReadAllText("/data/grammarWithImplicits.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "MyParser1");
-        Check.That(model.IsError).IsFalse();
-        Check.That(model.Value).IsNotNull();
+        Check.That(model).IsOkModel();
         var parserGenerator = new ParserGenerator();
         var source = parserGenerator.GenerateParser(model.Value, "ns","int");
         Check.That(source).IsNotNull();
@@ -54,8 +52,7 @@ public class Tests
         var grammar = fs.ReadAllText("/data/grammarWithImplicits.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "MyParser1");
-        Check.That(model.IsError).IsFalse();
-        Check.That(model.Value).IsNotNull();
+        Check.That(model).IsOkModel();
         var dot = builder.Getz(grammar, "2 + 2", "MyParser1", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
         Check.That(dot.IsError).IsFalse();
 
@@ -68,8 +65,8 @@ public class Tests
         var grammar = fs.ReadAllText("/data/whileGrammar.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "WhileParser");
-        Check.That(model.IsError).IsFalse();
-        Check.That(model.Value).IsNotNull();
+        Check.That(model).IsOkModel();
+        
         var dot = builder.Getz(grammar, "(a:=0; while a < 10 do (print a; a := a +1 ))", "WhileParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
         Check.That(dot.IsError).IsFalse();
     }
@@ -81,8 +78,7 @@ public class Tests
         var grammar = fs.ReadAllText("/data/whileGrammar.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "WhileParser");
-        Check.That(model.IsError).IsFalse();
-        Check.That(model.Value).IsNotNull();
+        Check.That(model).IsOkModel();
         var parserGenerator = new ParserGenerator();
         var source = parserGenerator.GenerateParser(model.Value, "ns","int");
         Check.That(source).IsNotNull();
@@ -133,8 +129,7 @@ public class Tests
         var grammar = fs.ReadAllText("/data/minimalGrammar.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "MinimalParser");
-        Check.That(model.IsError).IsFalse();
-        Check.That(model.Value).IsNotNull();
+        Check.That(model).IsOkModel();
         var lexerGenerator = new LexerGenerator();
         var source = lexerGenerator.GenerateLexer(model.Value.LexerModel, "ns");
         Check.That(source).IsNotNull();
@@ -175,8 +170,8 @@ public class Tests
         {
             model.Error.ForEach(Console.WriteLine);
         }
-        Check.That(model.IsError).IsFalse();
-        Check.That(model.Value).IsNotNull();
+
+        Check.That(model).IsOkModel();
         var json = builder.Getz(grammar, "( * / - + ]", "grammarX", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToJson)});
         if (json.IsError)
         {
@@ -196,8 +191,7 @@ public class Tests
         var grammar = fs.ReadAllText("/data/grammarX.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "grammarX");
-        Check.That(model.IsError).IsFalse();
-        Check.That(model.Value).IsNotNull();
+        Check.That(model).IsOkModel();
         var parserGenerator = new ParserGenerator();
         var source = parserGenerator.GenerateParser(model.Value, "ns","object");
         Check.That(source).IsNotNull();

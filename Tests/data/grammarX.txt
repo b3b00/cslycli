@@ -15,7 +15,6 @@ genericLexer MyLexer1;
 
 parser MyParser1;
 
-# operations 
 
 -> root : [LPAREN | RPAREN] ? [PLUS | MINUS | TIMES | DIVIDE] + [LBRACK | RBRACK] *   ;     
 

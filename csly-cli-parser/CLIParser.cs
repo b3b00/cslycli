@@ -5,8 +5,11 @@ using csly.cli.model.parser;
 using sly.lexer;
 using sly.parser.generator;
 using sly.parser.parser;
+using Range = csly.cli.model.lexer.Range;
 
 namespace csly.cli.parser;
+
+
 
 public class CLIParser
 {
@@ -92,7 +95,86 @@ public class CLIParser
         }
         
         return new TokenModel(tokenType, id.Value, idType);
-    } 
+    }
+
+    [Production("token : LEFTBRACKET[d] EXTENSIONTOKEN[d] RIGHTBRACKET[d] ID extension ")]
+    public ICLIModel ExtensionToken(Token<CLIToken> id, ICLIModel extension, ParserContext context)
+    {
+        (extension as ExtensionTokenModel).Name = id.Value;
+        context.AddEnumName(id.Value);
+        return (extension as ExtensionTokenModel);
+    }
+
+    #region lexer extensions
+
+    [Production("extension : OPEN_EXT[d] transition* ARROW[d] END[d] CLOSE_EXT[d]")]
+    public ICLIModel Extension(List<ICLIModel> transitions, ParserContext context)
+    {
+        var ext = new ExtensionTokenModel(null, transitions.Cast<ITransition>().ToList());        
+        return ext;
+    }
+    
+    [Production("transition : ARROW[d] pattern repeater? (AT[d] ID)?")]
+    public ICLIModel Transition(ICLIModel pattern, ValueOption<ICLIModel> repeater, ValueOption<Group<CLIToken, ICLIModel>> id, ParserContext context)
+    {
+        var transition = pattern as ITransition;
+        var t = repeater.Match((x) =>
+            {
+                transition.Repeater = x as TransitionRepeater;
+                return transition;
+            },
+            () => transition);
+        return t;
+    }
+
+    [Production("repeater : ZEROORMORE[d]")]
+    public ICLIModel RepeatZeroOrMore(ParserContext context)
+    {
+        return new TransitionRepeater(RepeaterType.ZeroOrMore);
+    }
+    
+    [Production("repeater : ONEORMORE[d]")]
+    public ICLIModel RepeatOneOrMore(ParserContext context)
+    {
+        return new TransitionRepeater(RepeaterType.OneOrMore);
+    }
+    
+    [Production("repeater : LEFTCURL[d] INT RIGHTCURL[d]")]
+    public ICLIModel RepeatMany(Token<CLIToken> many, ParserContext context)
+    {
+        return new TransitionRepeater(RepeaterType.Count, many.IntValue);
+    }
+    
+
+    [Production("pattern : CHAR")]
+    public ICLIModel SinglePattern(Token<CLIToken> single, ParserContext context)
+    {
+        return new CharacterTransition(single.CharValue);
+    }
+    
+    
+    [Production("pattern : LEFTBRACKET[d] range (COMMA[d] range)* RIGHTBRACKET[d]")]
+    public ICLIModel RangePattern(ICLIModel headRange, List<Group<CLIToken, ICLIModel>> tailsRanges, ParserContext context)
+    {
+        List<Range> ranges = new List<Range>() { headRange as Range };
+        var tail = tailsRanges.Select(x =>
+        {
+            var xx = x.Value(0) as Range;
+            return xx;
+        }).ToList();
+        ranges.AddRange(tail);
+
+        return new RangeTransition(ranges);
+
+    }
+    
+    [Production("range : CHAR DASH[d] CHAR")]
+    public ICLIModel RangeDefinition(Token<CLIToken> start, Token<CLIToken> end, ParserContext context)
+    {
+        return new Range(start.CharValue, end.CharValue);
+    }
+    
+    #endregion
     
   #endregion
 

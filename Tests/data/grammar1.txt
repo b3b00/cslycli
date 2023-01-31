@@ -12,7 +12,6 @@ genericLexer MyLexer1;
 
 parser MyParser1;
 
-# operations 
 
        
 [Right 10] PLUS;
@@ -24,12 +23,9 @@ parser MyParser1;
 [Postfix 110] '--'; 
 
 
-# operands
-
 [Operand] operand : INT;
 [Operand] operand : LPAREN MyParser1_expressions RPAREN; 
 
-# statements
 
 -> expression :  MyParser1_expressions ;
 

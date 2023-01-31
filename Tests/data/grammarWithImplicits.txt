@@ -8,8 +8,6 @@ genericLexer MyLexer1;
 parser MyParser1;
 
 
-# statements
-
 -> expression :  term ['+' | '-'] expression ;
 
 expression : term;

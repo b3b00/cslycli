@@ -9,7 +9,11 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-4.final" />
-        <PackageReference Include="sly" Version="2.9.2.1" />
+        
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="sly" Version="2.9.4.2-alpha" />
     </ItemGroup>
 
 </Project>

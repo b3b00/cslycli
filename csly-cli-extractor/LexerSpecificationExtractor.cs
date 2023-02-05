@@ -136,15 +136,15 @@ public class LexerSpecificationExtractor
         }
         else if (type == "AlphaNumId")
         {
-            Lexeme(name, GenericToken.Identifier, IdentifierType.AlphaNumeric.ToString());
+            return Lexeme(name, GenericToken.Identifier, IdentifierType.AlphaNumeric.ToString());
         }
         else if (type == "AlphaId")
         {
-            Lexeme(name, GenericToken.Identifier, IdentifierType.Alpha.ToString());
+            return Lexeme(name, GenericToken.Identifier, IdentifierType.Alpha.ToString());
         }
         else if (type == "AlphaNumDashId")
         {
-            Lexeme(name, GenericToken.Identifier, IdentifierType.AlphaNumericDash.ToString());
+            return Lexeme(name, GenericToken.Identifier, IdentifierType.AlphaNumericDash.ToString());
         }
         else if (type == "String")
         {

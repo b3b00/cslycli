@@ -245,6 +245,20 @@ public class LexerGenerator
 
                         break;
                     }
+                    case GenericToken.Char:
+                    {
+                        string args = token.Args.Any() ? string.Join(", ", token.Args.Select(x => $@"""{x}""")) : "";
+                        if (string.IsNullOrEmpty(args))
+                        {
+                            builder.AppendLine("\t\t[String]");
+                        }
+                        else
+                        {
+                            builder.AppendLine($"\t\t[String({args})]");
+                        }
+
+                        break;
+                    }
                     case GenericToken.KeyWord:
                     {
                         builder.AppendLine($"\t\t[Keyword(\"{token.Args[0]}\")]");

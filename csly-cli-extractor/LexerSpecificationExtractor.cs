@@ -66,6 +66,18 @@ public class LexerSpecificationExtractor
             {
                 return $"[Int] {name};";
             }
+            case GenericToken.Char:
+            {
+                StringBuilder b = new StringBuilder();
+                b.Append("[Character] ").Append(name);
+                if (args.Length == 2)
+                {
+                    b.Append($" : '{args[0].Replace("'","''")}' '{args[1].Replace("'","''")}'");
+                }
+
+                b.Append(";");
+                return b.ToString();
+            }
             case GenericToken.String:
             {
                 StringBuilder b = new StringBuilder();
@@ -138,6 +150,10 @@ public class LexerSpecificationExtractor
         {
             return Lexeme(name, GenericToken.String, args);
         }
+        else if (type == "Character")
+        {
+            return Lexeme(name, GenericToken.Char, args);
+        }
         else if (type == "Lexeme")
         {
             var t = args[0];
@@ -148,7 +164,29 @@ public class LexerSpecificationExtractor
             }
         }
 
-        return $"[{type}] {name};";
+        if (type == "Mode")
+        {
+            if (args.Any())
+            {
+                var t = string.Join(", ",args.Select(x => $@"""{x}"""));
+                return $@"[Mode(""{t}"")]";
+            }
+
+            return "[Mode]";
+        }
+        
+        if (type == "Push")
+        {
+            if (args.Any())
+            {
+                var t = string.Join(", ",args.Select(x => $@"""{x}"""));
+                return $@"[Push(""{t}"")]";
+            }
+
+            return "[Push]";
+        }
+
+        return $"[{type}]";
 
     }
 
@@ -178,7 +216,22 @@ public class LexerSpecificationExtractor
                 if (member.AttributeLists.Any())
                 {
                     var attributes = member.AttributeLists;
-                    foreach (var attr in attributes.SelectMany(x => x.Attributes))
+                    var modeAttributes = new List<string>() { "Mode", "Push,Pop" };
+                    
+                    foreach (var attr in attributes.SelectMany(x => x.Attributes).Where(x => modeAttributes.Contains(x.Name.ToString())))
+                    {
+                        string[] pstrings = new string[] { };
+                        if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
+                        {
+                            pstrings = attr.ArgumentList.Arguments.Select(x => x.Expression.ExprToString()).ToArray();
+                        }
+
+                        var lexeme = Lexeme(member.Identifier.Text, attr.Name.ToString(), pstrings);
+                        builder.AppendLine(lexeme);
+
+                    }
+                    
+                    foreach (var attr in attributes.SelectMany(x => x.Attributes).Where(x => !modeAttributes.Contains(x.Name.ToString())))
                     {
                         string[] pstrings = new string[] { };
                         if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())

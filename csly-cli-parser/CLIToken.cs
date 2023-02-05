@@ -45,6 +45,7 @@ public enum CLIToken
     
     
     [Keyword("String")] STRINGTOKEN,
+    [Keyword("Character")] CHARTOKEN,
     [Keyword("Int")] INTTOKEN,
     [Keyword("Double")] DOUBLETOKEN,
     [Keyword("AlphaId")] ALPHAIDTOKEN,
@@ -62,24 +63,10 @@ public enum CLIToken
     [AlphaNumDashId] 
     [Mode("default","EXT")]
     ID,
-        
-    
-    // [Mode("EXT")]
-    // [Push("RANGE")]
-    // [Sugar("[[")] LEFTBRACKETBRACKET,
-    // [Mode("EXT")]
-    // [Pop]
-    // [Mode("RANGE")]
-    // [Sugar("]]")] RIGHTBRACKETBRACKET,
     
     [Mode("EXT")]
     [Character("'","\\")]
     CHAR,
-    
-    // [Mode("RANGE")]
-    // [Extension]
-    // RANGE,
-    
         
     [Sugar("*")]
     [Mode("default","EXT")]
@@ -94,8 +81,6 @@ public enum CLIToken
         
     [Sugar("[d]")]
     DISCARD,
-        
-   
         
     [Sugar("|")]
     OR,
@@ -132,7 +117,7 @@ public enum CLIToken
     [Sugar("}")]
     RIGHTCURL,
     
-    [Mode("EXT","RANGE")]
+    [Mode("EXT")]
     [Sugar(",")]
     COMMA,
     
@@ -146,7 +131,5 @@ public enum CLIToken
     [Sugar("<<<")]
     CLOSE_EXT,
     
-    // [Extension]
-    // [Mode("EXT")]
-    // CHAR
+   
 }

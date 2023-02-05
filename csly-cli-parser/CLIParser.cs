@@ -55,12 +55,13 @@ public class CLIParser
     }
     
     [Production(
-        "token :LEFTBRACKET[d] [STRINGTOKEN|MULTILINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING STRING SEMICOLON[d]")]
+        "token :LEFTBRACKET[d] [STRINGTOKEN|CHARTOKEN|MULTILINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING STRING SEMICOLON[d]")]
     public ICLIModel TwoArgToken(Token<CLIToken> type, Token<CLIToken> id, Token<CLIToken> arg1, Token<CLIToken> arg2, ParserContext context)
     {
         var tokenType = type.TokenID switch
         {
             CLIToken.STRINGTOKEN => GenericToken.String,
+            CLIToken.CHARTOKEN => GenericToken.Char,
             CLIToken.MULTILINECOMMENT => GenericToken.Comment,
             _ => GenericToken.SugarToken
         };

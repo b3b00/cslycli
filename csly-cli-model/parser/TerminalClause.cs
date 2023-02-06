@@ -15,6 +15,8 @@ namespace csly.cli.model.parser
         
         public string ImplicitToken { get; set; }
         
+        public bool IsDiscarded { get; set; }
+        
         public TerminalClause(bool isImplicit, string value)
         {
             IsImplicit = isImplicit;

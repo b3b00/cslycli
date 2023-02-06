@@ -56,6 +56,9 @@ public enum CLIToken
     [Keyword("SingleLineComment")] SINGLELINECOMMENT,
     [Keyword("MultiLineComment")] MULTILINECOMMENT,
     [Keyword("Extension")] EXTENSIONTOKEN,
+    [Keyword("Push")] PUSH,
+    [Keyword("Mode")] MODE,
+    [Keyword("Pop")] POP,
     
     
     
@@ -117,7 +120,7 @@ public enum CLIToken
     [Sugar("}")]
     RIGHTCURL,
     
-    [Mode("EXT")]
+    [Mode("default","EXT")]
     [Sugar(",")]
     COMMA,
     

@@ -33,11 +33,69 @@ public class CLIParser
 
   
     
-    [Production("genericRoot : GENERICLEXER[d] ID SEMICOLON[d]  token*")]
+    [Production("genericRoot : GENERICLEXER[d] ID SEMICOLON[d]  modedToken*")]
     public ICLIModel Lexer(Token<CLIToken> name, List<ICLIModel> tokens, ParserContext context)
     {
         return new LexerModel(tokens.Cast<TokenModel>().ToList(), name.Value);
     }
+
+    [Production("modedToken : mode* token")]
+    public ICLIModel ModedToken(List<ICLIModel> modes, ICLIModel token, ParserContext context)
+    {
+        TokenModel model = token as TokenModel;
+        foreach (var mode in modes)
+        {
+            switch (mode)
+            {
+                case PopModel pop:
+                {
+                    model.IsPop = true;
+                    break;
+                }
+                case PushModel push:
+                {
+                    model.PushMode = push.Target;
+                    break;
+                }
+                case ModeModel mod :
+                {
+                    model.AddModes(mod.Modes);
+                    break;
+                }
+            }
+        }
+        
+        return model;
+    }
+
+    [Production("mode : LEFTBRACKET[d] PUSH[d] LEFTPAREN[d] STRING RIGHTPAREN[d] RIGHTBRACKET[d]")]
+    public ICLIModel Push(Token<CLIToken> push, ParserContext context)
+    {
+        return new PushModel(push.StringWithoutQuotes);
+    }
+    
+    [Production("mode : LEFTBRACKET[d] POP[d] RIGHTBRACKET[d]")]
+    public ICLIModel Pop(ParserContext context)
+    {
+        return new PopModel();
+    }
+    
+    [Production("mode : LEFTBRACKET[d] MODE[d] LEFTPAREN[d] STRING (COMMA[d] STRING )* RIGHTPAREN[d] RIGHTBRACKET[d]")]
+    public ICLIModel Modes(Token<CLIToken> mode, List<Group<CLIToken,ICLIModel>> modes, ParserContext context)
+    {
+        var mods = modes.Select(x => x.Token(0).StringWithoutQuotes).ToList();
+        
+        return new ModeModel(mode.StringWithoutQuotes, mods);
+    }
+    
+    [Production("mode : LEFTBRACKET[d] MODE[d] RIGHTBRACKET[d]")]
+    public ICLIModel ModeDefault(ParserContext context)
+    {
+        return new ModeModel(new List<string>());
+    }
+    
+    
+    
 
     [Production(
         "token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN|SINGLELINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d]")]
@@ -251,6 +309,12 @@ public class CLIParser
             return new OptionClause(item);
         }
        
+        [Production("clause :discardeditem")]
+        public IClause DiscardedClause(IClause item, ParserContext context)
+        {
+            return item;
+        }
+        
 
         [Production("clause : item ")]
         public IClause SimpleClause(IClause item, ParserContext context)
@@ -303,13 +367,32 @@ public class CLIParser
         [Production("clause : group")]
         public IClause GroupClause(IClause group) => group;
         
-        [Production("group : LEFTPAREN[d]  item* RIGHTPAREN[d] ")]
+        [Production("group : LEFTPAREN[d] discardeditem* RIGHTPAREN[d] ")]
         public GroupClause Group( List<ICLIModel> clauses, ParserContext context)
         {
-            var group = new GroupClause(clauses[0] as IClause);
-            group.Clauses.AddRange(clauses.Skip(1).Cast<IClause>());
+            var group = new GroupClause(clauses.Cast<IClause>().ToList());
             return group;;
         }
+
+        [Production("discardeditem : item DISCARD?")]
+        public ICLIModel discardedItem(ICLIModel item, Token<CLIToken> discard, ParserContext context)
+        {
+            if (item is TerminalClause term)
+            {
+                term.IsDiscarded = true;
+            }
+            else if( item is NonTerminalClause nonterm)
+            {
+                if (!discard.IsEmpty)
+                {
+                    throw new ArgumentException(
+                        $" non terminal clause {nonterm.NonTerminalName} can not be discarded ! {discard.Position.Line}");
+                }
+            }
+
+            return item;
+        }
+        
         
         [Production("clause : group ONEORMORE[d] ")]
         public IClause GroupOneOrMore( GroupClause group, ParserContext context)

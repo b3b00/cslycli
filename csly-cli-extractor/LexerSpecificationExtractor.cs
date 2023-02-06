@@ -168,8 +168,8 @@ public class LexerSpecificationExtractor
         {
             if (args.Any())
             {
-                var t = string.Join(", ",args.Select(x => $@"""{x}"""));
-                return $@"[Mode(""{t}"")]";
+                var t = string.Join(", ",args.Select(x => $"'{x}'"));
+                return $@"[Mode({t})]";
             }
 
             return "[Mode]";
@@ -179,8 +179,8 @@ public class LexerSpecificationExtractor
         {
             if (args.Any())
             {
-                var t = string.Join(", ",args.Select(x => $@"""{x}"""));
-                return $@"[Push(""{t}"")]";
+                var t = string.Join(", ",args.Select(x => $"'{x}'"));
+                return $@"[Push({t})]";
             }
 
             return "[Push]";
@@ -217,8 +217,9 @@ public class LexerSpecificationExtractor
                 {
                     var attributes = member.AttributeLists;
                     var modeAttributes = new List<string>() { "Mode", "Push,Pop" };
-                    
-                    foreach (var attr in attributes.SelectMany(x => x.Attributes).Where(x => modeAttributes.Contains(x.Name.ToString())))
+                    var modes = attributes.SelectMany(x => x.Attributes)
+                        .Where(x => modeAttributes.Contains(x.Name.ToString()));
+                    foreach (var attr in modes)
                     {
                         string[] pstrings = new string[] { };
                         if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())

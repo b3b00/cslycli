@@ -9,14 +9,25 @@ namespace csly.cli.model.parser
     [DebuggerDisplay("{ToString()}")]
     public class GroupClause : IClause
     {
-        public GroupClause(IClause clause)
+
+        public GroupClause()
         {
-            Clauses = new List<IClause> {clause};
+            Clauses = new List<IClause>();
+        }
+
+        public GroupClause(IClause clause) : this()
+        {
+            Clauses.Add(clause);
         }
      
         public GroupClause(ChoiceClause choices)
         {
             Clauses = new List<IClause> {choices};
+        }
+        
+        public GroupClause(List<IClause> choices)
+        {
+            Clauses = choices;
         }
 
         public List<IClause> Clauses { get; set; }
@@ -27,6 +38,11 @@ namespace csly.cli.model.parser
             return true;
         }
 
+        public void AddRange(List<IClause> clauses)
+        {
+            Clauses.AddRange(clauses);
+        }
+        
         public void AddRange(GroupClause clauses)
         {
             Clauses.AddRange(clauses.Clauses);

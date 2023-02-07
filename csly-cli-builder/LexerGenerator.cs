@@ -197,6 +197,23 @@ public class LexerGenerator
 
     private string GetBody(LexerModel model)
     {
+        
+        Func<string, string> escapeChars = s =>
+        {
+
+            if (s == "\"")
+            {
+                return "\\\"";
+            }
+
+            if (s == "\\")
+            {
+                return "\\\\";
+            }
+
+            return s;
+        };
+        
         StringBuilder builder = new StringBuilder();
         builder.AppendLine();
         foreach (var tokens in model.TokensByName)
@@ -233,7 +250,9 @@ public class LexerGenerator
                     }
                     case GenericToken.String:
                     {
-                        string args = token.Args.Any() ? string.Join(", ", token.Args.Select(x => $@"""{x}""")) : "";
+                        
+                        
+                        string args = token.Args.Any() ? string.Join(", ", token.Args.Select(x => $@"""{escapeChars(x)}""")) : "";
                         if (string.IsNullOrEmpty(args))
                         {
                             builder.AppendLine("\t\t[String]");
@@ -247,14 +266,14 @@ public class LexerGenerator
                     }
                     case GenericToken.Char:
                     {
-                        string args = token.Args.Any() ? string.Join(", ", token.Args.Select(x => $@"""{x}""")) : "";
+                        string args = token.Args.Any() ? string.Join(", ", token.Args.Select(x => $@"""{escapeChars(x)}""")) : "";
                         if (string.IsNullOrEmpty(args))
                         {
-                            builder.AppendLine("\t\t[String]");
+                            builder.AppendLine("\t\t[Character]");
                         }
                         else
                         {
-                            builder.AppendLine($"\t\t[String({args})]");
+                            builder.AppendLine($"\t\t[Character({args})]");
                         }
 
                         break;

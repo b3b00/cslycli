@@ -11,22 +11,28 @@ namespace csly.cli.parser;
 
 
 
+[ParserRoot("root")]
 public class CLIParser
 {
     [Production("root: genericRoot parserRoot ")] 
     public ICLIModel Root(ICLIModel genericLex, ICLIModel parser, ParserContext context)
     {
+        
         return new Model(genericLex as LexerModel, parser as ParserModel) ;
     }
 
     [Production("parserRoot : PARSER[d] ID SEMICOLON[d] rule*")]
     public ICLIModel Parser(Token<CLIToken> name, List<ICLIModel> rules, ParserContext context)
     {
-        return new ParserModel()
+        var model = new ParserModel()
         {
             Name = name.Value,
             Rules = rules.Cast<Rule>().ToList()
         };
+        var root = model.Rules.FirstOrDefault(x => x.IsRoot);
+
+        return model;
+
     }
     
     #region generic lexer
@@ -124,7 +130,7 @@ public class CLIParser
             _ => GenericToken.SugarToken
         };
         context.AddEnumName(id.Value);
-        return new TokenModel(tokenType,id.Value,arg1.StringWithoutQuotes, arg2.StringWithoutQuotes);
+        return new TokenModel(tokenType,id.Value,arg1.StringWithoutQuotes.Replace("\\\\","\\"), arg2.StringWithoutQuotes.Replace("\\\\","\\"));
     }
 
     [Production("token : LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d]")]
@@ -166,7 +172,7 @@ public class CLIParser
 
     #region lexer extensions
 
-    [Production("extension : OPEN_EXT[d] transition* ARROW[d] END[d] CLOSE_EXT[d]")]
+    [Production("extension : OPEN_EXT[d] transition* ARROW[d] ENDTOKEN[d] CLOSE_EXT[d]")]
     public ICLIModel Extension(List<ICLIModel> transitions, ParserContext context)
     {
         var ext = new ExtensionTokenModel(null, transitions.Cast<ITransition>().ToList());        
@@ -247,7 +253,7 @@ public class CLIParser
   }
   
 
-        [Production("rule  : ROOT ? operand? ID COLON[d] clause+ SEMICOLON[d]")]
+        [Production("rule  : ARROW ? operand? ID COLON[d] clause+ SEMICOLON[d]")]
         public GrammarNode Root(Token<CLIToken> root, ValueOption<ICLIModel> operand,Token<CLIToken> name, List<ICLIModel> clauses, ParserContext context)
         {
             var rule = new Rule(operand.IsSome);

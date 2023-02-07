@@ -23,6 +23,7 @@ public class Tests
         var grammar = fs.ReadAllText("/data/grammar1.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "MyParser1");
+        
         Check.That(model).IsOkModel();
         var dot = builder.Getz(grammar, "2 + 2", "MyParser1", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
         Check.That(dot.IsError).IsFalse();

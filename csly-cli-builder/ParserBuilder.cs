@@ -104,7 +104,7 @@ public class ParserBuilder
         builder.SetCustomAttribute(customAttributeBuilder);
     }
     
-    public Result<Model,List<string>> CompileModel(string modelSource, string parserName = "dynamicParser")
+    public Result<Model> CompileModel(string modelSource, string parserName = "dynamicParser")
     {
         ParserBuilder<CLIToken, ICLIModel> builder = new ParserBuilder<CLIToken, ICLIModel>();
         var instance = new CLIParser();
@@ -126,7 +126,7 @@ public class ParserBuilder
         else
         {
             // should not happen
-            return new Result<Model, List<string>>();
+            return new Result<Model>();
         }
     }
     
@@ -163,9 +163,6 @@ public class ParserBuilder
         var parseMethod = parserType.GetMethod("Parse", new[] { typeof(string), typeof(string) });
         var result = parseMethod.Invoke(parser, new object[] { source, null });
 
-        // TODO : check if parse returned error
-        
-        
         var ParseResultType = typeof(ParseResult<,>).MakeGenericType(buildResult.lexerType, typeof(object));
 
         var x = ParseResultType.GetProperty("IsError").GetValue(result) as bool?;
@@ -258,7 +255,7 @@ public class ParserBuilder
     }
     
     
-    private  void AddProduction(TypeBuilder builder, Rule rule)
+    private void AddProduction(TypeBuilder builder, Rule rule)
     {
 
         var parameters = rule.Clauses.Select(x => BuildTypeParameter(x)).ToArray();
@@ -286,13 +283,15 @@ public class ParserBuilder
     
     private int explicitPrefixCounter = 0;
     
-    private  void AddPrefix(TypeBuilder builder, PrefixRule prefix)
+    private void AddPrefix(TypeBuilder builder, PrefixRule prefix)
     {
         string name = prefix.Name;
+        string operatorName = prefix.Name;
         if (prefix.IsExplicit)
         {
             name = explicitPrefixCounter.ToString();
             explicitPrefixCounter++;
+            operatorName = $"'{operatorName}'";
         }
 
         var methodBuilder = AddMethod(builder, $"prefix_{name}", TokenType, ObjectType);
@@ -303,20 +302,23 @@ public class ParserBuilder
             new Type[3] { typeof(string),typeof(Associativity),typeof(int) });
             
         CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
-            constructorInfo, new object[] { prefix.Name,Associativity.Left,prefix.Precedence });
+            constructorInfo, new object[] { operatorName,Associativity.Left,prefix.Precedence });
 
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
     }
 
     private int explicitPostfixCounter = 0;
     
-    private  void AddPostfix(TypeBuilder builder, PostfixRule postfix)
+    private void AddPostfix(TypeBuilder builder, PostfixRule postfix)
     {
+        
         string name = postfix.Name;
+        string operatorName = postfix.Name;
         if (postfix.IsExplicit)
         {
             name = explicitPostfixCounter.ToString();
             explicitPostfixCounter++;
+            operatorName = $"'{operatorName}'";
         }
         
         var methodBuilder = AddMethod(builder, $"postfix_{name}", ObjectType,TokenType);
@@ -327,14 +329,18 @@ public class ParserBuilder
             new Type[3] { typeof(string),typeof(Associativity),typeof(int) });
             
         CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
-            constructorInfo, new object[] { postfix.Name,Associativity.Left,postfix.Precedence });
+            constructorInfo, new object[] { operatorName,Associativity.Left,postfix.Precedence });
 
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
     }
     
     private void AddInfix(TypeBuilder builder, InfixRule infix)
     {
-        //var methodBuilder =  builder.DefineMethod($"infix_{infix.Name}_{infix.Associativity}_{infix.Precedence}", default);
+        string operatorName = infix.Name;
+        if (infix.IsExplicit)
+        {
+            operatorName = $"'{operatorName}'";
+        }
 
         var methodBuilder = AddMethod(builder, $"infix_{infix.Name}_{infix.Associativity}_{infix.Precedence}",
             ObjectType, TokenType, ObjectType); 
@@ -345,7 +351,7 @@ public class ParserBuilder
             new Type[3] { typeof(string),typeof(Associativity),typeof(int) });
             
         CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
-            constructorInfo, new object[] { infix.Name,infix.Associativity,infix.Precedence });
+            constructorInfo, new object[] { operatorName, infix.Associativity, infix.Precedence });
 
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
     }

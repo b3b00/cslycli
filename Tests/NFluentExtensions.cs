@@ -98,4 +98,15 @@ public static class NFluentParseExtensions
                     "{expected} is expected to have 1 and only 1 element.");
             return ExtensibilityHelper.BuildCheckLink(context);
         }
+        
+        public static ICheckLink<ICheck<Result<T>>> IsOk<T>(this ICheck<Result<T>> context) 
+        {
+            ExtensibilityHelper.BeginCheck(context)
+                .FailWhen(sut => sut.IsError, "parser has failed. found {checked}.")
+                .FailWhen(sut => sut.Error != null && sut.Error.Any() , "parser has errors. found {checked}")
+                .DefineExpectedValue("no error expected")
+                .OnNegate("no error found.")
+                .EndCheck();
+            return ExtensibilityHelper.BuildCheckLink(context);
+        }
     }

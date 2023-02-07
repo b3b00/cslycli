@@ -2,13 +2,13 @@ genericLexer MyLexer1;
 
 [Int] INT;
 
-[Sugar] PLUS : '+';
-[Sugar] MINUS : '-';
-[Sugar] TIMES : '*';
-[Sugar] DIVIDE : '/';
+[Sugar] PLUS : "+";
+[Sugar] MINUS : "-";
+[Sugar] TIMES : "*";
+[Sugar] DIVIDE : "/";
 
-[Sugar] LPAREN : '(';
-[Sugar] RPAREN : ')';
+[Sugar] LPAREN : "(";
+[Sugar] RPAREN : ")";
 
 parser MyParser1;
 
@@ -20,7 +20,7 @@ parser MyParser1;
 [Left 50]DIVIDE;
 
 [Prefix 100] MINUS;
-[Postfix 110] '--'; 
+[Postfix 110] "--"; 
 
 
 [Operand] operand : INT;

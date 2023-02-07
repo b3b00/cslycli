@@ -14,14 +14,22 @@ public class MetaTests
 {
    
     [Fact]
-    public void MetaMetaTest()
+    public void CompileCLIModelThenGenerateCLIModelSourceThenSelfParseCLIModel()
     {
+        
+        //
+        // 1. compile model form meta.txt
+        //
         EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
         var grammar = fs.ReadAllText("/data/meta.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "GrammarParser");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
+        
+        //
+        // 1. generate C# source from model
+        //
         var parserGenerator = new ParserGenerator();
         var source = parserGenerator.GenerateParser(model.Value, "grammar","object");
         Check.That(source).IsNotNull();
@@ -30,6 +38,10 @@ public class MetaTests
         source = lexerGenerator.GenerateLexer(model.Value.LexerModel, "grammar");
         Check.That(source).IsNotNull();
         Check.That(source).IsNotEmpty();
+        
+        //
+        // 3. parse CLI spec with itself
+        //
         var json = builder.Getz(grammar, grammar, "GrammarParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToJson)});
         Check.That(json.IsError).IsFalse();
         var content = json.Value.First().content;
@@ -91,14 +103,22 @@ public class MetaTests
     }
     
     [Fact]
-    public void ReallyMetaTest()
+    public void FromCLISpecToSourceToSpec()
     {
         EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        
+        //
+        // 1. compile model form meta.txt
+        //
         var grammar = fs.ReadAllText("/data/meta.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "GrammarParser");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
+        
+        // 
+        // 2. generate source from compiled model 
+        //
         var parserGenerator = new ParserGenerator();
         var parserSource = parserGenerator.GenerateParser(model.Value, "grammar","object");
         Check.That(parserSource).IsNotNull();
@@ -108,6 +128,9 @@ public class MetaTests
         Check.That(lexerSource).IsNotNull();
         Check.That(lexerSource).IsNotEmpty();
 
+        //
+        // 3. extract specification from generated source
+        //
         var extractor = new SpecificationExtractor();
         var specification = extractor.ExtractFromSource(lexerSource, parserSource);
         

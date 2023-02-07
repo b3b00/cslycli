@@ -127,7 +127,7 @@ public class ExtractionTests
     
     
     [Fact]
-    public void TestManyLexemGrammarCompileThenDecompileTest()
+    public void TestManyLexemGrammarCompileThenDecompileThenTest_ManyLexemes()
     {
         CultureInfo ci = new CultureInfo("en-US");
         Thread.CurrentThread.CurrentCulture = ci;
@@ -136,7 +136,7 @@ public class ExtractionTests
         var grammar = fs.ReadAllText("/data/manyLexemes.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "Many");
-        Check.That(model.IsError).IsFalse();
+        Check.That(model).IsOk();
         var errors = model.Error;
 
         var p = builder.BuildParser(model);
@@ -159,6 +159,41 @@ public class ExtractionTests
         Check.That(if1.Value<string>()).IsEqualTo("if");
         var if2 = o.SelectToken(".Children[0].Children[1].Token.Value");
         Check.That(if2.Value<string>()).IsEqualTo("IF");
+    }
+    
+    [Fact]
+    public void TestManyLexemGrammarCompileThenDecompileThenTest_Grammar1()
+    {
+        CultureInfo ci = new CultureInfo("en-US");
+        Thread.CurrentThread.CurrentCulture = ci;
+        Thread.CurrentThread.CurrentUICulture = ci;
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/grammar1.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MyParser1");
+        Check.That(model).IsOkModel();
+        var errors = model.Error;
+
+        var p = builder.BuildParser(model);
+        Check.That(p.lexerType).IsNotNull();
+        Check.That(p.parserType).IsNotNull();
+
+        var decompiler = new Decompiler();
+        var decompiled = decompiler.Decompile(p.lexerType, p.parserType);
+        Check.That(decompiled).IsNotNull().And.IsNotEmpty();
+        builder.CompileModel(decompiled, "Many");
+        
+        var parseResult = builder.Getz(decompiled, "123 --", "MyParser1", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)}, rootRule:"expression");
+        Check.That(parseResult.IsError).IsFalse();
+        var r = parseResult.Value[0];
+        Check.That(r.format).IsEqualTo("JSON");
+        Check.That(r.content).IsNotNull().And.IsNotEmpty();
+        var json = r.content;
+        var o = JsonConvert.DeserializeObject<JObject>(json);
+        var if1 = o.SelectTokens("$..Token.Value");
+        var tokens = if1.ToList().Select(x => x.Value<string>()).ToList();
+        Check.That(tokens).ContainsExactly(new List<string>() { "123", "--", "--" });
+        ;
     }
     
     

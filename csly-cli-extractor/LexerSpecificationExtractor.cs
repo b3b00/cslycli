@@ -18,11 +18,11 @@ public class LexerSpecificationExtractor
             {
                 if (args.Length == 1)
                 {
-                    return $"[SingleLineComment] {name} : '{args[0].Replace("'","''")}';";
+                    return $"[SingleLineComment] {name} : \"{args[0].Replace("\"","\\\"")}\";";
                 }
                 else if (args.Length == 2)
                 {
-                    return $"[MultiLineComment] {name} : '{args[0].Replace("'","''")}' '{args[1].Replace("'","''")}';";
+                    return $"[MultiLineComment] {name} : \"{args[0].Replace("\"","\\\"")}\" \"{args[1].Replace("\"","\\\"")}\";";
                 }
 
                 break;
@@ -72,7 +72,7 @@ public class LexerSpecificationExtractor
                 b.Append("[Character] ").Append(name);
                 if (args.Length == 2)
                 {
-                    b.Append($" : '{args[0].Replace("'","''")}' '{args[1].Replace("'","''")}'");
+                    b.Append($" : \"{args[0].Replace("\"","\\\"")}\" \"{args[1].Replace("\\","\\\\").Replace("\"","\\\"")}\"");
                 }
 
                 b.Append(";");
@@ -84,7 +84,7 @@ public class LexerSpecificationExtractor
                 b.Append("[String] ").Append(name);
                 if (args.Length == 2)
                 {
-                    b.Append($" : '{args[0].Replace("'","''")}' '{args[1].Replace("'","''")}'");
+                    b.Append($" : \"{args[0].Replace("\"","\\\"")}\" \"{args[1].Replace("\\","\\\\").Replace("\"","\\\"")}\"");
                 }
 
                 b.Append(";");
@@ -92,11 +92,11 @@ public class LexerSpecificationExtractor
             }
             case GenericToken.KeyWord:
             {
-                return $"[KeyWord] {name} : '{args[0].Replace("'","''")}';";
+                return $"[KeyWord] {name} : \"{args[0].Replace("\"","\\\"")}\";";
             }
             case GenericToken.SugarToken:
             {
-                return $"[Sugar] {name} : '{args[0].Replace("'","''")}';";
+                return $"[Sugar] {name} : \"{args[0].Replace("\"","\\\"")}\";";
             }
             default:
             {
@@ -168,7 +168,7 @@ public class LexerSpecificationExtractor
         {
             if (args.Any())
             {
-                var t = string.Join(", ",args.Select(x => $"'{x}'"));
+                var t = string.Join(", ",args.Select(x => $@"""{x}"""));
                 return $@"[Mode({t})]";
             }
 
@@ -179,7 +179,7 @@ public class LexerSpecificationExtractor
         {
             if (args.Any())
             {
-                var t = string.Join(", ",args.Select(x => $"'{x}'"));
+                var t = string.Join(", ",args.Select(x => $@"""{x}"""));
                 return $@"[Push({t})]";
             }
 

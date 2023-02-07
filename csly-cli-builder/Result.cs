@@ -2,6 +2,49 @@
 
 namespace clsy.cli.builder;
 
+public class Result<T> : Result<T, List<string>>
+{
+    public Result() : base()
+    {
+    }
+    
+    public Result(T value) : base(value)
+    {
+    }
+
+    public Result(List<string> error) : base (error)
+    {
+    }
+
+    public static implicit operator T(Result<T> r) {
+        return r.result;
+    } 
+    
+    public static implicit operator List<string>(Result<T> r) {
+        return r.error;
+    } 
+    
+    public static implicit operator Result<T>(T value)
+    {
+        return new Result<T>(value);
+    }
+
+    public static implicit operator  Result<T>(List<string> error)
+    {
+        return new Result<T>(error);
+    }
+    
+    public override string ToString()
+    {
+        if (IsError)
+        {
+            return "ERROR\n"+string.Join("\n", Error as List<string>);
+        }
+
+        return "OK";
+    }
+}
+
 public class Result<T,E> 
 {
     internal readonly T result;
@@ -51,6 +94,16 @@ public class Result<T,E>
     public static implicit operator  Result<T,E>(E error)
     {
         return new Result<T, E>(error);
+    }
+
+    public override string ToString()
+    {
+        if (IsError)
+        {
+            return "ERROR\n"+string.Join("\n", Error);
+        }
+
+        return "OK";
     }
     
 }

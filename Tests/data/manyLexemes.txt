@@ -1,14 +1,14 @@
 genericLexer ManyLex;
 
-[KeyWord] IF : 'if';
-[KeyWord] IF : 'IF';
+[KeyWord] IF : "if";
+[KeyWord] IF : "IF";
 
 [Double] DBL;
 [Int] INT;
 [AlphaId] ID;
 
-[SingleLineComment] SINGLE : '//';
-[MultiLineComment] MULTI : '/*' '*/';
+[SingleLineComment] SINGLE : "//";
+[MultiLineComment] MULTI : "/*" "*/";
 
 parser ManyParse;
 

@@ -55,27 +55,27 @@ public class LexerDecompiler
                 {
                     if (lexem.GenericTokenParameters.Length == 1)
                     {
-                        return $"[SingleLineComment] {name} : '{lexem.GenericTokenParameters[0].Replace("'","''")}';";
+                        return $@"[SingleLineComment] {name} : ""{lexem.GenericTokenParameters[0].Replace("'","''")}"";";
                     }
                     else
                     {
-                        return $"[SingleLineComment] {name} : '{lexem.GenericTokenParameters[0].Replace("'","''")} {lexem.GenericTokenParameters[1].Replace("'","''")}';";
+                        return $@"[MultiLineComment] {name} : ""{lexem.GenericTokenParameters[0].Replace("'","''")} {lexem.GenericTokenParameters[1].Replace("'","''")}"";";
                     }
                 }
                 case GenericToken.KeyWord:
                 {
-                    return $"[KeyWord] {name} : '{lexem.GenericTokenParameters[0].Replace("'","''")}';";
+                    return $@"[KeyWord] {name} : ""{lexem.GenericTokenParameters[0].Replace("'","''")}"";";
                 }
                 case GenericToken.SugarToken:
                 {
-                    return $"[Sugar] {name} : '{lexem.GenericTokenParameters[0].Replace("'","''")}';";
+                    return $@"[Sugar] {name} : ""{lexem.GenericTokenParameters[0].Replace("'","''")}"";";
                 }
                 case GenericToken.String:
                 {
                     
                     if (lexem.GenericTokenParameters.Any())
                     {
-                        var args =lexem.GenericTokenParameters.Select(x => $"'{x.Replace("'", "''")}'").ToList();
+                        var args =lexem.GenericTokenParameters.Select(x => $@"""{x.Replace("'", "''")}""").ToList();
                         return $"[String] {name} : {string.Join(" ", args)};";
                     }
                     return $"[String] {name};";

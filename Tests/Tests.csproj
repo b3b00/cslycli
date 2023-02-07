@@ -30,7 +30,7 @@
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
       <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj" />
-        <PackageReference Include="sly" Version="2.9.4.2-alpha2" />
+        <PackageReference Include="sly" Version="2.9.4.2-alpha3" />
     </ItemGroup>
 
     <ItemGroup>

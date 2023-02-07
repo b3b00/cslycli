@@ -23,7 +23,7 @@
         "IndentationLevel": 0,
         "IsWhiteSpace": false,
         "IsEOL": false,
-        "IsImplicit": false,
+        "IsExplicit": false,
         "CommentType": "Single",
         "IsEmpty": false,
         "Value": "2",

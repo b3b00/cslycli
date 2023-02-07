@@ -10,7 +10,7 @@
     <ItemGroup>      
        
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
-        <PackageReference Include="sly" Version="2.9.4.2-alpha" />
+        <PackageReference Include="sly" Version="2.9.4.2-alpha2" />
     </ItemGroup>
 
 </Project>

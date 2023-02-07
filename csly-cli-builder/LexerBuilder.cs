@@ -36,6 +36,9 @@ public class LexerBuilder
             EnumBuilder enumBuilder = moduleBuilder.DefineEnum(DynamicLexerName, TypeAttributes.Public, typeof(int));
 
             int i = 0;
+            
+            enumBuilder.DefineLiteral($"{model.Name.ToUpper()}_EOS", i);
+            i++;
 
             foreach (var tokenModel in model.TokensByName )
             {

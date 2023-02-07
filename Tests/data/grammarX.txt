@@ -2,16 +2,16 @@ genericLexer MyLexer1;
 
 [Int] INT;
 
-[Sugar] PLUS : '+';
-[Sugar] MINUS : '-';
-[Sugar] TIMES : '*';
-[Sugar] DIVIDE : '/';
+[Sugar] PLUS : "+";
+[Sugar] MINUS : "-";
+[Sugar] TIMES : "*";
+[Sugar] DIVIDE : "/";
 
-[Sugar] LPAREN : '(';
-[Sugar] RPAREN : ')';
+[Sugar] LPAREN : "(";
+[Sugar] RPAREN : ")";
 
-[Sugar] LBRACK : '[';
-[Sugar] RBRACK : ']';
+[Sugar] LBRACK : "[";
+[Sugar] RBRACK : "]";
 
 parser MyParser1;
 

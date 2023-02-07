@@ -3,13 +3,13 @@ genericLexer SimpleExpressionToken;
 [Double] DOUBLE;
 [Int] INT;
 
-[Sugar] PLUS : '+';
-[Sugar] INCREMENT : '++';
-[Sugar] MINUS : '-';
-[Sugar] TIMES : '*';
-[Sugar] DIVIDE : '/';
-[Sugar] LPAREN : '(';
-[Sugar] RPAREN : ')';
+[Sugar] PLUS : "+";
+[Sugar] INCREMENT : "++";
+[Sugar] MINUS : "-";
+[Sugar] TIMES : "*";
+[Sugar] DIVIDE : "/";
+[Sugar] LPAREN : "(";
+[Sugar] RPAREN : ")";
 [AlphaNumId] ID;
 
 parser SimpleExpressionParser;

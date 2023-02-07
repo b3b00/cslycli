@@ -2,17 +2,17 @@ genericLexer MyLexer1;
 
 [Int] INT;
 
-[Sugar] LPAREN : '(';
-[Sugar] RPAREN : ')';
+[Sugar] LPAREN : "(";
+[Sugar] RPAREN : ")";
 
 parser MyParser1;
 
 
--> expression :  term ['+' | '-'] expression ;
+-> expression :  term ["+" | "-"] expression ;
 
 expression : term;
 
-term : factor ['*' | '/'] term;
+term : factor ["*" | "/"] term;
 
 term : factor;
 

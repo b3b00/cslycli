@@ -14,7 +14,7 @@ public enum CLIToken
     [Mode("default","EXT")]
     [Int] INT,
     
-    [String("'","'")] STRING,
+    [String("\"","\\")] STRING,
 
 
     [Mode]
@@ -35,7 +35,6 @@ public enum CLIToken
     [Sugar(")")] RIGHTPAREN,
     [Mode("default","EXT")]
     [Sugar(":")] COLON,
-    [Sugar("->")] ROOT,
     [Sugar("^")] NOT,
     
     [Keyword("genericLexer")]
@@ -56,6 +55,9 @@ public enum CLIToken
     [Keyword("SingleLineComment")] SINGLELINECOMMENT,
     [Keyword("MultiLineComment")] MULTILINECOMMENT,
     [Keyword("Extension")] EXTENSIONTOKEN,
+    [Keyword("Push")] PUSH,
+    [Keyword("Mode")] MODE,
+    [Keyword("Pop")] POP,
     
     
     
@@ -96,7 +98,7 @@ public enum CLIToken
     [Sugar(">>>")]
     OPEN_EXT,
     
-    [Mode("EXT")]
+    [Mode("EXT","default")]
     [Sugar("->")]
     ARROW,
     
@@ -117,13 +119,13 @@ public enum CLIToken
     [Sugar("}")]
     RIGHTCURL,
     
-    [Mode("EXT")]
+    [Mode("default","EXT")]
     [Sugar(",")]
     COMMA,
     
     [Mode("EXT")]
     [Keyword("END")]
-    END,
+    ENDTOKEN,
     
     
     [Pop]

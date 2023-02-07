@@ -5,39 +5,39 @@ genericLexer WhileLexer;
 [AlphaId] ID; 
 
 
-[ KeyWord] IF:'if';
-[ KeyWord] THEN:'then';
-[ KeyWord] ELSE:'else';
-[ KeyWord] WHILE:'while';
-[ KeyWord] DO:'do';
-[ KeyWord] SKIP:'skip';
-[ KeyWord] TRUE:'true';
-[ KeyWord] FALSE:'false';
-[ KeyWord] NOT:'not';
-[ KeyWord] AND:'and';
-[ KeyWord] OR:'or';
-[ KeyWord] PRINT:'print';
+[ KeyWord] IF:"if";
+[ KeyWord] THEN:"then";
+[ KeyWord] ELSE:"else";
+[ KeyWord] WHILE:"while";
+[ KeyWord] DO:"do";
+[ KeyWord] SKIP:"skip";
+[ KeyWord] TRUE:"true";
+[ KeyWord] FALSE:"false";
+[ KeyWord] NOT:"not";
+[ KeyWord] AND:"and";
+[ KeyWord] OR:"or";
+[ KeyWord] PRINT:"print";
 
- [Sugar] GREATER : '>';
+ [Sugar] GREATER : ">";
 
-[Sugar] LESSER : '<';
+[Sugar] LESSER : "<";
 
-[Sugar] EQUALS : '==';
+[Sugar] EQUALS : "==";
 
-[Sugar] DIFFERENT : '!=';
+[Sugar] DIFFERENT : "!=";
 
-[Sugar] CONCAT : '.';
+[Sugar] CONCAT : ".";
 
-[Sugar] ASSIGN : ':=';
+[Sugar] ASSIGN : ":=";
 
-[Sugar] PLUS : '+';
-[Sugar] MINUS : '-';
-[Sugar] TIMES : '*';
-[Sugar] DIVIDE : '/';
+[Sugar] PLUS : "+";
+[Sugar] MINUS : "-";
+[Sugar] TIMES : "*";
+[Sugar] DIVIDE : "/";
 
-[Sugar] LPAREN : '(';
-[Sugar] RPAREN : ')';
-[Sugar] SEMICOLON : ';';
+[Sugar] LPAREN : "(";
+[Sugar] RPAREN : ")";
+[Sugar] SEMICOLON : ";";
 
 parser WhileParser;
 

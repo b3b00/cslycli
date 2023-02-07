@@ -89,6 +89,7 @@ public class ParserDecompiler
     private string GetOperation(OperationAttribute operation, Type lexerType)
     {
         string token = "";
+        
         if (operation.IsStringToken)
         {
             token = operation.StringToken;
@@ -111,7 +112,11 @@ public class ParserDecompiler
         }
         if (operation.Affix == Affix.PostFix)
         {
-            return $"[Postfix {operation.Precedence}] {token};";
+            if (token.StartsWith("'") && token.EndsWith("'"))
+            {
+                token = token.Substring(1, token.Length - 2);
+            }
+            return $@"[Postfix {operation.Precedence}] ""{token}"";";
         }
         return "";
     }

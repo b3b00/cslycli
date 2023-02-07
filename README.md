@@ -163,14 +163,14 @@ Each token starts with a token type and ends with a `;` :
 # integer token
   [Int] INT;
 # keywords for if ... then ... else
-  [KeyWord] IF : 'if';
-  [KeyWord] THEN : 'then';
-  [KeyWord] ELSE : 'else';
+  [KeyWord] IF : "if";
+  [KeyWord] THEN : "then";
+  [KeyWord] ELSE : "else";
 # sugar for opening and closing braces
-  [Sugar] OPEN_BRACE : '{';
-  [Sugar] CLOSE_BRACE : '}';
+  [Sugar] OPEN_BRACE : "{";
+  [Sugar] CLOSE_BRACE : "}";
 # string with " as delimiter and \ as escaper
-  [String] STRING : '"' '\';
+  [String] STRING : "\"" "\\";
 ```
 
 ### parser
@@ -222,19 +222,19 @@ where <PRECEDENCE> is the priority level of the operation and <TOKEN_NAME> is th
 [Left 10] ADD;
 
 # right associative exponentiation using explicit token
-[Right 100] '^';
+[Right 100] "^";
 ```
 
 Prefix nd postfix operations are defined quite the same way :
  - [Prefix <PRECEDENCE(integer)>] <TOKEN_NAME>
 
 ```
-[Prefix 150] '-';
+[Prefix 150] "-";
 ```
 
   - [Postfix <PRECEDENCE(integer)>] <TOKEN_NAME> : 
 ```
-[Postfix 100] '--';
+[Postfix 100] "--";
 ```
 
 *** operands ***
@@ -244,7 +244,7 @@ Operands are rules tagged with the special ```[Operand]``` attribute at the begi
 ```
 [Operand] intOperand : INT;
 [Operand] stringOperand : STRING;
-[Operand] groupOperand : '(' MyParser_expressions ')'; # referencing root rule for expressions.
+[Operand] groupOperand : "(" MyParser_expressions ")"; # referencing root rule for expressions.
 
 ```
 
@@ -259,20 +259,20 @@ genericLexer arithLexer;
 
 parser arithParser; # root rule will be arithParser_expressions
 
-[Right 50] '+';
-[Left 50] '-';
+[Right 50] "+";
+[Left 50] "-";
 
-[Right 50] '*';
-[Left 50] '/';
+[Right 50] "*";
+[Left 50] "/";
 
-[Prefix 100] '-';
-[Postfix 100] '!' ; # factorial
+[Prefix 100] "-";
+[Postfix 100] "!" ; # factorial
 
 [Operand]
 operand : INT; # an integer operand
 
 [operand]
-operand : '(' arithParser ')'; # a parenthetical expression
+operand : "(" arithParser ")"; # a parenthetical expression
 
 ```
 
@@ -286,103 +286,124 @@ the root rule of the grammar is defined by '->' at the begining of the rule :
 ### Specification formal grammar using csly-cli specification file (going meta 😃 )
 
 ```
+genericLexer CLIToken;
 
-genericLexer GrammarLexer;
-
-[KeyWord] LEXER : 'genericLexer' ;
-[KeyWord] PARSER : 'parser' ;
-[String] STRING : '''' ''''; 
+[Sugar] SEMICOLON : ";";
+[Mode("default", "EXT")]
 [Int] INT;
-[KeyWord] DOUBLE : 'Double';
-[KeyWord] ALPHAID : 'AlphaId';
-[KeyWord] ALPHANUMID : 'AlphaNumId';
-[KeyWord] ALPHANUMDASHID : 'AlphaNumDashId';  
-[KeyWord] KEYWORD : 'KeyWord';
-[KeyWord] SUGAR : 'Sugar';
-[KeyWord] RIGHT : 'Right';
-[KeyWord] LEFT : 'Left';
-[KeyWord] PREFIX : 'Prefix';
-[KeyWord] OPERAND : 'Operand';
-[KeyWord] STRINGTOKEN : 'String';
-[KeyWord] INTTOKEN : 'Int';
-[KeyWord] SINGLELINECOMMENT : 'SingleLineComment';
-[KeyWord] MULTILINECOMMENT : 'MultiLineComment';
+[String] STRING;
+[Mode]
+[Mode]
+[SingleLineComment] COMMENT : "#";
+[MultiLineComment] COMMENT : "/*" "*/";
+[Mode("default", "EXT")]
+[Sugar] LEFTBRACKET : "[";
+[Mode("default", "EXT")]
+[Sugar] RIGHTBRACKET : "]";
+[Sugar] LEFTPAREN : "(";
+[Sugar] RIGHTPAREN : ")";
+[Mode("default", "EXT")]
+[Sugar] COLON : ":";
+[Sugar] NOT : "^";
+[KeyWord] GENERICLEXER : "genericLexer";
+[KeyWord] PARSER : "parser";
+[KeyWord] STRINGTOKEN : "String";
+[KeyWord] CHARTOKEN : "Character";
+[KeyWord] INTTOKEN : "Int";
+[KeyWord] DOUBLETOKEN : "Double";
+[KeyWord] ALPHAIDTOKEN : "AlphaId";
+[KeyWord] ALPHANUMIDTOKEN : "AlphaNumId";
+[KeyWord] ALPHANUMDASHIDTOKEN : "AlphaNumDashId";
+[KeyWord] KEYWORDTOKEN : "KeyWord";
+[KeyWord] SUGARTOKEN : "Sugar";
+[KeyWord] SINGLELINECOMMENT : "SingleLineComment";
+[KeyWord] MULTILINECOMMENT : "MultiLineComment";
+[KeyWord] EXTENSIONTOKEN : "Extension";
+[KeyWord] PUSH : "Push";
+[KeyWord] MODE : "Mode";
+[KeyWord] POP : "Pop";
+[Mode("default", "EXT")]
 [AlphaNumDashId] ID;
-[SingleLineComment] LINECOMMENT : '#';
-[MultiLineComment] BLOCKCOMMENT : '/*' '*/';
+[Mode("EXT")]
+[Character] CHAR : "'" "\\";
+[Mode("default", "EXT")]
+[Sugar] ZEROORMORE : "*";
+[Mode("default", "EXT")]
+[Sugar] ONEORMORE : "+";
+[Sugar] OPTION : "?";
+[Sugar] DISCARD : "[d]";
+[Sugar] OR : "|";
+[KeyWord] RIGHT : "Right";
+[KeyWord] LEFT : "Left";
+[KeyWord] OPERAND : "Operand";
+[KeyWord] PREFIX : "Prefix";
+[KeyWord] POSTFIX : "Postfix";
+[Mode]
+[Push("EXT")]
+[Sugar] OPEN_EXT : ">>>";
+[Mode("EXT","default")]
+[Sugar] ARROW : "->";
+[Mode("EXT")]
+[Sugar] AT : "@";
+[Mode("EXT")]
+[Sugar] DASH : "-";
+[Mode("EXT")]
+[Sugar] LEFTCURL : "{";
+[Mode("EXT")]
+[Sugar] RIGHTCURL : "}";
+[Mode("default", "EXT")]
+[Sugar] COMMA : ",";
+[Mode("EXT")]
+[KeyWord] ENDTOKEN : "END";
+[Mode("EXT")]
+[Pop]
+[Sugar] CLOSE_EXT : "<<<";
 
-[Sugar] OR : '|';
-[Sugar] START : '->';
 
-parser GrammarParser;
+parser CLIParser;
 
 -> root: genericRoot parserRoot ;
-
-
-
-# Lexer
-
-
-genericRoot : LEXER ID ';'  token*;
-
-token :'[' [KEYWORD|SUGAR|SINGLELINECOMMENT] ']' ID ':' STRING ';';
-
-token : '[' [STRINGTOKEN|INTTOKEN|ALPHAID|ALPHANUMID|ALPHANUMDASHID|DOUBLE] ']' ID ';';
-
-token : '[' [STRINGTOKEN|MULTILINECOMMENT] ']' ID ':' STRING STRING ';';
-
-
-
-# parser
-
-parserRoot : PARSER ID ';' rule*;
-
-rule  : START? ('[' OPERAND ']')? ID ':' clause+ ';';
-
-# expressions
-
-rule : '[' PREFIX INT ']' ID ';';
-
-rule : '[' [RIGHT|LEFT] INT ']' ID ';';
-
-
-
-# clauses
-
-item : [ ID | STRING ];
-
-clause : item '*';
-
-clause : item '+';
-
-clause : item '?';
-
+parserRoot : PARSER[d] ID SEMICOLON[d] rule*;
+genericRoot : GENERICLEXER[d] ID SEMICOLON[d]  modedToken*;
+modedToken : mode* token;
+mode : LEFTBRACKET[d] PUSH[d] LEFTPAREN[d] STRING RIGHTPAREN[d] RIGHTBRACKET[d];
+mode : LEFTBRACKET[d] POP[d] RIGHTBRACKET[d];
+mode : LEFTBRACKET[d] MODE[d] LEFTPAREN[d] STRING (COMMA[d] STRING )* RIGHTPAREN[d] RIGHTBRACKET[d];
+mode : LEFTBRACKET[d] MODE[d] RIGHTBRACKET[d];
+token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN|SINGLELINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d];
+token :LEFTBRACKET[d] [STRINGTOKEN|CHARTOKEN|MULTILINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING STRING SEMICOLON[d];
+token : LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d];
+token : LEFTBRACKET[d] EXTENSIONTOKEN[d] RIGHTBRACKET[d] ID extension ;
+extension : OPEN_EXT[d] transition* ARROW[d] ENDTOKEN[d] CLOSE_EXT[d];
+transition : ARROW[d] pattern repeater? (AT[d] ID)?;
+repeater : ZEROORMORE[d];
+repeater : ONEORMORE[d];
+repeater : LEFTCURL[d] INT RIGHTCURL[d];
+pattern : CHAR;
+pattern : LEFTBRACKET[d] range (COMMA[d] range)* RIGHTBRACKET[d];
+range : CHAR DASH[d] CHAR;
+operand :  LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d];
+rule  : ARROW ? operand? ID COLON[d] clause+ SEMICOLON[d];
+rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
+rule : LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
+rule : LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
+item : [ ID | STRING ] ;
+clause : item ZEROORMORE[d];
+clause : item ONEORMORE[d];
+clause : item OPTION;
+clause :discardeditem;
 clause : item ;
-
 clause : choiceclause;
-
+choiceclause : LEFTBRACKET[d]  item ( OR[d] item)* RIGHTBRACKET[d]  ;
+clause : choiceclause ONEORMORE[d] ;
+clause : choiceclause ZEROORMORE[d] ;
+clause : choiceclause OPTION[d] ;
 clause : group;
-
-
-# choices
-
-choiceclause : '['  item ( OR item)* ']';
-
-clause : choiceclause '+';
-
-clause : choiceclause '*';
-
-clause : choiceclause '?';
-
-# groups
-
-group : '('  item* ')';
-
-clause : group '+';
-
-clause : group '*';
-
-clause : group '?';
+group : LEFTPAREN[d] discardeditem* RIGHTPAREN[d] ;
+discardeditem : item DISCARD?;
+clause : group ONEORMORE[d] ;
+clause : group ZEROORMORE [d];
+clause : group OPTION[d] ;
 
 ```
 

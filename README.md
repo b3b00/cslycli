@@ -286,6 +286,7 @@ the root rule of the grammar is defined by '->' at the begining of the rule :
 ### Specification formal grammar using csly-cli specification file (going meta 😃 )
 
 ```
+
 genericLexer CLIToken;
 
 [Sugar] SEMICOLON : ";";
@@ -338,6 +339,11 @@ genericLexer CLIToken;
 [KeyWord] OPERAND : "Operand";
 [KeyWord] PREFIX : "Prefix";
 [KeyWord] POSTFIX : "Postfix";
+
+### 
+# extensions
+# 
+
 [Mode]
 [Push("EXT")]
 [Sugar] OPEN_EXT : ">>>";
@@ -363,7 +369,11 @@ genericLexer CLIToken;
 parser CLIParser;
 
 -> root: genericRoot parserRoot ;
-parserRoot : PARSER[d] ID SEMICOLON[d] rule*;
+
+
+######################################################
+# generic lexer
+### 
 genericRoot : GENERICLEXER[d] ID SEMICOLON[d]  modedToken*;
 modedToken : mode* token;
 mode : LEFTBRACKET[d] PUSH[d] LEFTPAREN[d] STRING RIGHTPAREN[d] RIGHTBRACKET[d];
@@ -383,27 +393,47 @@ pattern : CHAR;
 pattern : LEFTBRACKET[d] range (COMMA[d] range)* RIGHTBRACKET[d];
 range : CHAR DASH[d] CHAR;
 operand :  LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d];
+
+
+######################################################
+# parser
+###
+
+parserRoot : PARSER[d] ID SEMICOLON[d] rule*;
+
+# rules
+
 rule  : ARROW ? operand? ID COLON[d] clause+ SEMICOLON[d];
 rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
 rule : LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
 rule : LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
+
+
+
 item : [ ID | STRING ] ;
+discardeditem : item DISCARD?;
+
 clause : item ZEROORMORE[d];
 clause : item ONEORMORE[d];
+
 clause : item OPTION;
+
 clause :discardeditem;
 clause : item ;
+
 clause : choiceclause;
 choiceclause : LEFTBRACKET[d]  item ( OR[d] item)* RIGHTBRACKET[d]  ;
+
 clause : choiceclause ONEORMORE[d] ;
 clause : choiceclause ZEROORMORE[d] ;
 clause : choiceclause OPTION[d] ;
 clause : group;
 group : LEFTPAREN[d] discardeditem* RIGHTPAREN[d] ;
-discardeditem : item DISCARD?;
+
 clause : group ONEORMORE[d] ;
 clause : group ZEROORMORE [d];
 clause : group OPTION[d] ;
+
 
 ```
 

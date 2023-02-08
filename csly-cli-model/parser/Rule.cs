@@ -28,7 +28,7 @@ namespace csly.cli.model.parser
         {
             get
             {
-                // TODO : rework Clause.ToString ? 
+                // TODO ?? : rework Clause.ToString  
                 var key = NonTerminalName+"_"+string.Join("_", Clauses.Select<IClause, string>(c => c.ToString()));
                 
                 if (Clauses.Count == 1) 

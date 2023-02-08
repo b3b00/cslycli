@@ -95,13 +95,11 @@ public class LexerBuilder
                 var endMethod = fsmbuildertype.GetMethod("End", new Type[] {typeof(GenericToken), typeof(bool) });
                 var end = Expression.Call(b, endMethod,Expression.Constant(GenericToken.Extension),Expression.Constant(false));
                 
-                // TODO : add callback
-
                 var getProps = Expression.Property(fsmmatchParameter, "Properties");
                 var addMethod = typeof(Dictionary<,>).MakeGenericType(typeof(string), typeof(object)).GetMethod("Add",new []{typeof(string),typeof(object)});
 
-                
-                // note  : the needed cast (Convert(type(object)). otherwise Expression fails to build as it thinks that the generated enum is not assignable from Object ! 
+                // NOTE  :  needed cast (Convert(type(object)).
+                // otherwise Expression fails to build as it thinks that the generated enum is not assignable from Object ! 
                 var assign = Expression.Call(getProps, addMethod,Expression.Constant(GenericLexer<GenericToken>.DerivedToken),
                     Expression.Convert(tokenParameter,typeof(object)));
                 
@@ -126,10 +124,6 @@ public class LexerBuilder
             var block = Expression.Block(ifs);
             var l = Expression.Lambda(block, false, tokenParameter, lexemeParameter, lexerParameter);
             var d = l.Compile();
-            
-            // TODO convert to BuildExtension
-            // System.Action<ExtensionLexer,sly.lexer.LexemeAttribute,sly.lexer.GenericLexer<ExtensionLexer>>
-            //     sly.lexer.fsm.BuildExtension<ExtensionLexer>
             
             return d as Delegate;
             

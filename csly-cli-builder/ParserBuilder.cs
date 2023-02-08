@@ -148,7 +148,7 @@ public class ParserBuilder
         var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
            
         
-        // TODO :  return a list<string> if buildResult is error
+        //  return a list<string> if buildResult is error
         var isErrorResult = buildResultType.GetProperty("IsError").GetValue(buildResult.parserBuildResult, null) as bool?;
         if (isErrorResult.HasValue && isErrorResult.Value)
         {
@@ -229,7 +229,7 @@ public class ParserBuilder
         var builder = builderconstructor.Invoke(new object?[] { });
         var buildMethod = builderType.GetMethod("BuildParser", new Type[] { ObjectType,typeof(ParserType),typeof(string),BuildExtensionType,LexerPostProcessType});
         
-        var x = buildMethod.Invoke(builder, new object?[] { instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, root,extensionBuilder,null }); // TODO
+        var x = buildMethod.Invoke(builder, new object?[] { instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, root,extensionBuilder,null }); 
         return x;
     } 
 

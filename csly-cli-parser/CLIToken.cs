@@ -31,7 +31,9 @@ public enum CLIToken
     [Sugar("]")] RIGHTBRACKET,
     
     
+    [Mode("EXT","default")]
     [Sugar("(")] LEFTPAREN,
+    [Mode("EXT","default")]
     [Sugar(")")] RIGHTPAREN,
     [Mode("default","EXT")]
     [Sugar(":")] COLON,

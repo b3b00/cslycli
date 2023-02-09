@@ -56,6 +56,9 @@
       <EmbeddedResource Include="data\simpleexpr\simpleexpressionparser.csharp" />
       <None Remove="data\simpleexpr\simpleexpressiontoken.csharp" />
       <EmbeddedResource Include="data\simpleexpr\simpleexpressiontoken.csharp" />
+        <EmbeddedResource Remove="data\dotExtMarks.txt"/>
+        <EmbeddedResource Include="data\dotExtMarks.txt"/>
+        <EmbeddedResource Include="data\extWithMarks.txt"/>
     </ItemGroup>
 
 </Project>

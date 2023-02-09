@@ -2,7 +2,11 @@ namespace csly.cli.model.lexer;
 
 public interface ITransition : ICLIModel
 {
-    public TransitionRepeater Repeater { get; set; }
+    TransitionRepeater Repeater { get; set; }
+    
+    string Mark { get; set; }
+    
+    string Target { get; set; }
     
 }
 
@@ -16,6 +20,10 @@ public class CharacterTransition : ITransition
     public TransitionRepeater Repeater { get; set; }
     
     public char Character { get; set; }
+    
+    public string Mark { get; set; }
+    
+    public string Target { get; set; }
 }
 
 public class Range : ICLIModel
@@ -49,11 +57,19 @@ public class RangeTransition : ITransition
     public TransitionRepeater Repeater { get; set; }
     
     public IList<Range> Ranges { get; set; }
+    
+    public string Mark { get; set; }
+    
+    public string Target { get; set; }
 } 
 
 public class ExceptTransition : ITransition
 {
     public TransitionRepeater Repeater { get; set; }
+    
+    public string Mark { get; set; }
+    
+    public string Target { get; set; }
 } 
 
 public enum RepeaterType

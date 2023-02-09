@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
-using csly.cli.model;
 using csly.cli.parser;
 using NFluent;
 using SharpFileSystem.FileSystems;
 using sly.lexer;
-using sly.parser.generator;
 using Xunit;
+using LexerBuilder = sly.lexer.LexerBuilder;
 
 namespace Tests;
 
@@ -30,6 +29,25 @@ public class ExtensionTests
         var tokens = lexed.Tokens.Tokens;
         Check.That(tokens).Not.IsNullOrEmpty();
         Check.That(tokens).CountIs(24);
+
+    }
+    
+    [Fact]
+    public void TestExtLexerWithMarks()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/extWithMarks.txt");
+
+        var lexbuild = LexerBuilder.BuildLexer<CLIToken>();
+        Check.That(lexbuild.IsError).IsFalse();
+        Check.That(lexbuild.Result).IsNotNull();
+        var lexer = lexbuild.Result;
+        var graph = (lexer as GenericLexer<CLIToken>).ToGraphViz();
+        var lexed = lexer.Tokenize(grammar);
+        Check.That(lexed.IsError).IsFalse();
+        var tokens = lexed.Tokens.Tokens;
+        Check.That(tokens).Not.IsNullOrEmpty();
+        Check.That(tokens).CountIs(23);
 
     }
     
@@ -65,6 +83,45 @@ parser MinimalParser;
         var dot = modelBuilder.Getz(grammar, "#132456", "colorParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
         Check.That(dot.IsError).IsFalse();
         
+    }
+    
+    [Fact]
+    public void TestExtLexerWithMarks2()
+    {
+        var grammar = @"
+genericLexer MinimalLexer;
+
+
+[Extension] TEST
+>>>
+-> '#'  -> (loop) '|' @fin -> (fin) '$' -> END
+<<<
+
+
+
+parser MinimalParser;
+
+-> root : TEST;
+";
+
+
+
+        ParserContext context = new ParserContext("glop");
+
+        var modelBuilder = new ParserBuilder();
+        var model = modelBuilder.CompileModel(grammar, "strangeParser");
+        Check.That(model).IsOkModel();
+        
+        var dot = modelBuilder.Getz(grammar, "#|$", "strangeParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
+        Check.That(dot.IsError).IsFalse();
+        Check.That(dot.Value).CountIs(1);
+        var dotresult = dot.Value[0];
+        Check.That(dotresult.format).Equals("DOT");
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var expected = fs.ReadAllText("/data/dotExtMarks.txt").Replace("\r\n","\n");
+        
+        Check.That(dotresult.content.Replace("\r\n","\n")).Equals(expected);
+
     }
     
     [Fact]

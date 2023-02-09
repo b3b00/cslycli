@@ -126,7 +126,7 @@ public class ParserBuilder
         else
         {
             // should not happen
-            return new Result<Model>();
+            return buildParser.Errors.Select(x => x.Message).ToList();
         }
     }
     

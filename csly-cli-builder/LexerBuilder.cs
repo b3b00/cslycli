@@ -155,7 +155,7 @@ public class LexerBuilder
                     {
                         for (int i = 0; i < transition.Repeater.Count; i++)
                         {
-                            builder = DoTransition(builder, null);
+                            builder = DoTransition(builder, transition.Target);
                         }
 
                         break;

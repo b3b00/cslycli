@@ -179,8 +179,8 @@ public class CLIParser
         return ext;
     }
     
-    [Production("transition : ARROW[d] pattern repeater? (AT[d] ID)?")]
-    public ICLIModel Transition(ICLIModel pattern, ValueOption<ICLIModel> repeater, ValueOption<Group<CLIToken, ICLIModel>> id, ParserContext context)
+    [Production("transition : ARROW[d] (LEFTPAREN[d] ID RIGHTPAREN[d])? pattern repeater? (AT[d] ID)?")]
+    public ICLIModel Transition(ValueOption<Group<CLIToken, ICLIModel>> mark, ICLIModel pattern,  ValueOption<ICLIModel> repeater, ValueOption<Group<CLIToken, ICLIModel>> target, ParserContext context)
     {
         var transition = pattern as ITransition;
         var t = repeater.Match((x) =>
@@ -188,9 +188,26 @@ public class CLIParser
                 transition.Repeater = x as TransitionRepeater;
                 return transition;
             },
-            () => transition);
+            () => transition) as ITransition;
+        mark.Match(
+            (x) =>
+            {
+                t.Mark = x.Token(0).Value;
+                return x;
+            },
+            () => null);
+        target.Match(
+            (x) =>
+            {
+                t.Target = x.Token(0).Value;
+                return x;
+            },
+            () => null);
+        
         return t;
     }
+    
+    
 
     [Production("repeater : ZEROORMORE[d]")]
     public ICLIModel RepeatZeroOrMore(ParserContext context)

@@ -1,0 +1,8 @@
+
+[Extension] TEST
+>>>
+-> '#'  -> (loop) '|' @fin -> (fin) '$' -> END
+<<<
+
+
+

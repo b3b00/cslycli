@@ -17,7 +17,7 @@ public enum CLIToken
     [String("\"","\\")] STRING,
 
 
-    [Mode]
+    [Mode("EXT","default")]
     [SingleLineComment("#")]
     
     [Mode]

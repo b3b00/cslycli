@@ -43,9 +43,8 @@ builder.GoTo("start")
 .MultiRangeTransition(('0', '9'), ('A', 'F'))
 .MultiRangeTransition(('0', '9'), ('A', 'F'))
 
-.CallBack(callbackTEST);
-
-}if (token == MinimalLexer.AT) {
+.End().CallBack(callbackTEST);
+if (token == MinimalLexer.AT) {
 
 NodeCallback<GenericToken> callbackAT = (FSMMatch<GenericToken> match) => 
    	{
@@ -59,9 +58,8 @@ var builder = lexer.FSMBuilder;
 builder.GoTo("start")
 .Transition('@')
 
-.CallBack(callbackAT);
+.End().CallBack(callbackAT);
 
-}
 
         }    
     }

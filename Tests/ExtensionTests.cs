@@ -94,7 +94,7 @@ genericLexer MinimalLexer;
 
 [Extension] TEST
 >>>
--> '#'  -> (loop) '|' @fin -> (fin) '$' -> END
+-> '#'  -> (loop) '|' -> (fin) '$' -> END
 <<<
 
 
@@ -128,7 +128,7 @@ parser MinimalParser;
     public void TestExtLexerWithMarksAndChains()
     {
         EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
-        var grammar = fs.ReadAllText("/data/extWithMarksMultiChain.txt.txt").Replace("\r\n","\n");
+        var grammar = fs.ReadAllText("/data/extWithMarksMultiChain.txt").Replace("\r\n","\n");
         
         ParserContext context = new ParserContext("glop");
 
@@ -142,8 +142,8 @@ parser MinimalParser;
         Check.That(dot.Value).CountIs(1);
         var dotresult = dot.Value[0];
         Check.That(dotresult.format).Equals("DOT");
-        
-        Check.That(dotresult.content.Replace("\r\n","\n")).Contains($@"\\""{test}\"" shape=doublecircle height=0.50]");
+        string expectation = $@"\""{test}\"""" shape=doublecircle height=0.50]";
+        Check.That(dotresult.content.Replace("\r\n","\n")).Contains(expectation);
         
         test = "#******€";
         dot = modelBuilder.Getz(grammar, test, "strangeParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
@@ -151,7 +151,8 @@ parser MinimalParser;
         Check.That(dot.Value).CountIs(1);
         dotresult = dot.Value[0];
         Check.That(dotresult.format).Equals("DOT");
-        Check.That(dotresult.content.Replace("\r\n","\n")).Contains($@"\\""{test}\"" shape=doublecircle height=0.50]");
+        expectation = $@"\""{test}\"""" shape=doublecircle height=0.50]";
+        Check.That(dotresult.content.Replace("\r\n","\n")).Contains(expectation);
 
     }
     

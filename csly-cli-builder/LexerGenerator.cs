@@ -76,15 +76,41 @@ public class LexerGenerator
         var tab = "            ";
         source = $"if (token == {lexerModel.Name}.{extension.Name}) {{\n\n";
         source += GetGenericCallBack(lexerModel.Name,extension.Name);
+        // source += "\n\nvar builder = lexer.FSMBuilder;\n\n";
+        // source += "builder.GoTo(\"start\")\n";
+        foreach (var chain in extension.Chains)
+        {
+            source += TransitionChain(chain,extension.Name) + "\n";
+        }
+
+        // source += $".CallBack(callback{extension.Name});";
+        // source += "\n\n}";
+        return source;
+    }
+
+    private string TransitionChain(TransitionChain chain, string extensionName)
+    {
+        var source = "";
+        var tab = "            ";
+        // source = $"if (token == {lexerModel.Name}.{extension.Name}) {{\n\n";
+        // source += GetGenericCallBack(lexerModel.Name,extension.Name);
         source += "\n\nvar builder = lexer.FSMBuilder;\n\n";
-        source += "builder.GoTo(\"start\")\n";
-        foreach (var transition in extension.Transitions)
+        source += $"builder.GoTo(\"{chain.StartingNodeName}\")\n";
+        foreach (var transition in chain.Transitions)
         {
             source += Transition(transition) + "\n";
         }
 
-        source += $".CallBack(callback{extension.Name});";
-        source += "\n\n}";
+        if (chain.IsEnded)
+        {
+            source += $".End()";    
+            source += $".CallBack(callback{extensionName});";
+        }
+        else
+        {
+            source += ";\n";
+        }
+
         return source;
     }
 

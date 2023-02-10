@@ -184,8 +184,8 @@ public class CLIParser
         return ext;
     }
 
-    [Production("transition_chain : (LEFTPAREN[d] ID RIGHTPAREN[d])? transition+ SEMICOLON[d] (ARROW ENDTOKEN)?")]
-    public ICLIModel Chain(ValueOption<Group<CLIToken, ICLIModel>> startNode, List<ICLIModel> transitions, ValueOption<Group<CLIToken, ICLIModel>> end)
+    [Production("transition_chain : (LEFTPAREN[d] ID RIGHTPAREN[d])? transition+  (ARROW ENDTOKEN)?")] // TODO SEMICOLON really useful ?
+    public ICLIModel Chain(ValueOption<Group<CLIToken, ICLIModel>> startNode, List<ICLIModel> transitions, ValueOption<Group<CLIToken, ICLIModel>> end, ParserContext context)
     {
         var trans = transitions.Cast<ITransition>().ToList();
         var chain =  new TransitionChain(trans, end.IsSome);

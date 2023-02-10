@@ -21,20 +21,26 @@ public class ExtractionTests
     public void ReallyMetaTest()
     {
         EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        
+        // compile CLI Parser from spec
         var grammar = fs.ReadAllText("/data/meta.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "GrammarParser");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
+        
+        // generate CLI parser C# source code
         var parserGenerator = new ParserGenerator();
         var parserSource = parserGenerator.GenerateParser(model.Value, "grammar","object");
         Check.That(parserSource).IsNotNull();
         Check.That(parserSource).IsNotEmpty();
         var lexerGenerator = new LexerGenerator();
+        // generate CLI lexer C# source code
         var lexerSource = lexerGenerator.GenerateLexer(model.Value.LexerModel, "grammar");
         Check.That(lexerSource).IsNotNull();
         Check.That(lexerSource).IsNotEmpty();
 
+        // extract CLI parser spec from generated source code
         var extractor = new SpecificationExtractor();
         var specification = extractor.ExtractFromSource(lexerSource, parserSource);
         

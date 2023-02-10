@@ -125,6 +125,37 @@ parser MinimalParser;
     }
     
     [Fact]
+    public void TestExtLexerWithMarksAndChains()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/extWithMarksMultiChain.txt.txt").Replace("\r\n","\n");
+        
+        ParserContext context = new ParserContext("glop");
+
+        var modelBuilder = new ParserBuilder();
+        var model = modelBuilder.CompileModel(grammar, "strangeParser");
+        Check.That(model).IsOkModel();
+
+        string test = "#*********#";
+        var dot = modelBuilder.Getz(grammar, test, "strangeParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
+        Check.That(dot.IsError).IsFalse();
+        Check.That(dot.Value).CountIs(1);
+        var dotresult = dot.Value[0];
+        Check.That(dotresult.format).Equals("DOT");
+        
+        Check.That(dotresult.content.Replace("\r\n","\n")).Contains($@"\\""{test}\"" shape=doublecircle height=0.50]");
+        
+        test = "#******€";
+        dot = modelBuilder.Getz(grammar, test, "strangeParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
+        Check.That(dot.IsError).IsFalse();
+        Check.That(dot.Value).CountIs(1);
+        dotresult = dot.Value[0];
+        Check.That(dotresult.format).Equals("DOT");
+        Check.That(dotresult.content.Replace("\r\n","\n")).Contains($@"\\""{test}\"" shape=doublecircle height=0.50]");
+
+    }
+    
+    [Fact]
     public void TestExtLexerSourceGen()
     {
         EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));

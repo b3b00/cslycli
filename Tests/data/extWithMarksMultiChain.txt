@@ -1,0 +1,21 @@
+
+
+
+genericLexer MinimalLexer;
+
+# matches either
+# #*******#  
+# or #*******€
+#
+
+[Extension] TEST
+>>>
+-> (start-ext)in-ext '#' @in-ext -> '#' -> END;
+(in-ext) -> '*' @in-ext ;
+(in-ext) -> '€' -> END ;
+<<<
+
+
+parser MinimalParser;
+
+-> root : TEST;

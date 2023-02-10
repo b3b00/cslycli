@@ -1,6 +1,7 @@
 
 genericLexer CLIToken;
 
+[Mode("EXT","default")]
 [Sugar] SEMICOLON : ";";
 [Mode("default", "EXT")]
 [Int] INT;
@@ -95,8 +96,13 @@ mode : LEFTBRACKET[d] MODE[d] RIGHTBRACKET[d];
 token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN|SINGLELINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d];
 token :LEFTBRACKET[d] [STRINGTOKEN|CHARTOKEN|MULTILINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING STRING SEMICOLON[d];
 token : LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d];
+
 token : LEFTBRACKET[d] EXTENSIONTOKEN[d] RIGHTBRACKET[d] ID extension ;
-extension : OPEN_EXT[d] transition* ARROW[d] ENDTOKEN[d] CLOSE_EXT[d];
+extension : OPEN_EXT[d] transitionchain*  CLOSE_EXT[d];
+transitionchain : ( ARROW[d]) transition *
+
+extension : OPEN_EXT[d] transition_chain*  CLOSE_EXT[d];
+(LEFTPAREN[d] ID RIGHTPAREN[d])? transition+  (ARROW ENDTOKEN)? SEMICOLON[d]; # SEMICOLON really useful ?
 transition : ARROW[d] pattern repeater? (AT[d] ID)?;
 repeater : ZEROORMORE[d];
 repeater : ONEORMORE[d];

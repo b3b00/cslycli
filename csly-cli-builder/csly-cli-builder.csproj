@@ -7,7 +7,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>        
+    <ItemGroup>            
         <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
         <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
     </ItemGroup>

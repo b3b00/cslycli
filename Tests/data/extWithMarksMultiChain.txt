@@ -6,7 +6,7 @@ genericLexer MinimalLexer;
 # matches
 # either #*********#
 # or #********€ 
-#
+
 [Extension] TEST
 >>>
 # salut !

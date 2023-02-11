@@ -1,6 +1,9 @@
 using System.Text;
 using clsy.cli.builder.parser.cli.model;
 using csly.cli.model.lexer;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using sly.lexer;
 
 namespace clsy.cli.builder;
@@ -25,9 +28,18 @@ public class LexerGenerator
         {
             extender = GetExtender(model);
         }
-        return head+"\n"+body+"\n"+foot+"\n\n"+extender+"\n\n}";
+        var source = head+"\n"+body+"\n"+foot+"\n\n"+extender+"\n\n}";
         
-        
+        var tree = CSharpSyntaxTree.ParseText(source);
+        CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
+        var prettyPrintedSource = root .NormalizeWhitespace()
+            .SyntaxTree
+            .GetText(CancellationToken.None)
+            .ToString();
+
+        return prettyPrintedSource;
+
+
     }
 
     private string GetExtender(LexerModel model)

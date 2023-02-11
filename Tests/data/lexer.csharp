@@ -1,20 +1,11 @@
-
 using sly.lexer;
 using sly.lexer.fsm;
 
-namespace ns {
-
-    public enum MinimalLexer {
-
-
-		[Int]
-		INT,
-
-
-
+namespace ns
+{
+    public enum MinimalLexer
+    {
+        [Int]
+        INT,
     }
-
-
-
-
 }

@@ -1,6 +1,9 @@
 using System.Text;
 using csly.cli.model;
 using csly.cli.model.parser;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using sly.parser.syntax.grammar;
 
 namespace clsy.cli.builder;
@@ -18,7 +21,19 @@ public class ParserGenerator
         var head = GetHeader(model.ParserModel.Name, nameSpace);
         var body = GetBody(model.ParserModel, model.ParserModel.Name, model.LexerModel.Name, output);
         var foot = getFooter();
-        return head+"\n"+body+"\n"+foot;
+        
+        var source = head+"\n"+body+"\n"+foot;
+        
+        var tree = CSharpSyntaxTree.ParseText(source);
+        CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
+        var prettyPrintedSource = root.NormalizeWhitespace()
+            .SyntaxTree
+            .GetText(CancellationToken.None)
+            .ToString();
+
+        return prettyPrintedSource;
+        
+        
     }
 
     

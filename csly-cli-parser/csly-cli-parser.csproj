@@ -7,10 +7,12 @@
         <RootNamespace>csly.cli.parser</RootNamespace>
     </PropertyGroup>
 
-    <ItemGroup>      
-       
-      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
+
+
+    <ItemGroup>
         <PackageReference Include="sly" Version="2.9.4.2-alpha3" />
     </ItemGroup>
-
+    <ItemGroup>
+        <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
+    </ItemGroup>
 </Project>

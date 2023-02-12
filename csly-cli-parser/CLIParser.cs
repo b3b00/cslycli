@@ -14,6 +14,8 @@ namespace csly.cli.parser;
 [ParserRoot("root")]
 public class CLIParser
 {
+    #region roots
+    
     [Production("root: genericRoot parserRoot ")] 
     public ICLIModel Root(ICLIModel genericLex, ICLIModel parser, ParserContext context)
     {
@@ -35,9 +37,11 @@ public class CLIParser
 
     }
     
-    #region generic lexer
+    #endregion
+    
+    
 
-  
+   #region generic lexer
     
     [Production("genericRoot : GENERICLEXER[d] ID SEMICOLON[d]  modedToken*")]
     public ICLIModel Lexer(Token<CLIToken> name, List<ICLIModel> tokens, ParserContext context)
@@ -99,8 +103,6 @@ public class CLIParser
     {
         return new ModeModel(new List<string>());
     }
-    
-    
     
 
     [Production(
@@ -170,17 +172,39 @@ public class CLIParser
         return (extension as ExtensionTokenModel);
     }
 
+    #endregion
+    
     #region lexer extensions
 
-    [Production("extension : OPEN_EXT[d] transition* ARROW[d] ENDTOKEN[d] CLOSE_EXT[d]")]
-    public ICLIModel Extension(List<ICLIModel> transitions, ParserContext context)
+    [Production("extension : OPEN_EXT[d] transition_chain+ CLOSE_EXT[d]")]
+    public ICLIModel Extension(List<ICLIModel> chains, ParserContext context)
     {
-        var ext = new ExtensionTokenModel(null, transitions.Cast<ITransition>().ToList());        
+        var ext = new ExtensionTokenModel(null, chains.Cast<TransitionChain>().ToList());
+        // TODO check if end exists !
         return ext;
     }
+
+    [Production("transition_chain : (LEFTPAREN[d] ID RIGHTPAREN[d])? transition+  (ARROW ENDTOKEN)?")] // TODO SEMICOLON really useful ?
+    public ICLIModel Chain(ValueOption<Group<CLIToken, ICLIModel>> startNode, List<ICLIModel> transitions, ValueOption<Group<CLIToken, ICLIModel>> end, ParserContext context)
+    {
+        var trans = transitions.Cast<ITransition>().ToList();
+        var chain =  new TransitionChain(trans, end.IsSome);
+        var start = startNode.Match(
+            (x) =>
+            {
+                chain.StartingNodeName = x.Token(0).Value;
+                return x;
+            },
+            () =>
+            {
+                chain.StartingNodeName = GenericLexer<CLIToken>.start;
+                return null;
+            });
+        return chain;
+    }
     
-    [Production("transition : ARROW[d] pattern repeater? (AT[d] ID)?")]
-    public ICLIModel Transition(ICLIModel pattern, ValueOption<ICLIModel> repeater, ValueOption<Group<CLIToken, ICLIModel>> id, ParserContext context)
+    [Production("transition : ARROW[d] (LEFTPAREN[d] ID RIGHTPAREN[d])? pattern repeater? (AT[d] ID)?")]
+    public ICLIModel Transition(ValueOption<Group<CLIToken, ICLIModel>> mark, ICLIModel pattern,  ValueOption<ICLIModel> repeater, ValueOption<Group<CLIToken, ICLIModel>> target, ParserContext context)
     {
         var transition = pattern as ITransition;
         var t = repeater.Match((x) =>
@@ -188,10 +212,25 @@ public class CLIParser
                 transition.Repeater = x as TransitionRepeater;
                 return transition;
             },
-            () => transition);
+            () => transition) as ITransition;
+        mark.Match(
+            (x) =>
+            {
+                t.Mark = x.Token(0).Value;
+                return x;
+            },
+            () => null);
+        target.Match(
+            (x) =>
+            {
+                t.Target = x.Token(0).Value;
+                return x;
+            },
+            () => null);
+        
         return t;
     }
-
+    
     [Production("repeater : ZEROORMORE[d]")]
     public ICLIModel RepeatZeroOrMore(ParserContext context)
     {
@@ -241,7 +280,7 @@ public class CLIParser
     
     #endregion
     
-  #endregion
+  
 
   #region  parser
 

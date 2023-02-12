@@ -7,18 +7,18 @@ public class ExtensionTokenModel : TokenModel
 {
     
 
-    public IList<ITransition> Transitions { get; set; }
+    public IList<TransitionChain> Chains { get; set; }
 
 
 
-    public ExtensionTokenModel(string name, IList<ITransition> transitions) : base(GenericToken.Extension,name)
+    public ExtensionTokenModel(string name, IList<TransitionChain> chains) : base(GenericToken.Extension,name)
     {
-        Transitions = transitions;
+        Chains = chains;
     }
     
-    public ExtensionTokenModel( IList<ITransition> transitions) : this(string.Empty,transitions)
+    public ExtensionTokenModel( IList<TransitionChain> chains) : this(string.Empty,chains)
     {
-        Transitions = transitions;
+        Chains = chains;
     }
 
 

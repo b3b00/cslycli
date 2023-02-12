@@ -1,6 +1,9 @@
 using System.Text;
 using clsy.cli.builder.parser.cli.model;
 using csly.cli.model.lexer;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using sly.lexer;
 
 namespace clsy.cli.builder;
@@ -25,9 +28,18 @@ public class LexerGenerator
         {
             extender = GetExtender(model);
         }
-        return head+"\n"+body+"\n"+foot+"\n\n"+extender+"\n\n}";
+        var source = head+"\n"+body+"\n"+foot+"\n\n"+extender+"\n\n}";
         
-        
+        var tree = CSharpSyntaxTree.ParseText(source);
+        CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
+        var prettyPrintedSource = root .NormalizeWhitespace()
+            .SyntaxTree
+            .GetText(CancellationToken.None)
+            .ToString();
+
+        return prettyPrintedSource;
+
+
     }
 
     private string GetExtender(LexerModel model)
@@ -76,15 +88,41 @@ public class LexerGenerator
         var tab = "            ";
         source = $"if (token == {lexerModel.Name}.{extension.Name}) {{\n\n";
         source += GetGenericCallBack(lexerModel.Name,extension.Name);
+        // source += "\n\nvar builder = lexer.FSMBuilder;\n\n";
+        // source += "builder.GoTo(\"start\")\n";
+        foreach (var chain in extension.Chains)
+        {
+            source += TransitionChain(chain,extension.Name) + "\n";
+        }
+
+        // source += $".CallBack(callback{extension.Name});";
+        // source += "\n\n}";
+        return source;
+    }
+
+    private string TransitionChain(TransitionChain chain, string extensionName)
+    {
+        var source = "";
+        var tab = "            ";
+        // source = $"if (token == {lexerModel.Name}.{extension.Name}) {{\n\n";
+        // source += GetGenericCallBack(lexerModel.Name,extension.Name);
         source += "\n\nvar builder = lexer.FSMBuilder;\n\n";
-        source += "builder.GoTo(\"start\")\n";
-        foreach (var transition in extension.Transitions)
+        source += $"builder.GoTo(\"{chain.StartingNodeName}\")\n";
+        foreach (var transition in chain.Transitions)
         {
             source += Transition(transition) + "\n";
         }
 
-        source += $".CallBack(callback{extension.Name});";
-        source += "\n\n}";
+        if (chain.IsEnded)
+        {
+            source += $".End()";    
+            source += $".CallBack(callback{extensionName});";
+        }
+        else
+        {
+            source += ";\n";
+        }
+
         return source;
     }
 

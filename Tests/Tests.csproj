@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>        
+        <PackageReference Include="sly" Version="2.9.4.2-alpha3" />        
         <PackageReference Include="SharpCoreFileSystem" Version="1.0.4" />
         <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
@@ -24,18 +25,17 @@
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>      
+    <ItemGroup>  
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />      
       <ProjectReference Include="..\csly-cli-decompiler\csly-cli-decompiler.csproj" />
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
       <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj" />
-        <PackageReference Include="sly" Version="2.9.4.2-alpha3" />
+        
     </ItemGroup>
-
     <ItemGroup>
       <EmbeddedResource Include="data\badGrammar.txt" />
-      <EmbeddedResource Include="data\ext.txt" />
+      <EmbeddedResource Include="data\ext.txt" />      
       <EmbeddedResource Include="data\grammarWithImplicits.txt" />
       <EmbeddedResource Include="data\grammarX.txt" />
       <EmbeddedResource Include="data\lexer.csharp" />
@@ -45,17 +45,17 @@
       <EmbeddedResource Include="data\minimalGrammar.txt" />
       <EmbeddedResource Include="data\minimalGrammarWithExt.txt" />
       <EmbeddedResource Include="data\parser.csharp" />
-      <EmbeddedResource Include="data\whileGrammar.txt" />
-      <None Remove="data\gammar1.txt" />
-      <EmbeddedResource Include="data\grammar1.txt" />
-      <None Remove="data\minimalJSON.json" />
-      <EmbeddedResource Include="data\minimalJSON.json" />
-      <None Remove="data\simpleExpression.txt" />
-      <EmbeddedResource Include="data\simpleExpression.txt" />
-      <None Remove="data\simpleexpr\simpleexpressionparser.csharp" />
-      <EmbeddedResource Include="data\simpleexpr\simpleexpressionparser.csharp" />
-      <None Remove="data\simpleexpr\simpleexpressiontoken.csharp" />
+      <EmbeddedResource Include="data\whileGrammar.txt" />      
+      <EmbeddedResource Include="data\grammar1.txt" />      
+      <EmbeddedResource Include="data\minimalJSON.json" />      
+      <EmbeddedResource Include="data\simpleExpression.txt" />      
+      <EmbeddedResource Include="data\simpleexpr\simpleexpressionparser.csharp" />      
       <EmbeddedResource Include="data\simpleexpr\simpleexpressiontoken.csharp" />
+      <EmbeddedResource Remove="data\dotExtMarks.txt" />      
+      <EmbeddedResource Include="data\extWithMarks.txt" />
+      <EmbeddedResource Include="data\extWithMarksMultiChain.txt" />
+      <None Remove="data\dotExtMarks.txt" />
+      <EmbeddedResource Include="data\dotExtMarks.txt" />
     </ItemGroup>
 
 </Project>

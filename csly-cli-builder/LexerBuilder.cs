@@ -78,7 +78,7 @@ public class LexerBuilder
             var fsmmatchParameter = Expression.Parameter(fsmmatchType);
 
             
-            var b = Expression.Property(lexerParameter, "FSMBuilder");
+            var fsmBuilder = Expression.Property(lexerParameter, "FSMBuilder");
             
             foreach (var extensionTokenModel in extensions)
             {
@@ -88,35 +88,19 @@ public class LexerBuilder
                 var tostr = enumType.GetMethod("ToString", new Type[]{});
                 var eq = Expression.Equal(n, Expression.Call(tokenParameter,tostr));
                 
-                var extensionBuilder = BuildFsmForExtension(extensionTokenModel);
-                var lambdaBuild = Expression.Invoke(Expression.Constant(extensionBuilder), b);
                 
-                // .End(Extension)
-                var endMethod = fsmbuildertype.GetMethod("End", new Type[] {typeof(GenericToken), typeof(bool) });
-                var end = Expression.Call(b, endMethod,Expression.Constant(GenericToken.Extension),Expression.Constant(false));
-                
-                var getProps = Expression.Property(fsmmatchParameter, "Properties");
-                var addMethod = typeof(Dictionary<,>).MakeGenericType(typeof(string), typeof(object)).GetMethod("Add",new []{typeof(string),typeof(object)});
 
-                // NOTE  :  needed cast (Convert(type(object)).
-                // otherwise Expression fails to build as it thinks that the generated enum is not assignable from Object ! 
-                var assign = Expression.Call(getProps, addMethod,Expression.Constant(GenericLexer<GenericToken>.DerivedToken),
-                    Expression.Convert(tokenParameter,typeof(object)));
+                var extensionExpressions = new List<Expression>();
+                foreach (var chain in extensionTokenModel.Chains)
+                {
+                    var extensionBuilder = BuildFsmForExtensionChain(chain);
+                    var lambdaBuild = Expression.Invoke(Expression.Constant(extensionBuilder), fsmBuilder);
+                    var chainExpressions = BuildTransitionChainExpression(chain,fsmbuildertype, fsmBuilder, fsmmatchParameter, tokenParameter, ConvertLambdaCallbackToDelegate, lambdaBuild);
+                    extensionExpressions.AddRange(chainExpressions);
+                }
                 
-                var callbackBody = Expression.Block(assign, fsmmatchParameter);
-
-                var callbackLambda = Expression.Lambda(callbackBody, false, fsmmatchParameter);
-                var nodecallbacktype = typeof(NodeCallback<GenericToken>);
-                var callback = Expression.Invoke(Expression.Constant(ConvertLambdaCallbackToDelegate), callbackLambda);
-                
-                var callbackMethod = fsmbuildertype.GetMethod("CallBack", new Type[] {nodecallbacktype});
-                var setCallBack = Expression.Call(b, callbackMethod, callback);
-
-                // Build the ifthenelse block
-                
-                var thenBlock = Expression.Block(lambdaBuild,end,setCallBack);
-                
-                var ifthenelse = Expression.IfThen(eq, thenBlock);
+                var extensionExpression = Expression.Block(extensionExpressions);
+                var ifthenelse = Expression.IfThen(eq, extensionExpression);
                 ifs.Add(ifthenelse);
             }
 
@@ -130,12 +114,64 @@ public class LexerBuilder
             
         }
 
-        private Action<FSMLexerBuilder<GenericToken>> BuildFsmForExtension(ExtensionTokenModel token)
+        private static List<Expression> BuildTransitionChainExpression(TransitionChain chain,
+            Type fsmbuildertype, // type du builder du FSM
+            MemberExpression fsmBuilder, // le builder de FSM
+            ParameterExpression fsmmatchParameter, // parametre FSMMatch
+            ParameterExpression tokenParameter, // parametre Token<>
+            Func<Func<FSMMatch<GenericToken>, FSMMatch<GenericToken>>, NodeCallback<GenericToken>> ConvertLambdaCallbackToDelegate, // lambda de conversion  Func => NodeCallback
+            InvocationExpression lambdaBuild) //  lambda de construction de la chaine d'appel .Transition
+        {
+            if (chain.IsEnded)
+            {
+                // .End(Extension)
+                var endMethod = fsmbuildertype.GetMethod("End", new Type[] { typeof(GenericToken), typeof(bool) });
+                var end = Expression.Call(fsmBuilder, endMethod, Expression.Constant(GenericToken.Extension),
+                    Expression.Constant(false));
+
+                var callbackLambda =
+                    BuildCallbackLambdaForExtension(fsmmatchParameter, tokenParameter); // TODO : move to parameter
+
+                var nodecallbacktype = typeof(NodeCallback<GenericToken>);
+                var callback = Expression.Invoke(Expression.Constant(ConvertLambdaCallbackToDelegate), callbackLambda);
+
+                var callbackMethod = fsmbuildertype.GetMethod("CallBack", new Type[] { nodecallbacktype });
+                var setCallBack = Expression.Call(fsmBuilder, callbackMethod, callback);
+
+                // Build the ifthenelse block
+
+                var thenBlock = Expression.Block(lambdaBuild, end, setCallBack);
+                return new List<Expression>() { lambdaBuild, end, setCallBack };
+            }
+
+            return new List<Expression>() { lambdaBuild };
+        }
+
+        private static LambdaExpression BuildCallbackLambdaForExtension(ParameterExpression fsmmatchParameter,
+            ParameterExpression tokenParameter)
+        {
+            // construction du callback
+            var getProps = Expression.Property(fsmmatchParameter, "Properties");
+            var addMethod = typeof(Dictionary<,>).MakeGenericType(typeof(string), typeof(object))
+                .GetMethod("Add", new[] { typeof(string), typeof(object) });
+
+            // NOTE  :  needed cast (Convert(type(object)).
+            // otherwise Expression fails to build as it thinks that the generated enum is not assignable from Object ! 
+            var assign = Expression.Call(getProps, addMethod, Expression.Constant(GenericLexer<GenericToken>.DerivedToken),
+                Expression.Convert(tokenParameter, typeof(object)));
+
+            var callbackBody = Expression.Block(assign, fsmmatchParameter);
+
+            var callbackLambda = Expression.Lambda(callbackBody, false, fsmmatchParameter);
+            return callbackLambda;
+        }
+
+        private Action<FSMLexerBuilder<GenericToken>> BuildFsmForExtensionChain(TransitionChain chain)
         {
             Action<FSMLexerBuilder<GenericToken>> fmsTransitioner = builder =>
             {
-                builder = builder.GoTo(GenericLexer<GenericToken>.start);
-                foreach (var transition in token.Transitions)
+                builder = builder.GoTo(chain.StartingNodeName);
+                foreach (var transition in chain.Transitions)
                 {
                     builder = Transition(builder, transition);
                 }
@@ -143,6 +179,9 @@ public class LexerBuilder
             };
             return fmsTransitioner;
         }
+        
+        
+         
 
         private FSMLexerBuilder<GenericToken> Repeat(FSMLexerBuilder<GenericToken> builder, Func<FSMLexerBuilder<GenericToken> , string , FSMLexerBuilder<GenericToken>> DoTransition,
             ITransition transition)
@@ -155,7 +194,7 @@ public class LexerBuilder
                     {
                         for (int i = 0; i < transition.Repeater.Count; i++)
                         {
-                            builder = DoTransition(builder, null);
+                            builder = DoTransition(builder, transition.Target);
                         }
 
                         break;
@@ -185,7 +224,7 @@ public class LexerBuilder
             }
             else
             {
-                builder = DoTransition(builder, null);
+                builder = DoTransition(builder, transition.Target);
             }
             return builder;
         }
@@ -198,6 +237,12 @@ public class LexerBuilder
             {
                 DoTransition = (lexerBuilder, toNode) =>
                 {
+                    
+                    if (!string.IsNullOrEmpty(transition.Mark))
+                    {
+                        // TODO : check i not already exist
+                        lexerBuilder.Mark(transition.Mark);
+                    }
                     if (string.IsNullOrEmpty(toNode))
                     {
                         lexerBuilder.Transition(charTransition.Character);
@@ -206,6 +251,7 @@ public class LexerBuilder
                     {
                         lexerBuilder.TransitionTo(charTransition.Character,toNode);
                     }
+                    
                     return lexerBuilder;
                 };
 
@@ -214,6 +260,11 @@ public class LexerBuilder
             {
                 DoTransition = (lexerBuilder, toNode) =>
                 {
+                    if (!string.IsNullOrEmpty(transition.Mark)) 
+                    {
+                        // TODO : check i not already exist
+                        lexerBuilder.Mark(transition.Mark);
+                    }
                     if (string.IsNullOrEmpty(toNode))
                     {
                         builder.MultiRangeTransition(rangeTransition.Ranges
@@ -225,6 +276,7 @@ public class LexerBuilder
                         lexerBuilder.MultiRangeTransitionTo(toNode,rangeTransition.Ranges.Select(x => (x.StartCharacter, x.EndCharacter))
                             .ToArray());
                     }
+                    
                     return lexerBuilder;
                 };
             }

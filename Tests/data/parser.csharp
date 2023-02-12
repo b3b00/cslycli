@@ -1,20 +1,16 @@
-
 using sly.lexer;
 using sly.parser.generator;
 using System.Collections.Generic;
 using sly.parser.parser;
 
-namespace ns {
-
-    public class MinimalParser {
-
-		[Production("root : INT")]
-		public int root___INT(Token<MinimalLexer> p0)
+namespace ns
+{
+    public class MinimalParser
+    {
+        [Production("root : INT")]
+        public int root___INT(Token<MinimalLexer> p0)
         {
             return default(int);
         }
-
-
-
     }
 }

@@ -7,18 +7,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-
-
     <ItemGroup>
         <PackageReference Include="sly" Version="2.9.4.2-alpha3" />
     </ItemGroup>
 
-
-
-    <ItemGroup>
-      <Reference Include="sly">
-        <HintPath>..\..\csly\sly\bin\Debug\net6.0\sly.dll</HintPath>
-      </Reference>
-    </ItemGroup>
 
 </Project>

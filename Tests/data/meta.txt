@@ -4,8 +4,8 @@ genericLexer CLIToken;
 [Sugar] SEMICOLON : ";";
 [Mode("default", "EXT")]
 [Int] INT;
-[String] STRING;
-[Mode]
+[String] STRING : "\"" "\\";
+[Mode("EXT", "default")]
 [Mode]
 [SingleLineComment] COMMENT : "#";
 [MultiLineComment] COMMENT : "/*" "*/";
@@ -13,7 +13,9 @@ genericLexer CLIToken;
 [Sugar] LEFTBRACKET : "[";
 [Mode("default", "EXT")]
 [Sugar] RIGHTBRACKET : "]";
+[Mode("EXT", "default")]
 [Sugar] LEFTPAREN : "(";
+[Mode("EXT", "default")]
 [Sugar] RIGHTPAREN : ")";
 [Mode("default", "EXT")]
 [Sugar] COLON : ":";
@@ -51,15 +53,10 @@ genericLexer CLIToken;
 [KeyWord] OPERAND : "Operand";
 [KeyWord] PREFIX : "Prefix";
 [KeyWord] POSTFIX : "Postfix";
-
-### 
-# extensions
-# 
-
 [Mode]
 [Push("EXT")]
 [Sugar] OPEN_EXT : ">>>";
-[Mode("EXT","default")]
+[Mode("EXT", "default")]
 [Sugar] ARROW : "->";
 [Mode("EXT")]
 [Sugar] AT : "@";
@@ -81,11 +78,7 @@ genericLexer CLIToken;
 parser CLIParser;
 
 -> root: genericRoot parserRoot ;
-
-
-######################################################
-# generic lexer
-### 
+parserRoot : PARSER[d] ID SEMICOLON[d] rule*;
 genericRoot : GENERICLEXER[d] ID SEMICOLON[d]  modedToken*;
 modedToken : mode* token;
 mode : LEFTBRACKET[d] PUSH[d] LEFTPAREN[d] STRING RIGHTPAREN[d] RIGHTBRACKET[d];
@@ -96,8 +89,9 @@ token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN|SINGLELINECOMMENT] RIGHTBRACKET[d
 token :LEFTBRACKET[d] [STRINGTOKEN|CHARTOKEN|MULTILINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING STRING SEMICOLON[d];
 token : LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d];
 token : LEFTBRACKET[d] EXTENSIONTOKEN[d] RIGHTBRACKET[d] ID extension ;
-extension : OPEN_EXT[d] transition* ARROW[d] ENDTOKEN[d] CLOSE_EXT[d];
-transition : ARROW[d] pattern repeater? (AT[d] ID)?;
+extension : OPEN_EXT[d] transition_chain+ CLOSE_EXT[d];
+transition_chain : (LEFTPAREN[d] ID RIGHTPAREN[d])? transition+  (ARROW ENDTOKEN)?;
+transition : ARROW[d] (LEFTPAREN[d] ID RIGHTPAREN[d])? pattern repeater? (AT[d] ID)?;
 repeater : ZEROORMORE[d];
 repeater : ONEORMORE[d];
 repeater : LEFTCURL[d] INT RIGHTCURL[d];
@@ -105,43 +99,24 @@ pattern : CHAR;
 pattern : LEFTBRACKET[d] range (COMMA[d] range)* RIGHTBRACKET[d];
 range : CHAR DASH[d] CHAR;
 operand :  LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d];
-
-
-######################################################
-# parser
-###
-
-parserRoot : PARSER[d] ID SEMICOLON[d] rule*;
-
-# rules
-
 rule  : ARROW ? operand? ID COLON[d] clause+ SEMICOLON[d];
 rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
 rule : LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
 rule : LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
-
-
-
 item : [ ID | STRING ] ;
-discardeditem : item DISCARD?;
-
 clause : item ZEROORMORE[d];
 clause : item ONEORMORE[d];
-
 clause : item OPTION;
-
 clause :discardeditem;
 clause : item ;
-
 clause : choiceclause;
 choiceclause : LEFTBRACKET[d]  item ( OR[d] item)* RIGHTBRACKET[d]  ;
-
 clause : choiceclause ONEORMORE[d] ;
 clause : choiceclause ZEROORMORE[d] ;
 clause : choiceclause OPTION[d] ;
 clause : group;
 group : LEFTPAREN[d] discardeditem* RIGHTPAREN[d] ;
-
+discardeditem : item DISCARD?;
 clause : group ONEORMORE[d] ;
 clause : group ZEROORMORE [d];
 clause : group OPTION[d] ;

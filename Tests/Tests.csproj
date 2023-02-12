@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>        
-        <PackageReference Include="sly" Version="2.9.4.2-alpha3" />        
+        <PackageReference Include="sly" Version="2.9.4.3" />        
         <PackageReference Include="SharpCoreFileSystem" Version="1.0.4" />
         <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />

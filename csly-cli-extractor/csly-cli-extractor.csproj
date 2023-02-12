@@ -15,7 +15,7 @@
 
 
     <ItemGroup>
-        <PackageReference Include="sly" Version="2.9.4.2-alpha3" />
+        <PackageReference Include="sly" Version="2.9.4.3" />
     </ItemGroup>
 
 </Project>

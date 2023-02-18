@@ -153,7 +153,7 @@ Each token starts with a token type and ends with a `;` :
   - Single line comments : ```[SingleLineComment] LINECOMMENT : '#'```;
   - multi line comments : ```[MultiLineComment] BLOCKCOMMENT : '/*' '*/'```;
   
-  **simple lexer examples**
+#### simple lexer examples
 
   ```
   genericLexer sample;
@@ -172,6 +172,48 @@ Each token starts with a token type and ends with a `;` :
 # string with " as delimiter and \ as escaper
   [String] STRING : "\"" "\\";
 ```
+
+####  Lexer extensions
+
+You can extends Generic Lexer capabilities defining custom token pattern (as in [Generic Lexer Extensions](https://github.com/b3b00/csly/wiki/GenericLexerExtension))
+An extension token is noted with  ```[Extension]```.
+Following comes the FSM definition to match the extension pattern surrounded by ```>>>``` and ```<<<```
+An extension pattern is a set of transitions.
+A transition starts with a arrow `->` followed by a pattern.
+Patterns can be :
+   - simple character 'x'
+   - character ranges ['a'-'z','A'-'Z']
+Patterns can be repeated :
+   - `*` : zero or more
+   - `+` : one or more
+   - `{n}` : n times (where n is a positive integer)
+
+**node names**
+
+nodes can be named to allow non linear transitions.
+
+```
+-> (<NODE_NAME>) 'x' @<DESTINATION_NODE_NAME>
+```
+
+
+**extension grammar** 
+
+```
+extension : '>>>' transition_chain+ '<<<';
+transition_chain : ( '(' ID ')' )? transition+  ('->' 'END')?;
+transition : '->' ( '(' ID ')' )? pattern repeater? ( '@' ID)?;
+repeater : '*';
+repeater : '+';
+repeater : '{' INT '}' ;
+pattern : CHAR;
+pattern : '[' range ( ',' range)* ']';
+range : CHAR '-' CHAR;
+```
+
+
+
+
 
 ### parser
 

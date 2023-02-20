@@ -222,10 +222,10 @@ digraph LR {
 ```
 [Extension] TEST
 >>>
--> '#'  -> (loop) '#' 
-(loop) -> '*' @loop 
-(loop) -> '€' -> END
-(loop) -> '$' -> END  
+-> '#'  -> (loop) '#' # starts with a '#'
+(loop) -> '*' @loop # loops with '*'
+(loop) -> '€' -> END  # ends with '€' 
+(loop) -> '$' -> END  # ends with '$'
 <<<
 
 ```

@@ -190,10 +190,44 @@ Patterns can be repeated :
 
 **node names**
 
-nodes can be named to allow non linear transitions.
+Nodes can be named to allow non linear transitions.
 
 ```
 -> (<NODE_NAME>) 'x' @<DESTINATION_NODE_NAME>
+```
+
+example for the followin pattern :
+   -  starts with a '#'
+   -  then many '*'
+   -  then and ending '$' or '€'
+
+this is a graphviz dot representation :
+
+```
+digraph LR {
+digraph LR {
+ rankdir="LR";
+  start [shape=Mdiamond];
+  
+  start ->  loop [label="'#'"];
+  loop -> loop [label="'*'"];
+  loop -> end [label="'$'",]
+  loop -> end [label="'€'"]
+  
+  end [shape=Msquare];
+}
+```
+![Overview](./graphviz.svg)
+
+```
+[Extension] TEST
+>>>
+-> '#'  -> (loop) '#' 
+(loop) -> '*' @loop 
+(loop) -> '€' -> END
+(loop) -> '$' -> END  
+<<<
+
 ```
 
 

@@ -9,7 +9,6 @@ genericLexer MinimalLexer;
 
 [Extension] TEST
 >>>
-# salut !
 -> '#'  -> (in-ext) '#' -> END
 (in-ext) -> '*' @in-ext 
 (in-ext) -> '€' -> END 

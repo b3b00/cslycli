@@ -194,6 +194,7 @@ public class ParserBuilder
         return null;
     }
 
+      
     public static string SyntaxTreeToDotGraph(Type lexerType, Type parserType, object syntaxTree)
     {
         var graphvizType = typeof(GraphVizEBNFSyntaxTreeVisitor<>).MakeGenericType(lexerType);
@@ -210,6 +211,19 @@ public class ParserBuilder
         var dot = (graph as DotGraph);
 
         return dot.Compile();
+    }
+    
+    
+    public static string SyntaxTreeToSvg(Type lexerType, Type parserType, object syntaxTree)
+    {
+        var graphvizType = typeof(SvgTreeBuilder<>).MakeGenericType(lexerType);
+        var visitor = graphvizType.GetConstructor(new Type[] { }).Invoke(new object[]{});
+        
+        var visited = graphvizType
+            .GetMethod("VisitTree", new Type[] { syntaxTree.GetType() })
+            .Invoke(visitor, new object[] { syntaxTree });
+
+        return visited.ToString();
     }
 
     public static string SyntaxTreeToJson(Type lexerType, Type parserTree, object syntaxTree)

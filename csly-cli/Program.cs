@@ -131,9 +131,21 @@ public class Program
 
         if (test.OutputTypes.Any())
         {
-            formatters = test.OutputTypes.Select(x => (x.Value, (x == OutputFormat.DOT
-                ? ((SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToDotGraph)
-                : ((SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToJson)))).ToList();
+            formatters = test.OutputTypes.Select(x =>
+            {
+                if (x == OutputFormat.DOT)
+                {
+                    return (x.Value,(SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToDotGraph);
+                }  
+                else if (x == OutputFormat.JSON)
+                {
+                    return (x.Value,(SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToJson);
+                }
+                else
+                {
+                    return (x.Value, (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToSvg);
+                }
+            } ).ToList();
         }
         else
         {

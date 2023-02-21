@@ -26,5 +26,6 @@ public enum OutputFormat
 {
     NO = 0,
     JSON = 1,
-    DOT = 2
+    DOT = 2,
+    SVG = 3
 }

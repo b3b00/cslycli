@@ -1,10 +1,15 @@
+using Microsoft.Msagl.Core.Geometry;
+using Microsoft.Msagl.Core.Geometry.Curves;
 using Microsoft.Msagl.Core.Layout;
 using sly.lexer;
 using sly.parser.generator.visitor;
 using sly.parser.syntax.tree;
 using  Microsoft.Msagl.Drawing;
+using Microsoft.Msagl.Layout.Layered;
+using Microsoft.Msagl.Miscellaneous;
 using Label = Microsoft.Msagl.Drawing.Label;
 using Node = Microsoft.Msagl.Drawing.Node;
+using GeomEdge = Microsoft.Msagl.Core.Layout.Edge;
 
 namespace clsy.cli.builder;
 
@@ -24,22 +29,25 @@ public class SvgTreeBuilder<IN> : IConcreteSyntaxTreeVisitor<IN,Node> where IN :
     public string VisitTree(ISyntaxNode<IN> tree)
     {
         var walker = new ConcreteSyntaxTreeWalker<IN, Node>(this);
-        var svgGraph = walker.Visit(tree);
-        Stream stream = null;
-        using (stream = new MemoryStream()) {
-            var writer = new SvgGraphWriter(stream, _graph) {
-                Precision = 4
-            };
-            writer.Write();
-        }
-
-        using (var reader = new StreamReader(stream))
-        {
-            var svg = reader.ReadToEnd();
-            return svg;
-        }
+        var svgRootNode = walker.Visit(tree);
         
-        return "nothing";
+        _graph.CreateGeometryGraph();
+        
+        // Now the drawing graph elements point to the corresponding geometry elements, 
+        // however the node boundary curves are not set.
+        // Setting the node boundaries
+        foreach (var n in _graph.Nodes) {
+            // Ideally we should look at the drawing node attributes, and figure out, the required node size
+            // I am not sure how to find out the size of a string rendered in SVG. Here, we just blindly assign to each node a rectangle with width 60 and height 40, and round its corners.
+            n.GeometryNode.BoundaryCurve = CurveFactory.CreateRectangleWithRoundedCorners(60, 40, 3, 2, new Point(0, 0));
+        }
+           
+        AssignLabelsDimensions(_graph);
+
+        LayoutHelpers.CalculateLayout(_graph.GeometryGraph, new SugiyamaLayoutSettings(), null);
+        var svg = PrintSvgAsString(_graph);
+        
+        return svg;
     }
     
     public Node VisitOptionNode(bool exists, Node child)
@@ -52,7 +60,8 @@ public class SvgTreeBuilder<IN> : IConcreteSyntaxTreeVisitor<IN,Node> where IN :
         var node = BuildNode(syntaxNode.Name, false);
         foreach (var child in children)
         {
-            var edge =_graph.AddEdge(node.Id, child.Id);
+            var edge =_graph.AddEdge(node.Id, child.Id).Attr.Color = Microsoft.Msagl.Drawing.Color.Green;
+            //edge.GeometryEdge = e;
         }
 
         return node;
@@ -112,6 +121,31 @@ public class SvgTreeBuilder<IN> : IConcreteSyntaxTreeVisitor<IN,Node> where IN :
         var node = _graph.AddNode($"{(isLeaf ? "l_" : "n_")}{counter}");
         counter++;
         node.Label = new Label(label);
+        node.LabelText = label;
         return node;
+    }
+    
+    private void AssignLabelsDimensions(Graph graph) {
+        
+
+        foreach (var node in graph.Nodes)       
+        {
+            if (node.Label != null)
+            {
+                node.Label.Width = node.Width * 0.6;
+                node.Label.Height = 40;
+            }
+        }
+    }
+    
+    static string PrintSvgAsString(Graph drawingGraph) {
+        var ms = new MemoryStream();
+        var writer = new StreamWriter(ms);
+        var svgWriter = new SvgGraphWriter(writer.BaseStream, drawingGraph);
+        svgWriter.Write();
+        ms.Position = 0;
+        var sr = new StreamReader(ms);
+        var svgString = sr.ReadToEnd();
+        return svgString;
     }
 }

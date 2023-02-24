@@ -176,7 +176,25 @@ public class Program
             foreach (var value in result.Value)
             {
 
-                var outputFileExtension = value.format == OutputFormat.DOT.ToString() ? ".dot" : ".json";
+                var outputFileExtension = ".json";
+                switch (value.format.ToString())
+                {
+                    case nameof(OutputFormat.DOT):
+                    {
+                        outputFileExtension = ".dot";
+                        break;
+                    }
+                    case nameof(OutputFormat.SVG):
+                    {
+                        outputFileExtension = ".svg";
+                        break;
+                    }
+                    case nameof(OutputFormat.JSON):
+                    {
+                        outputFileExtension = ".json";
+                        break;
+                    }
+                }
 
                 var outputFileName = Path.Combine(test.Output, parserName + outputFileExtension);
                 if (File.Exists(outputFileName))

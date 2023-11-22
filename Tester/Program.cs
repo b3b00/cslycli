@@ -8,6 +8,8 @@ using csly.cli.parser;
 using sly.lexer;
 using sly.parser.generator;
 
+namespace cslyCliTester {
+
 public static class Program
 {
 
@@ -76,4 +78,5 @@ parser ExtensionParser;
         source = source.Replace("\r\n", "\n");
         File.WriteAllText("C:/Users/olduh/dev/csly-cli/Tests/data/lexerWithExt.cs",source);
     }
+}
 }

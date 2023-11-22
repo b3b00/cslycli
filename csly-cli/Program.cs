@@ -9,6 +9,9 @@ using decompiler;
 using sly.cli.options;
 using specificationExtractor;
 
+
+namespace cslycli {
+
 public class Program
 {
     public static void Main(string[] args)
@@ -183,6 +186,6 @@ public class Program
     
     
 }
-
+}
 
    

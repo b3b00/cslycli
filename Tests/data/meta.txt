@@ -70,6 +70,8 @@ genericLexer CLIToken;
 [Sugar] COMMA : ",";
 [Mode("EXT")]
 [KeyWord] ENDTOKEN : "END";
+[KeyWord] USEMEMOIZATION : "UseMemoization";
+[KeyWord] BROADENTOKENWINDOW : "BroadenTokenWindow";
 [Mode("EXT")]
 [Pop]
 [Sugar] CLOSE_EXT : "<<<";
@@ -80,7 +82,7 @@ parser CLIParser;
 [BroadenTokenWindow]
 
 -> root: genericRoot parserRoot ;
-parserRoot : PARSER[d] ID SEMICOLON[d] rule*;
+parserRoot : PARSER[d] ID SEMICOLON[d] optimization* rule*;
 genericRoot : GENERICLEXER[d] ID SEMICOLON[d]  modedToken*;
 modedToken : mode* token;
 mode : LEFTBRACKET[d] PUSH[d] LEFTPAREN[d] STRING RIGHTPAREN[d] RIGHTBRACKET[d];
@@ -101,6 +103,8 @@ pattern : CHAR;
 pattern : LEFTBRACKET[d] range (COMMA[d] range)* RIGHTBRACKET[d];
 range : CHAR DASH[d] CHAR;
 operand :  LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d];
+
+optimization : LEFTBRACKET[d] [USEMEMOIZATION|BROADENTOKENWINDOW] RIGHTBRACKET[d];
 rule  : ARROW ? operand? ID COLON[d] clause+ SEMICOLON[d];
 rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
 rule : LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];

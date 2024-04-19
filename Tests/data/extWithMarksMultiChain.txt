@@ -14,7 +14,6 @@ genericLexer MinimalLexer;
 (in-ext) -> '€' -> END 
 <<<
 
-
 parser MinimalParser;
 
--> root : TEST;
+-> root : TEST ;

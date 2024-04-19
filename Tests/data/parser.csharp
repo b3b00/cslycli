@@ -5,6 +5,7 @@ using sly.parser.parser;
 
 namespace ns
 {
+    [ParserRoot("root")]
     public class MinimalParser
     {
         [Production("root : INT")]

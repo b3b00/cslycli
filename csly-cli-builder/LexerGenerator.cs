@@ -94,6 +94,8 @@ public class LexerGenerator
             source += TransitionChain(chain,extension.Name,first) + "\n";
             first = false;
         }
+
+        source += "\n}\n";
         return source;
     }
 
@@ -294,10 +296,22 @@ public class LexerGenerator
                         builder.AppendLine("\t\t[Double]");
                         break;
                     }
+                    case GenericToken.Date:
+                    {
+                        string args = token.Args.Any() ? string.Join(", ", token.Args.Select(x => $@"""{escapeChars(x)}""")) : "";
+                        if (string.IsNullOrEmpty(args))
+                        {
+                            builder.AppendLine("\t\t[Date]");
+                        }
+                        else
+                        {
+                            builder.AppendLine($"\t\t[Date({args})]");
+                        }
+
+                        break;
+                    }
                     case GenericToken.String:
                     {
-                        
-                        
                         string args = token.Args.Any() ? string.Join(", ", token.Args.Select(x => $@"""{escapeChars(x)}""")) : "";
                         if (string.IsNullOrEmpty(args))
                         {
@@ -391,8 +405,7 @@ namespace {nameSpace} {{
 
     private string getFooter()
     {
-        return @"
-    }
+        return @"    
 }
 ";
     }

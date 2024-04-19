@@ -11,13 +11,14 @@
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <version>2.1.0</version>
         <PackageVersion>2.1.0</PackageVersion>
-        <PropertyGroup>
-            <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-        </PropertyGroup>
-        <ItemGroup>
-            <None Include="LICENSE.md" Pack="true" PackagePath=""/>
-        </ItemGroup>
+        
     </PropertyGroup>
+    <PropertyGroup>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="LICENSE.md" Pack="true" PackagePath=""/>
+    </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="CommandLineParser" Version="2.9.1" />

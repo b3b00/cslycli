@@ -201,5 +201,23 @@ public class Tests
             .Contains(
                 "public object root_____LPAREN___RPAREN______PLUS___MINUS___TIMES___DIVIDE______LBRACK___RBRACK___(Token<MyLexer1> p0, List<Token<MyLexer1>> p1, List<Token<MyLexer1>> p2)");
     }
-   
+
+    [Fact]
+    public void TestParserOptimizations()
+    {
+        var grammar = @"
+genericLexer MinimalLexer;
+[Int] INT;
+
+parser MinimalParser;
+[UseMemoization]
+[BroadenTokenWindow]
+-> root : INT ;
+";
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MinimalParser");
+        Check.That(model).IsOkModel();
+        Check.That(model.Value.ParserModel.UseMemoization).IsTrue();
+        Check.That(model.Value.ParserModel.BroadenTokenWindow).IsTrue();
+    }
 }

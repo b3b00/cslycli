@@ -60,6 +60,8 @@ public enum CLIToken
     [Keyword("Push")] PUSH,
     [Keyword("Mode")] MODE,
     [Keyword("Pop")] POP,
+    [Keyword("UseMemoization")] USEMEMOIZATION,
+    [Keyword("BroadenTokenWindow")] BROADENTOKENWINDOW,
     
     
     

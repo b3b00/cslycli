@@ -23,11 +23,14 @@ public class CLIParser
         return new Model(genericLex as LexerModel, parser as ParserModel) ;
     }
 
-    [Production("parserRoot : PARSER[d] ID SEMICOLON[d] rule*")]
-    public ICLIModel Parser(Token<CLIToken> name, List<ICLIModel> rules, ParserContext context)
+    [Production("parserRoot : PARSER[d] ID SEMICOLON[d] optimization* rule*")]
+    public ICLIModel Parser(Token<CLIToken> name, List<ICLIModel> optimizations, List<ICLIModel> rules, ParserContext context)
     {
+        var optims = optimizations.Cast<Optimization>().ToList();
         var model = new ParserModel()
         {
+            UseMemoization = optims.Exists(x => x.UseMemoization),
+            BroadenTokenWindow = optims.Exists(x => x.BroadenTokenWindow),
             Name = name.Value,
             Rules = rules.Cast<Rule>().ToList()
         };
@@ -35,6 +38,16 @@ public class CLIParser
 
         return model;
 
+    }
+
+    [Production("optimization : LEFTBRACKET[d] [USEMEMOIZATION|BROADENTOKENWINDOW] RIGHTBRACKET[d]")]
+    public ICLIModel Optimization(Token<CLIToken> optimizationToken, ParserContext context)
+    {
+        return new Optimization()
+        {
+            UseMemoization = optimizationToken.TokenID == CLIToken.USEMEMOIZATION,
+            BroadenTokenWindow = optimizationToken.TokenID == CLIToken.BROADENTOKENWINDOW
+        };
     }
     
     #endregion

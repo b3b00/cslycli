@@ -85,7 +85,7 @@ jobs:
       id: upload-release-nuget-symbols-asset 
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ${{ steps.publish_nuget.outputs.SYMBOLS_PACKAGE_PATH }}

@@ -49,13 +49,31 @@ public class ParserDecompiler
     private string GetParser(Type type, Type lexerType)
     {
         string root = null;
+        bool useMemo = false;
+        bool broadWindow = false;
+        
         var parserRootAttribute = type.GetCustomAttribute<ParserRootAttribute>();
         if (parserRootAttribute != null)
         {
             root = parserRootAttribute.RootRule;
         }
+
+        useMemo = type.GetCustomAttribute<UseMemoizationAttribute>() != null;
+        broadWindow = type.GetCustomAttribute<BroadenTokenWindowAttribute>() != null;
+        
         StringBuilder builder = new StringBuilder();
         builder.AppendLine($"parser {type.Name};").AppendLine();
+
+        if (useMemo)
+        {
+            builder.AppendLine("[UseMemoization]");
+        }
+
+        if (broadWindow)
+        {
+            builder.AppendLine("[BroadenTokenWindow]");
+        }
+        
         var methods = type.GetMethods().ToList();
         foreach (var method in methods)
         {

@@ -76,6 +76,8 @@ genericLexer CLIToken;
 
 
 parser CLIParser;
+[UseMemoization]
+[BroadenTokenWindow]
 
 -> root: genericRoot parserRoot ;
 parserRoot : PARSER[d] ID SEMICOLON[d] rule*;

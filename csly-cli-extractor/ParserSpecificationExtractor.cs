@@ -96,8 +96,19 @@ public class ParserSpecificationExtractor
             {
                 rootRule = parserRootAttribute.ArgumentList.Arguments[0].ToString().Replace("\"","");
             }
+            bool useMemo = parserAttributes.Exists(x => x.Name.ToString() == "UseMemoization");
+            bool broadWindow = parserAttributes.Exists(x => x.Name.ToString() == "BroadenTokenWindow");
             
             builder.AppendLine($"parser {parserDecl.Identifier.Text};").AppendLine();
+            if (useMemo)
+            {
+                builder.AppendLine("[UseMemoization]");
+            }
+
+            if (broadWindow)
+            {
+                builder.AppendLine("[BroadenTokenWindow]");
+            }
             var methods= parserDecl.Members.Where(x => x is MethodDeclarationSyntax).Cast<MethodDeclarationSyntax>().ToList();
             foreach (var method in methods)
             {

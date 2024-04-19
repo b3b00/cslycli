@@ -76,6 +76,7 @@ public class ParserBuilder
 
         TypeBuilder typeBuilder = moduleBuilder.DefineType(DynamicParserName, TypeAttributes.Public, typeof(object));
         AddParserRoot(typeBuilder,model.ParserModel.Root);
+        AddParserOptimizations(typeBuilder, model.ParserModel);
         foreach (var rule in model.ParserModel.Rules)
         {
             BuildVisitor(typeBuilder,rule);
@@ -102,6 +103,32 @@ public class ParserBuilder
             constructorInfo, new object[] { root });
 
         builder.SetCustomAttribute(customAttributeBuilder);
+    }
+    
+    public void AddParserOptimizations(TypeBuilder builder, ParserModel model)
+    {
+        if (model.UseMemoization)
+        {
+            Type attributeType = typeof(UseMemoizationAttribute);
+
+            ConstructorInfo constructorInfo = attributeType.GetConstructor(new Type[] { });
+
+            CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                constructorInfo, new object[] { });
+
+            builder.SetCustomAttribute(customAttributeBuilder);
+        }
+        if (model.BroadenTokenWindow)
+        {
+            Type attributeType = typeof(BroadenTokenWindowAttribute);
+
+            ConstructorInfo constructorInfo = attributeType.GetConstructor(new Type[] { });
+
+            CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                constructorInfo, new object[] { });
+
+            builder.SetCustomAttribute(customAttributeBuilder);
+        }
     }
     
     public Result<Model> CompileModel(string modelSource, string parserName = "dynamicParser")

@@ -28,7 +28,7 @@ public class LexerGenerator
         {
             extender = GetExtender(model);
         }
-        var source = head+"\n"+body+"\n"+foot+"\n\n"+extender+"\n\n}";
+        var source = head+"\n"+body+"}\n"+extender+"\n\n"+foot;
         
         var tree = CSharpSyntaxTree.ParseText(source);
         CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
@@ -88,25 +88,25 @@ public class LexerGenerator
         var tab = "            ";
         source = $"if (token == {lexerModel.Name}.{extension.Name}) {{\n\n";
         source += GetGenericCallBack(lexerModel.Name,extension.Name);
-        // source += "\n\nvar builder = lexer.FSMBuilder;\n\n";
-        // source += "builder.GoTo(\"start\")\n";
+        bool first = true;
         foreach (var chain in extension.Chains)
         {
-            source += TransitionChain(chain,extension.Name) + "\n";
+            source += TransitionChain(chain,extension.Name,first) + "\n";
+            first = false;
         }
-
-        // source += $".CallBack(callback{extension.Name});";
-        // source += "\n\n}";
         return source;
     }
 
-    private string TransitionChain(TransitionChain chain, string extensionName)
+    private string TransitionChain(TransitionChain chain, string extensionName, bool first)
     {
         var source = "";
         var tab = "            ";
         // source = $"if (token == {lexerModel.Name}.{extension.Name}) {{\n\n";
         // source += GetGenericCallBack(lexerModel.Name,extension.Name);
-        source += "\n\nvar builder = lexer.FSMBuilder;\n\n";
+        if (first)
+        {
+            source += "\n\nvar builder = lexer.FSMBuilder;\n\n";
+        }
         source += $"builder.GoTo(\"{chain.StartingNodeName}\")\n";
         foreach (var transition in chain.Transitions)
         {
@@ -115,7 +115,7 @@ public class LexerGenerator
 
         if (chain.IsEnded)
         {
-            source += $".End()";    
+            source += $".End(GenericToken.Extension)";    
             source += $".CallBack(callback{extensionName});";
         }
         else
@@ -393,6 +393,7 @@ namespace {nameSpace} {{
     {
         return @"
     }
+}
 ";
     }
 }

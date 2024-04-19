@@ -112,7 +112,7 @@ public class Tests
         var grammar = fs.ReadAllText("/data/minimalGrammar.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "MinimalParser");
-        Check.That(model.IsError).IsFalse();
+        Check.That(model).IsOkModel();
         Check.That(model.Value).IsNotNull();
         var json = builder.Getz(grammar, "2", "MinimalParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToJson)});
         Check.That(json.IsError).IsFalse();

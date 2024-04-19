@@ -18,7 +18,7 @@ public class ParserGenerator
     
     public  string GenerateParser(Model model, string nameSpace, string output)
     {
-        var head = GetHeader(model.ParserModel.Name, nameSpace);
+        var head = GetHeader(model.ParserModel.Name, nameSpace, model.ParserModel.Root);
         var body = GetBody(model.ParserModel, model.ParserModel.Name, model.LexerModel.Name, output);
         var foot = getFooter();
         
@@ -38,7 +38,7 @@ public class ParserGenerator
 
     
     
-    private  string GetHeader(string name, string nameSpace)
+    private  string GetHeader(string name, string nameSpace, string root)
     {
         return $@"
 using sly.lexer;
@@ -48,6 +48,7 @@ using sly.parser.parser;
 
 namespace {nameSpace} {{
 
+    [ParserRoot(""{root}"")]
     public class {name} {{
 ";
     }

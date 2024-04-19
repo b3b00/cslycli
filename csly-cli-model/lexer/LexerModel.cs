@@ -1,5 +1,6 @@
 using csly.cli.model;
 using csly.cli.model.lexer;
+using sly.lexer;
 
 namespace clsy.cli.builder.parser.cli.model;
 
@@ -10,6 +11,9 @@ public class LexerModel : ICLIModel
     public Dictionary<string, List<TokenModel>> TokensByName { get; set; }
 
     public string Name { get; set; }
+
+    public bool HasExtension => Tokens.Exists(x => x.Type == GenericToken.Extension);
+    
     public LexerModel(List<TokenModel> tokens, string name)
     {
         Name = name;

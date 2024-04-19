@@ -7,6 +7,7 @@ using clsy.cli.builder.parser;
 using CommandLine;
 using decompiler;
 using sly.cli.options;
+using sly.lexer;
 using specificationExtractor;
 
 
@@ -16,10 +17,11 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Parser.Default.ParseArguments<TestOptions, GenerateOptions, ExtractOptions, DecompileOptions>(args)
+        Parser.Default.ParseArguments<TestOptions, GenerateOptions, GenerateProjectOptions, ExtractOptions, DecompileOptions>(args)
             .MapResult(
                 (TestOptions test) => { return Test(test); },
                 (GenerateOptions generate) => { return Generate(generate); },
+                (GenerateProjectOptions generateProject) => { return GenerateProject(generateProject); },
                 (ExtractOptions extract) => { return Extract(extract);},
                 (DecompileOptions decompile) => { return Decompile(decompile);},
                 errors =>
@@ -90,21 +92,104 @@ public class Program
 
             return 1;
         }
+
+        var lexerModel = model.Value.LexerModel;
+        var parserModel = model.Value.ParserModel;
         
         Console.WriteLine("Model compilation succeeded.");
 
         var lexerGenerator = new LexerGenerator();
-        var enumCode = lexerGenerator.GenerateLexer(model.Value.LexerModel, generate.NameSpace);
-        var path = Path.Combine(fi.Directory.FullName, model.Value.LexerModel.Name + ".cs");
+        var enumCode = lexerGenerator.GenerateLexer(lexerModel, generate.NameSpace);
+        var path = Path.Combine(generate.OutputDir, lexerModel.Name + ".cs");
         File.WriteAllText(path,enumCode);
 
         var parserGenerator = new ParserGenerator();
         var parserCode = parserGenerator.GenerateParser(model.Value,  generate.NameSpace, generate.ParserOutput);
-        path = Path.Combine(fi.Directory.FullName, model.Value.ParserModel.Name + ".cs");
+        path = Path.Combine(generate.OutputDir, parserModel.Name + ".cs");
         File.WriteAllText(path,parserCode);
         return 0;
     }
 
+    private static int GenerateProject(GenerateProjectOptions generate)
+    {
+        var fi = new FileInfo(generate.Grammar);
+        var parserName = fi.Name.Replace(fi.Extension, "");
+        var builder = new clsy.cli.builder.parser.ParserBuilder();
+        var grammar = File.ReadAllText(generate.Grammar);
+
+        var model = builder.CompileModel(grammar);
+        if (model.IsError)
+        {
+            foreach (var error in model.Error)
+            {
+                Console.Error.WriteLine(error);    
+            }
+            return 1;
+        }
+
+        var parserModel = model.Value.ParserModel;
+        var lexerModel = model.Value.LexerModel;
+
+        Generate(new GenerateOptions() {Grammar = generate.Grammar, NameSpace = generate.NameSpace, ParserOutput = generate.ParserOutput, OutputDir = generate.OutputDir});
+        
+        string csproj = $@"<Project Sdk=""Microsoft.NET.Sdk"">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>{generate.NameSpace}</RootNamespace>                
+        <PackageOutputPath>./nupkg</PackageOutputPath>
+        <version>0.0.1</version>
+        <PackageVersion>0.0.1</PackageVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include=""sly"" Version=""3.1.0"" />
+    </ItemGroup>
+
+</Project>";
+        File.WriteAllText(Path.Combine(generate.OutputDir,parserModel.Name)+".csproj",csproj);
+
+        string extender =  lexerModel.HasExtension ? $"Extended{lexerModel.Name}.Extend{lexerModel.Name}": "null";
+        
+        string program = $@"
+using sly.parser.generator;
+using System;
+
+namespace {generate.NameSpace} {{
+    
+
+    public class Program {{
+        public static void Main(string[] args) {{
+            var builder = new ParserBuilder<{lexerModel.Name}, object>();
+            var instance = new {parserModel.Name}();
+
+            var buildParser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, null,{extender});
+            if (buildParser.IsOk)
+            {{
+                var result = buildParser.Result.Parse(""<< HERE COMES YOUR SOURCE"");
+                if (result.IsOk)
+                {{
+                    Console.WriteLine(result.Result);
+                }}
+                else
+                {{
+                    foreach (var error in result.Errors)
+                    {{
+                        Console.WriteLine(error.ErrorMessage);
+                    }}
+                }}
+
+            }}
+        }}
+    }}
+}}
+";
+        File.WriteAllText(Path.Combine(generate.OutputDir,"Program.cs"),program);
+        
+        return 0;
+    }
+    
     private static int Test(TestOptions test)
     {
         var fi = new FileInfo(test.Grammar);

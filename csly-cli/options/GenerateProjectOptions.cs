@@ -2,8 +2,8 @@ using CommandLine;
 
 namespace sly.cli.options;
 
-[Verb("generate")]
-public class GenerateOptions
+[Verb("project")]
+public class GenerateProjectOptions
 {
     [Option('g',"grammar",Required = true,HelpText = "path to grammar file")]
     public string Grammar { get; set; }
@@ -16,5 +16,5 @@ public class GenerateOptions
     
     [Option('d', "output-dir", Required = false, HelpText = "output directory")]
     public string OutputDir { get; set; } = "./";
-
+    
 }

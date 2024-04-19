@@ -16,4 +16,7 @@ genericLexer MinimalLexer;
 
 parser MinimalParser;
 
+[UseMemoization]
+[BroadenTokenWindow]
+
 -> root : TEST ;

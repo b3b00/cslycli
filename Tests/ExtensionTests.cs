@@ -153,6 +153,17 @@ parser MinimalParser;
         Check.That(dotresult.format).Equals("DOT");
         expectation = $@"\""{test}\"""" shape=doublecircle height=0.50]";
         Check.That(dotresult.content.Replace("\r\n","\n")).Contains(expectation);
+        
+        test = "#****";
+        dot = modelBuilder.Getz(grammar, test, "strangeParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
+        Check.That(dot.IsError).IsTrue();
+        Check.That(dot.Error).CountIs(1);
+        
+        test = "#****£";
+        dot = modelBuilder.Getz(grammar, test, "strangeParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
+        Check.That(dot.IsError).IsTrue();
+        Check.That(dot.Error).CountIs(1);
+        
 
     }
     

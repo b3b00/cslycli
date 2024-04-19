@@ -57,5 +57,8 @@
       <None Remove="data\dotExtMarks.txt" />
       <EmbeddedResource Include="data\dotExtMarks.txt" />
     </ItemGroup>
+    <ItemGroup>
+      <Compile Remove="data\lexerWithExt.cs" />
+    </ItemGroup>
 
 </Project>

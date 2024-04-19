@@ -142,7 +142,7 @@ public class LexerGenerator
                 }
                 else
                 {
-                    return $".TransitionTo('{charTransition.Character}',{toNode})";
+                    return $@".TransitionTo('{charTransition.Character}',""{toNode}"")";
                 }
                 return "";
             };
@@ -173,9 +173,17 @@ public class LexerGenerator
 
         if (DoTransition != null)
         {
-            var trans = Repeat(DoTransition, transition);
+            string trans = "";
+            if (!string.IsNullOrEmpty(transition.Mark))
+            {
+                trans += $@".Mark(""{transition.Mark}"")";
+            }
+            trans += Repeat(DoTransition, transition);
+            
             return trans;
         }
+
+        
 
         return "";
     }
@@ -223,7 +231,7 @@ public class LexerGenerator
         }
         else
         {
-            builder.AppendLine(doTransition(null));
+            builder.AppendLine(doTransition(transition.Target));
         }
         return builder.ToString();
     }

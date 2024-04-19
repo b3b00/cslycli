@@ -30,6 +30,7 @@ dotnet tool update -g csly-cli
 There are 4 usages of csly-cli :
   - test a parser specification against a source code.
   - generate C# source files for CSLY.
+  - generate a minimal console project for testing your parser.
   - extract parser specification file from an existing lexer/parser pair C# source file.
   - extract parser specification file from an existing .Net assembly containing a lexer/parser pair.
     
@@ -74,12 +75,34 @@ the test command tries to parse a source file according to a grammar specificati
    - -g --grammar * : path to grammar specification file
    - -n --namespace * : parser namespace   
    - -o --output * : parser output type (see [parser typing](https://github.com/b3b00/csly/wiki/defining-your-parser#parser-types) for CSLY parser typing)
+   - -d --output-dir * : output directory
 
 This command will output 2 .cs files :
-  - a lexer enum file named after the generic Lexer name given in the grammar specification file see (seed [grammar main structure](https://github.com/b3b00/cslycli#grammar-main-structur 
+  - a lexer enum file named after the generic Lexer name given in the grammar specification file (see [grammar main structure](https://github.com/b3b00/cslycli#grammar-main-structur
+  - a parser class file named after the parser name given in the grammar specification file
 
 ```
 csly-cli generate -g /path/to/grammar.txt -n my.name.space -o object
+```
+
+### generating C# console project
+
+```csly-cli project``` :
+
+- -g --grammar * : path to grammar specification file
+- -n --namespace * : parser namespace
+- -o --output * : parser output type (see [parser typing](https://github.com/b3b00/csly/wiki/defining-your-parser#parser-types) for CSLY parser typing)
+- -d --output-dir * : output directory
+
+This command will output a console project with :
+This command will output 2 .cs files :
+- a lexer enum file named after the generic Lexer name given in the grammar specification file (see [grammar main structure](https://github.com/b3b00/cslycli#grammar-main-structur
+- a parser class file named after the parser name given in the grammar specification file
+- a Program.cs main file
+- a .csproj file (named after the parser name)
+
+```
+csly-cli project -g /path/to/grammar.txt -n my.name.space -o object -d c:/tmp/my-parser-console-project
 ```
 
 

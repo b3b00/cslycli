@@ -86,7 +86,7 @@ csly-cli generate -g /path/to/grammar.txt -n my.name.space -o object
   ### extracting the specification from existing lexer/parser C# files.
   Given a lexer parser CSLY C# files pair, csly-cli can extract a specification file.
 
-  ```csly-cli generate``` : 
+  ```csly-cli extract``` : 
   - -l --lexer : path to lexer C# file
   - -p --parser : path to the parser C# file
   - -o -output : path and filename of the generated specification file

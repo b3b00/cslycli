@@ -23,6 +23,10 @@ public class LexerDecompiler
             
             switch (lexem.GenericToken)
             {
+                case GenericToken.Extension:
+                {
+                    return $"[Extension] {name}; // extension builder will not be decompiled";
+                }
                 case GenericToken.Double:
                 {
                     return $"[Double] {name};";

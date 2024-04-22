@@ -200,6 +200,8 @@ public class LexerSpecificationExtractor
     
     public string ExtractFromSource(string lexerSource)
     {
+        
+        
         StringBuilder builder = new StringBuilder();
         
         var tree = CSharpSyntaxTree.ParseText(lexerSource);
@@ -246,6 +248,9 @@ public class LexerSpecificationExtractor
                     }
                 }
             }
+            
+            ExtenderExtractor extenderExtractor = new ExtenderExtractor();
+            extenderExtractor.ExtractFromFile("c:/tmp/test/MinimalLexer.cs", lex.Identifier.Text);
         }
 
         return builder.ToString();

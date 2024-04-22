@@ -10,7 +10,7 @@ public class Decompiler
         
     }
 
-    public string Decompile(Type lexerType, Type parserType)
+    public string Decompile(Type lexerType, Type parserType, Type extenderType = null)
     {
         StringBuilder builder = new StringBuilder();
         LexerDecompiler lexerDecompiler = new LexerDecompiler();
@@ -19,14 +19,27 @@ public class Decompiler
         ParserDecompiler parserDecompiler = new ParserDecompiler();
         var parser = parserDecompiler.DecompileParser(lexerType, parserType);
         builder.AppendLine(parser);
+        if (extenderType != null)
+        {
+            ExtenderDecompiler extenderDecompiler = new ExtenderDecompiler();
+            var x = extenderDecompiler.Decompile(extenderType, lexerType);
+        }
         return builder.ToString();
     }
     
     public string Decompile(string lexerFqn, string parserFqn, string assemblyPath)
     {
         var assembly = Assembly.LoadFrom(assemblyPath);
+        var types = assembly.GetTypes();
+        foreach (var type in types)
+        {
+            Console.Write(type.FullName);
+        }
         var lexerType = assembly.GetType(lexerFqn);
         var parserType = assembly.GetType(parserFqn);
-        return Decompile(lexerType, parserType);
+        var extenderType = assembly.GetType("my.name.space.ExtendedMinimalLexer");
+        return Decompile(lexerType, parserType , extenderType);
     }
+    
+    
 }

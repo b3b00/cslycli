@@ -45,7 +45,7 @@ public class Program
         
         if (File.Exists(decompile.SpecificationOutputFile))
         {
-            File.Delete(decompile.SpecificationOutputFile);    
+            File.Delete(decompile.SpecificationOutputFile);
         }
 
         File.WriteAllText(decompile.SpecificationOutputFile, specification);

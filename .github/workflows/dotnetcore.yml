@@ -63,7 +63,7 @@ jobs:
       id: create_release
       uses: actions/create-release@latest
       env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.publish_nuget.outputs.VERSION }}
         release_name: Release ${{ steps.publish_nuget.outputs.VERSION }}

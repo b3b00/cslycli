@@ -362,6 +362,18 @@ public class LexerBuilder
                 
                 AddJsonAttribute(builder);
             }
+            else if (genericToken == GenericToken.Date)
+            {
+                var format = args[0] == "YYYYMMDD" ? DateFormat.YYYYMMDD : DateFormat.DDMMYYYY;
+                var separator = args[1][0];
+                var attributeType = typeof(DateAttribute);
+                ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                    new Type[3] { typeof(DateFormat), typeof(char), typeof(int)});
+                CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                    constructorInfo, new object[] {format, separator ,Channels.Main});
+                builder.SetCustomAttribute(customAttributeBuilder);
+                AddJsonAttribute(builder);
+            }
             else 
             {
                 Type attributeType = typeof(LexemeAttribute);

@@ -12,6 +12,10 @@ public static class ExpressionExtensions
         {
             case LiteralExpressionSyntax lit:
             {
+                if (lit.IsKind(SyntaxKind.CharacterLiteralExpression))
+                {
+                    return lit.Token.Value.ToString();
+                }
                 if (lit.IsKind(SyntaxKind.StringLiteralExpression))
                 {
                     return lit.Token.ValueText;

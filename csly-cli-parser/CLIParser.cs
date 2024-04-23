@@ -147,6 +147,17 @@ public class CLIParser
         context.AddEnumName(id.Value);
         return new TokenModel(tokenType,id.Value,arg1.StringWithoutQuotes.Replace("\\\\","\\"), arg2.StringWithoutQuotes.Replace("\\\\","\\"));
     }
+    
+    [Production(
+        "token :LEFTBRACKET[d] DATETOKEN[d] RIGHTBRACKET[d] ID COLON[d] [DDMMYYYY|YYYYMMDD] CHAR SEMICOLON[d]")]
+    public ICLIModel DateToken(Token<CLIToken> id, Token<CLIToken> dateType, Token<CLIToken> separator, ParserContext context)
+    {
+        var tokenType = GenericToken.Date;
+        string format = dateType.TokenID.ToString();
+            
+        context.AddEnumName(id.Value);
+        return new TokenModel(tokenType,id.Value,format, separator.CharValue.ToString());
+    }
 
     [Production("token : LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d]")]
     public ICLIModel NoArgToken(Token<CLIToken> type, Token<CLIToken> id, ParserContext context)

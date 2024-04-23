@@ -5,6 +5,8 @@ using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using csly.cli.model;
 using csly.cli.parser;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using sly.lexer;
 using sly.parser.generator;
 
@@ -33,50 +35,37 @@ public static class Program
     {
 
         var grammar = @"
+genericLexer MinimalLexer;
+[Date] DATE : YYYYMMDD '.';
 
-genericLexer ExtensionLexer;
+parser MinimalParser;
 
-[Extension] TEST
->>>
--> '#'  -> ['0'-'9','A'-'F'] {6} -> END
-<<<
-
-[Extension] AT
->>>
--> '@' -> END
-<<<
-
-
-parser ExtensionParser;
-
--> root : TEST;
+-> root : DATE ;
 ";
-
-
         var builder = new ParserBuilder();
-        var model = builder.CompileModel(grammar, "ExtensionParser");
-        var json = builder.Getz(grammar, "#FF00FF", "ExtensionParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToJson)});
-        if (json.IsError)
+        var model = builder.CompileModel(grammar, "MinimalParser");
+        if (model.IsOk)
         {
-            foreach (var s in json.Error)
-            {
-                Console.WriteLine(s);
-            }
+            var token = model.Value.LexerModel.Tokens[0];
         }
         else
         {
-            var content = json.Value.First().content;
-            Console.WriteLine(content);
+            foreach (var error in model.Error)
+            {
+                Console.WriteLine(error);
+            }
         }
         
+        var json = builder.Getz(grammar, "2024.04.23", "MyDateParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
+        if (json.IsOk)
+        {
+            File.WriteAllText("c:/temp/date.json",json.Value[0].content);
+            var tree = JsonConvert.DeserializeObject<JObject>(json.Value[0].content);
+            var token = tree.SelectToken("$.Children[0].Token");
+            Console.WriteLine(token);
+            var dateTime = token.SelectToken("DateTimeValue").Value<DateTime>();
+        }
         
-        
-        
-        
-        var lexerGenerator = new LexerGenerator();
-        var source = lexerGenerator.GenerateLexer(model.Value.LexerModel, "ns");
-        source = source.Replace("\r\n", "\n");
-        File.WriteAllText("C:/Users/olduh/dev/csly-cli/Tests/data/lexerWithExt.cs",source);
     }
 }
 }

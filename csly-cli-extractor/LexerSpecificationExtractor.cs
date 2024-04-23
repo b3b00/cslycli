@@ -14,6 +14,10 @@ public class LexerSpecificationExtractor
     {
         switch (type)
         {
+            case GenericToken.Date:
+            {
+                return $"[Date] {name} : {args[0]} '{args[1]}';";
+            }
             case GenericToken.Comment:
             {
                 if (args.Length == 1)
@@ -133,6 +137,10 @@ public class LexerSpecificationExtractor
         else if (type == "SingleLineComment" || type == "MultiLineComment")
         {
             return Lexeme(name, GenericToken.Comment, args);
+        }
+        else if (type == "Date")
+        {
+            return Lexeme(name, GenericToken.Date, args);
         }
         else if (type == "AlphaNumId")
         {

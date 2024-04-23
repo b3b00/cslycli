@@ -298,16 +298,21 @@ public class LexerGenerator
                     }
                     case GenericToken.Date:
                     {
-                        string args = token.Args.Any() ? string.Join(", ", token.Args.Select(x => $@"""{escapeChars(x)}""")) : "";
-                        if (string.IsNullOrEmpty(args))
+                        string args = token.Args.Any()
+                            ? string.Join(", ", token.Args.Select(x => $@"{escapeChars(x)}"))
+                            : "";
+                        if (token.Args.Length == 0)
                         {
                             builder.AppendLine("\t\t[Date]");
                         }
-                        else
+                        else if (token.Args.Length == 2)
                         {
-                            builder.AppendLine($"\t\t[Date({args})]");
+                            builder.AppendLine($"\t\t[Date(DateFormat.{token.Args[0]},'{token.Args[1]}')]");
                         }
-
+                        else if (args.Length == 1)
+                        {
+                            builder.AppendLine($"\t\t[Date(DateFormat.{token.Args[0]})]");
+                        }
                         break;
                     }
                     case GenericToken.String:

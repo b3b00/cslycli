@@ -8,8 +8,11 @@ using System.Reflection;
 using System.Threading;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NFluent;
 using SharpFileSystem.FileSystems;
+using sly.lexer;
 using Xunit;
 
 namespace Tests;
@@ -220,4 +223,39 @@ parser MinimalParser;
         Check.That(model.Value.ParserModel.UseMemoization).IsTrue();
         Check.That(model.Value.ParserModel.BroadenTokenWindow).IsTrue();
     }
+    
+    [Fact]
+    public void TestDateToken()
+    {
+        var grammar = @"
+genericLexer MinimalLexer;
+[Date] DATE : YYYYMMDD '.';
+
+parser MinimalParser;
+
+-> root : DATE ;
+";
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MinimalParser");
+        Check.That(model).IsOkModel();
+        Check.That(model.Value.LexerModel.Tokens).CountIs(1);
+        var token = model.Value.LexerModel.Tokens[0];
+        Check.That(token.Name).IsEqualTo("DATE");
+        Check.That(token.Type).IsEqualTo(GenericToken.Date);
+        Check.That(token.Args).CountIs(2);
+        Check.That(token.Args[0]).IsEqualTo("YYYYMMDD");
+        Check.That(token.Args[1]).IsEqualTo(".");
+
+        var generator = new LexerGenerator();
+        var lexer = generator.GenerateLexer(model.Value.LexerModel, "namespace");
+        ;
+        var json = builder.Getz(grammar, "2024.04.23", "MyDateParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
+        Check.That(json.IsError).IsFalse();
+        var tree = JsonConvert.DeserializeObject<JObject>(json.Value[0].content);
+        var firstToken = tree.SelectToken("$.Children[0].Token");
+        Check.That(firstToken).IsNotNull();
+        var dateTime = firstToken.SelectToken("Value").Value<string>();
+        Check.That(dateTime).IsEqualTo("2024.04.23");
+    }
+    
 }

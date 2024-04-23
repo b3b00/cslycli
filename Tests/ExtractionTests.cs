@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NFluent;
 using SharpFileSystem.FileSystems;
+using sly.lexer;
 using specificationExtractor;
 using Xunit;
 
@@ -230,6 +231,49 @@ public class ExtractionTests
         var json = r.content;
 
 
+    }
+    
+    [Fact]
+    public void GenerateThenExtractDateTest()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = @"
+genericLexer MinimalLexer;
+[Date] DATE : YYYYMMDD '.';
+
+parser MinimalParser;
+
+-> root : DATE ;
+";
+        var builder = new ParserBuilder();
+        var initialModel = builder.CompileModel(grammar, "DateParser");
+        Check.That(initialModel.IsError).IsFalse();
+        Check.That(initialModel.Value).IsNotNull();
+        var parserGenerator = new ParserGenerator();
+        var parserSource = parserGenerator.GenerateParser(initialModel.Value, "date","object");
+        Check.That(parserSource).IsNotNull();
+        Check.That(parserSource).IsNotEmpty();
+        var lexerGenerator = new LexerGenerator();
+        var lexerSource = lexerGenerator.GenerateLexer(initialModel.Value.LexerModel, "date");
+        Check.That(lexerSource).IsNotNull();
+        Check.That(lexerSource).IsNotEmpty();
+
+        var extractor = new SpecificationExtractor();
+        var specification = extractor.ExtractFromSource(lexerSource, parserSource);
+        
+        Check.That(specification).IsNotNull();
+        Check.That(specification).IsNotEmpty();
+        
+        var extractedModel = builder.CompileModel(specification, "DateParser");
+        Check.That(extractedModel.IsError).IsFalse();
+        Check.That(extractedModel.Value).IsNotNull();
+
+        Check.That(extractedModel.Value.LexerModel.Tokens).CountIs(initialModel.Value.LexerModel.Tokens.Count);
+        var token0 = extractedModel.Value.LexerModel.Tokens[0];
+        Check.That(token0.Type).IsEqualTo(GenericToken.Date);
+        Check.That(token0.Args[0]).IsEqualTo(DateFormat.YYYYMMDD.ToString());
+        Check.That(token0.Args[1]).IsEqualTo(".");
+        Check.That(extractedModel.Value.ParserModel.Rules).CountIs(initialModel.Value.ParserModel.Rules.Count);
     }
     
 }

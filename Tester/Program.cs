@@ -46,7 +46,7 @@ parser MinimalParser;
         var model = builder.CompileModel(grammar, "MinimalParser");
         if (model.IsOk)
         {
-            var token = model.Value.LexerModel.Tokens[0];
+            Console.WriteLine("model is OK");
         }
         else
         {
@@ -62,8 +62,15 @@ parser MinimalParser;
             File.WriteAllText("c:/temp/date.json",json.Value[0].content);
             var tree = JsonConvert.DeserializeObject<JObject>(json.Value[0].content);
             var token = tree.SelectToken("$.Children[0].Token");
-            Console.WriteLine(token);
-            var dateTime = token.SelectToken("DateTimeValue").Value<DateTime>();
+            var dateTime = token.SelectToken("Value").Value<string>();
+            if (dateTime == "2024.04.23")
+            {
+                Console.WriteLine("all is fine");
+            }
+            else
+            {
+                Console.WriteLine($"token is bad {dateTime} - expected 2024.04.23");
+            }
         }
         
     }

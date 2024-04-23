@@ -48,6 +48,7 @@ public enum CLIToken
     [Keyword("String")] STRINGTOKEN,
     [Keyword("Character")] CHARTOKEN,
     [Keyword("Int")] INTTOKEN,
+    [Keyword("Date")] DATETOKEN,
     [Keyword("Double")] DOUBLETOKEN,
     [Keyword("AlphaId")] ALPHAIDTOKEN,
     [Keyword("AlphaNumId")] ALPHANUMIDTOKEN,
@@ -63,6 +64,11 @@ public enum CLIToken
     [Keyword("UseMemoization")] USEMEMOIZATION,
     [Keyword("BroadenTokenWindow")] BROADENTOKENWINDOW,
     
+    [Keyword("YYYYMMDD")] YYYYMMDD,
+    [Keyword("DDMMYYYY")] DDMMYYYY,
+
+    
+    
     
     
     
@@ -70,7 +76,7 @@ public enum CLIToken
     [Mode("default","EXT")]
     ID,
     
-    [Mode("EXT")]
+    [Mode("default","EXT")]
     [Character("'","\\")]
     CHAR,
         

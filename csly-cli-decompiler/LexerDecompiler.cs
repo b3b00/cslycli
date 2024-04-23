@@ -35,6 +35,23 @@ public class LexerDecompiler
                 {
                     return $"[Int] {name};";
                 }
+                case GenericToken.Date:
+                {
+                    if (lexem.GenericTokenParameters.Length == 0)
+                    {
+                        return $"[Date] {name};";
+                    }
+                    else if (lexem.GenericTokenParameters.Length== 2)
+                    {
+                        return $"[Date] {name} : {lexem.GenericTokenParameters[0]} '{lexem.GenericTokenParameters[1]}' ;";
+                    }
+                    else if (lexem.GenericTokenParameters.Length == 1)
+                    {
+                        return $"[Date] {name} : {lexem.GenericTokenParameters[0]} ;";
+                    }
+
+                    break;
+                }
                 case GenericToken.Identifier:
                 {
                     switch (lexem.IdentifierType)

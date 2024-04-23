@@ -175,6 +175,10 @@ Each token starts with a token type and ends with a `;` :
   - String : ```[String] <STRING_TOKEN_NAME> : '<string_delim_char>' '<string_escape_char>;```
   - Single line comments : ```[SingleLineComment] LINECOMMENT : '#'```;
   - multi line comments : ```[MultiLineComment] BLOCKCOMMENT : '/*' '*/'```;
+  - date : ```[Date] DATE : YYYYMMDD '.'``` 
+    - date token takes 2 arguments
+      - date format (either YYYYMMDD or DDMMYYYY)
+      - date elements character separator  
   
 #### simple lexer examples
 
@@ -419,6 +423,9 @@ genericLexer CLIToken;
 [KeyWord] SINGLELINECOMMENT : "SingleLineComment";
 [KeyWord] MULTILINECOMMENT : "MultiLineComment";
 [KeyWord] EXTENSIONTOKEN : "Extension";
+[KeyWord] DATETOKEN : "Date";
+[KeyWord] YYYYMMDD : "YYYYMMDD";
+[KeyWord] DDMMYYYY : "DDMMYYYY";
 [KeyWord] PUSH : "Push";
 [KeyWord] MODE : "Mode";
 [KeyWord] POP : "Pop";
@@ -481,10 +488,12 @@ mode : LEFTBRACKET[d] MODE[d] LEFTPAREN[d] STRING (COMMA[d] STRING )* RIGHTPAREN
 mode : LEFTBRACKET[d] MODE[d] RIGHTBRACKET[d];
 token :LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN|SINGLELINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d];
 token :LEFTBRACKET[d] [STRINGTOKEN|CHARTOKEN|MULTILINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING STRING SEMICOLON[d];
+token :LEFTBRACKET[d] DATETOKEN[d] RIGHTBRACKET[d] ID COLON[d] [DDMMYYYY|YYYYMMDD] CHAR SEMICOLON[d];
 token : LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d];
 token : LEFTBRACKET[d] EXTENSIONTOKEN[d] RIGHTBRACKET[d] ID extension ;
-extension : OPEN_EXT[d] transition* ARROW[d] ENDTOKEN[d] CLOSE_EXT[d];
-transition : ARROW[d] pattern repeater? (AT[d] ID)?;
+extension : OPEN_EXT[d] transition_chain+ CLOSE_EXT[d];
+transition_chain : (LEFTPAREN[d] ID RIGHTPAREN[d])? transition+  (ARROW ENDTOKEN)?;
+transition : ARROW[d] (LEFTPAREN[d] ID RIGHTPAREN[d])? pattern repeater? (AT[d] ID)?;
 repeater : ZEROORMORE[d];
 repeater : ONEORMORE[d];
 repeater : LEFTCURL[d] INT RIGHTCURL[d];

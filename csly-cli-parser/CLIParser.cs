@@ -267,11 +267,25 @@ public class CLIParser
         return new TransitionRepeater(RepeaterType.OneOrMore);
     }
     
-    [Production("repeater : LEFTCURL[d] INT RIGHTCURL[d]")]
-    public ICLIModel RepeatMany(Token<CLIToken> many, ParserContext context)
+    [Production("repeater : LEFTCURL[d] INT (COMMA[d] INT)* RIGHTCURL[d]")]
+    public ICLIModel RepeatMany(Token<CLIToken> many, List<Group<CLIToken, ICLIModel>> otherManies, ParserContext context)
     {
-        return new TransitionRepeater(RepeaterType.Count, many.IntValue);
+        var manies = new List<int>() { many.IntValue };
+        if (otherManies != null && otherManies.Any())
+        {
+            var tail = otherManies.Select(x =>
+            {
+                var xx = x.Token(0).IntValue;
+                return xx;
+            }).ToList();
+            manies.AddRange(tail);
+        }
+
+        return new TransitionRepeater(RepeaterType.Count, manies);
     }
+    
+    [Production("repeater : LEFTCURL[d] INT RIGHTCURL[d]")]
+    
     
 
     [Production("pattern : CHAR")]

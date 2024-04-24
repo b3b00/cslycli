@@ -192,9 +192,28 @@ public class LexerBuilder
                 {
                     case RepeaterType.Count:
                     {
-                        for (int i = 0; i < transition.Repeater.Count; i++)
+                        if (transition.Repeater.Counts.Count == 1)
                         {
-                            builder = DoTransition(builder, transition.Target);
+                            for (int i = 0; i < transition.Repeater.Count; i++)
+                            {
+                                builder = DoTransition(builder, transition.Target);
+                            }
+                        }
+                        else if (transition.Repeater.Counts.Count > 1)
+                        {
+                            string repetitionStart = Guid.NewGuid().ToString();
+                            string repetitionEnd = transition.Target ?? Guid.NewGuid().ToString();
+                            builder.Mark(repetitionStart);
+                            for (int i = 0; i < transition.Repeater.Counts.Count; i++)
+                            {
+                                int count = transition.Repeater.Counts[i];
+                                builder.GoTo(repetitionStart);
+                                for (int j = 0; j < count ; j++)
+                                {
+                                    string temp = j < count - 1 ? Guid.NewGuid().ToString() : repetitionEnd;
+                                    builder = DoTransition(builder, temp);
+                                }
+                            }
                         }
 
                         break;

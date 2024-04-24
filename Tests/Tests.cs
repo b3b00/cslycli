@@ -257,5 +257,58 @@ parser MinimalParser;
         var dateTime = firstToken.SelectToken("Value").Value<string>();
         Check.That(dateTime).IsEqualTo("2024.04.23");
     }
-    
+
+    [Fact]
+    public void TestExtManyManyRepeater()
+    {
+        var grammar = @"
+genericLexer MinimalLexer;
+[Extension] EXT 
+# either *** or ******
+>>>
+-> '*' {3,6}  -> END 
+<<<
+
+parser MinimalParser;
+
+-> root : EXT ;
+";
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MinimalParser");
+        Check.That(model).IsOkModel();
+        Check.That(model.Value.LexerModel.Tokens).CountIs(1);
+        var token = model.Value.LexerModel.Tokens[0];
+        Check.That(token.Name).IsEqualTo("EXT");
+     
+        var json = builder.Getz(grammar, "***", "MyManyParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
+        Check.That(json.IsError).IsFalse();
+        var tree = JsonConvert.DeserializeObject<JObject>(json.Value[0].content);
+        var firstToken = tree.SelectToken("$.Children[0].Token");
+        Check.That(firstToken).IsNotNull();
+        var value = firstToken.SelectToken("Value").Value<string>();
+        Check.That(value).IsEqualTo("***");
+        
+        json = builder.Getz(grammar, "******", "MyManyParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
+        Check.That(json.IsError).IsFalse();
+        tree = JsonConvert.DeserializeObject<JObject>(json.Value[0].content);
+        firstToken = tree.SelectToken("$.Children[0].Token");
+        Check.That(firstToken).IsNotNull();
+        value = firstToken.SelectToken("Value").Value<string>();
+        Check.That(value).IsEqualTo("******");
+        
+        json = builder.Getz(grammar, "**", "MyManyParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
+        Check.That(json.IsError).IsTrue();
+        Check.That(json.Error).CountIs(1);
+        
+        json = builder.Getz(grammar, "****", "MyManyParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
+        Check.That(json.IsError).IsTrue();
+        Check.That(json.Error).CountIs(1);
+        
+        json = builder.Getz(grammar, "*******", "MyManyParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
+        Check.That(json.IsError).IsTrue();
+        Check.That(json.Error).CountIs(1);
+        
+        
+        
+    }
 }

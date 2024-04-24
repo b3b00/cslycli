@@ -203,6 +203,49 @@ public class ExtractionTests
         ;
     }
     
+    [Fact]
+    public void TestDateCompileThenDecompileThenTest()
+    {
+        CultureInfo ci = new CultureInfo("en-US");
+        Thread.CurrentThread.CurrentCulture = ci;
+        Thread.CurrentThread.CurrentUICulture = ci;
+        var grammar = @"
+genericLexer DateLexer;
+
+[Date] DATE : YYYYMMDD '-';
+
+parser DateParser;
+-> root : DATE;
+
+";
+                      
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "DateParser");
+        Check.That(model).IsOkModel();
+        var errors = model.Error;
+
+        var p = builder.BuildParser(model);
+        Check.That(p.lexerType).IsNotNull();
+        Check.That(p.parserType).IsNotNull();
+
+        var decompiler = new Decompiler();
+        var decompiled = decompiler.Decompile(p.lexerType, p.parserType);
+        Check.That(decompiled).IsNotNull().And.IsNotEmpty();
+        builder.CompileModel(decompiled, "Many");
+        
+        var parseResult = builder.Getz(decompiled, "2024-04-24", "MyParser1", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)}, rootRule:"expression");
+        Check.That(parseResult.IsError).IsFalse();
+        var r = parseResult.Value[0];
+        Check.That(r.format).IsEqualTo("JSON");
+        Check.That(r.content).IsNotNull().And.IsNotEmpty();
+        var json = r.content;
+        var o = JsonConvert.DeserializeObject<JObject>(json);
+        var if1 = o.SelectTokens("$..Token.Value");
+        var tokens = if1.ToList().Select(x => x.Value<string>()).ToList();
+        Check.That(tokens).ContainsExactly(new List<string>() { "2024-04-24" });
+        ;
+    }
+    
     
     [Fact]
     public void TestManyLexemGrammarGeneration()

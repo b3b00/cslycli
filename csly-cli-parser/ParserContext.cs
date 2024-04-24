@@ -3,12 +3,12 @@ namespace csly.cli.parser;
 public class ParserContext
 {
     private List<string> EnumNames = new List<string>();
-    
-    public string ParserName { get; private set; }
+
+    public string _parserName;
 
     public ParserContext(string parserName)
     {
-        ParserName = parserName;
+        _parserName = parserName;
     }
 
     public void AddEnumName(string name)

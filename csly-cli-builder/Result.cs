@@ -1,12 +1,11 @@
 
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace clsy.cli.builder;
 
 public class Result<T> : Result<T, List<string>>
 {
-    public Result() : base()
-    {
-    }
     
     public Result(T value) : base(value)
     {
@@ -34,13 +33,13 @@ public class Result<T> : Result<T, List<string>>
         return new Result<T>(error);
     }
     
+    [ExcludeFromCodeCoverage]
     public override string ToString()
     {
         if (IsError)
         {
             return "ERROR\n"+string.Join("\n", Error as List<string>);
         }
-
         return "OK";
     }
 }

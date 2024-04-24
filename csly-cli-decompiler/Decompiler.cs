@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
 
@@ -22,6 +23,7 @@ public class Decompiler
         return builder.ToString();
     }
     
+    [ExcludeFromCodeCoverage]
     public string Decompile(string lexerFqn, string parserFqn, string assemblyPath)
     {
         var assembly = Assembly.LoadFrom(assemblyPath);

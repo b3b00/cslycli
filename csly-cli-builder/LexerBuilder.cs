@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.Json.Serialization;
 using clsy.cli.builder.parser.cli.model;
+using clsy.cli.model.lexer;
 using csly.cli.model.lexer;
 using sly.lexer;
 using sly.lexer.fsm;
@@ -34,7 +35,7 @@ public class LexerBuilder
             ModuleBuilder moduleBuilder = dynamicAssembly.DefineDynamicModule(aName.Name);
 
             EnumBuilder enumBuilder = moduleBuilder.DefineEnum(DynamicLexerName, TypeAttributes.Public, typeof(int));
-
+            
             int i = 0;
             
             enumBuilder.DefineLiteral($"{model.Name.ToUpper()}_EOS", i);
@@ -55,6 +56,32 @@ public class LexerBuilder
             var extensionBuilder = BuildExtensionIfNeeded(model, finished);
 
             return (finished,extensionBuilder,dynamicAssembly,moduleBuilder);
+        }
+
+
+        private void SetLexerOptions(EnumBuilder builder, LexerOptions options)
+        {
+            var attributeType = typeof(LexerAttribute);
+            ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                new Type[3] { typeof(string), typeof(bool), typeof(int) });
+
+            CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                attributeType.GetConstructor(Type.EmptyTypes), 
+                new object[0],
+                new PropertyInfo?[] { // properties to assign to
+                    attributeType.GetProperty(nameof(LexerAttribute.IgnoreEOL)),
+                    attributeType.GetProperty(nameof(LexerAttribute.IgnoreWS)),
+                    attributeType.GetProperty(nameof(LexerAttribute.KeyWordIgnoreCase)),
+                    attributeType.GetProperty(nameof(LexerAttribute.IndentationAWare)),
+                }!,
+                new object[] { // values for property assignment
+                    options.IgnoreEOL,
+                    options.IgnoreWS,
+                    options.IgnoreKeyWordCase,
+                    options.IndentationAware
+                });
+            
+            builder.SetCustomAttribute(customAttributeBuilder);
         }
 
         private Delegate BuildExtensionIfNeeded(LexerModel model, Type? enumType)

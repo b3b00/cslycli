@@ -57,7 +57,7 @@ public class CLIParser
 
    #region generic lexer
     
-    [Production("genericRoot : GENERICLEXER[d] ID SEMICOLON[d] (lexeroption)* modedToken*")]
+    [Production("genericRoot : GENERICLEXER[d] ID SEMICOLON[d] lexer_option* modedToken*")]
     public ICLIModel Lexer(Token<CLIToken> name, List<ICLIModel> optionList, List<ICLIModel> tokens, ParserContext context)
     {
         var opts = optionList.Cast<LexerOptions>();
@@ -322,7 +322,7 @@ public class CLIParser
 
   [Production(
       "lexer_option : LEFTBRACKET[d] [IGNOREKEYWORDCASING|INDENTATIONAWARE|IGNOREWHITESPACES|IGNOREEOL] LEFTPAREN[d][TRUE|FALSE]RIGHTPAREN[d] RIGHTBRACKET[d]")]
-  public ICLIModel lexerOption(Token<CLIToken> option, Token<CLIToken> enabledFlag)
+  public ICLIModel lexerOption(Token<CLIToken> option, Token<CLIToken> enabledFlag, ParserContext context)
   {
       bool enabled = enabledFlag.Value == "true";
       return new LexerOptions()

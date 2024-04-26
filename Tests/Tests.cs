@@ -277,10 +277,10 @@ parser MinimalParser;
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "MinimalParser");
         Check.That(model).IsOkModel();
-        Check.That(model.Value.LexerModel.Options.IgnoreKeyWordCase).IsTrue();
-        Check.That(model.Value.LexerModel.Options.IndentationAware).IsFalse();
-        Check.That(model.Value.LexerModel.Options.IgnoreWS).IsFalse();
-        Check.That(model.Value.LexerModel.Options.IgnoreEOL).IsFalse();
+        Check.That(model.Value.LexerModel.Options.IgnoreKeyWordCase.Value).IsTrue();
+        Check.That(model.Value.LexerModel.Options.IndentationAware.Value).IsFalse();
+        Check.That(model.Value.LexerModel.Options.IgnoreWS).IsNull();
+        Check.That(model.Value.LexerModel.Options.IgnoreEOL).IsNull();
 
         var generator = new LexerGenerator();
         var lexer = generator.GenerateLexer(model.Value.LexerModel, "namespace");

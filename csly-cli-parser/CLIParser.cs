@@ -63,10 +63,11 @@ public class CLIParser
         var opts = optionList.Cast<LexerOptions>();
         var options = new LexerOptions()
         {
-            IgnoreWS = opts.Any(x => x.IgnoreWS),
-            IndentationAware = opts.Any(x => x.IndentationAware),
-            IgnoreEOL = opts.Any(x => x.IgnoreEOL),
-            IgnoreKeyWordCase = opts.Any(x => x.IgnoreKeyWordCase)
+            
+            IgnoreWS = opts.Select(x => x.IgnoreWS).FirstOrDefault(x => x.HasValue),
+            IndentationAware = opts.Select(x => x.IndentationAware).FirstOrDefault(x => x.HasValue),
+            IgnoreEOL = opts.Select(x => x.IgnoreEOL).FirstOrDefault(x => x.HasValue),
+            IgnoreKeyWordCase = opts.Select(x => x.IgnoreKeyWordCase).FirstOrDefault(x => x.HasValue) 
         };
         return new LexerModel(tokens.Cast<TokenModel>().ToList(),options, name.Value);
     }
@@ -327,10 +328,10 @@ public class CLIParser
       bool enabled = enabledFlag.Value == "true";
       return new LexerOptions()
       {
-          IgnoreWS = option.TokenID == CLIToken.IGNOREWHITESPACES && enabled,
-          IgnoreEOL = option.TokenID == CLIToken.IGNOREEOL && enabled,
-          IgnoreKeyWordCase = option.TokenID == CLIToken.IGNOREKEYWORDCASING && enabled,
-          IndentationAware = option.TokenID == CLIToken.INDENTATIONAWARE && enabled
+          IgnoreWS = option.TokenID == CLIToken.IGNOREWHITESPACES ? enabled : null,
+          IgnoreEOL = option.TokenID == CLIToken.IGNOREEOL  ? enabled : null,
+          IgnoreKeyWordCase = option.TokenID == CLIToken.IGNOREKEYWORDCASING ? enabled : null,
+          IndentationAware = option.TokenID == CLIToken.INDENTATIONAWARE ?  enabled : null
       };
   }
 

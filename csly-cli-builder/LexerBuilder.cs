@@ -35,6 +35,8 @@ public class LexerBuilder
             ModuleBuilder moduleBuilder = dynamicAssembly.DefineDynamicModule(aName.Name);
 
             EnumBuilder enumBuilder = moduleBuilder.DefineEnum(DynamicLexerName, TypeAttributes.Public, typeof(int));
+
+            SetLexerOptions(enumBuilder, model.Options);
             
             int i = 0;
             
@@ -75,10 +77,10 @@ public class LexerBuilder
                     attributeType.GetProperty(nameof(LexerAttribute.IndentationAWare)),
                 }!,
                 new object[] { // values for property assignment
-                    options.IgnoreEOL,
-                    options.IgnoreWS,
-                    options.IgnoreKeyWordCase,
-                    options.IndentationAware
+                    options.IgnoreEOL ?? true,
+                    options.IgnoreWS ?? true,
+                    options.IgnoreKeyWordCase ?? false,
+                    options.IndentationAware ?? false
                 });
             
             builder.SetCustomAttribute(customAttributeBuilder);

@@ -61,8 +61,19 @@ public enum CLIToken
     [Keyword("Push")] PUSH,
     [Keyword("Mode")] MODE,
     [Keyword("Pop")] POP,
+    [Keyword("true")] TRUE,
+    [Keyword("false")] FALSE,
+    
+    
+    // parser optimizations
     [Keyword("UseMemoization")] USEMEMOIZATION,
     [Keyword("BroadenTokenWindow")] BROADENTOKENWINDOW,
+    
+    // lexer options
+    [Keyword("IndentationAware")] INDENTATIONAWARE,
+    [Keyword("IgnoreWhiteSpaces")] IGNOREWHITESPACES,
+    [Keyword("IgnoreEndOfLines")] IGNOREEOL,
+    [Keyword("IgnoreKeyWordCase")] IGNOREKEYWORDCASING,
     
     [Keyword("YYYYMMDD")] YYYYMMDD,
     [Keyword("DDMMYYYY")] DDMMYYYY,

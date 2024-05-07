@@ -7,8 +7,6 @@ using csly.cli.model;
 using csly.cli.parser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using sly.lexer;
-using sly.parser.generator;
 
 namespace cslyCliTester {
 
@@ -33,7 +31,13 @@ public static class Program
 
     public static void Main(string[] args)
     {
+        TestDate();
+    }
 
+   
+
+    private static void TestDate()
+    {
         var grammar = @"
 genericLexer MinimalLexer;
 [Date] DATE : YYYYMMDD '.';
@@ -72,7 +76,6 @@ parser MinimalParser;
                 Console.WriteLine($"token is bad {dateTime} - expected 2024.04.23");
             }
         }
-        
     }
 }
 }

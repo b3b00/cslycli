@@ -129,6 +129,17 @@ public class ParserBuilder
 
             builder.SetCustomAttribute(customAttributeBuilder);
         }
+        if (model.AutoCloseIndentations)
+        {
+            Type attributeType = typeof(AutoCloseIndentationsAttribute);
+
+            ConstructorInfo constructorInfo = attributeType.GetConstructor(new Type[] { });
+
+            CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                constructorInfo, new object[] { });
+
+            builder.SetCustomAttribute(customAttributeBuilder);
+        }
     }
     
     public Result<Model> CompileModel(string modelSource, string parserName = "dynamicParser")
@@ -427,6 +438,14 @@ public class ParserBuilder
     {
         switch (clause)
         {
+            case IndentClause indentClause:
+            {
+                return TokenType;
+            } 
+            case UIndentClause uIndentClause:
+            {
+                return TokenType;
+            } 
             case TerminalClause terminal:
             {
                 return TokenType;

@@ -8,6 +8,8 @@ public class ParserModel : ICLIModel
     
     public bool BroadenTokenWindow { get; set; }
     
+    public bool AutoCloseIndentations { get; set; }
+    
     public string Root => Rules.FirstOrDefault(x => x.IsRoot)?.NonTerminalName;
     public string Name { get; set; }
 }

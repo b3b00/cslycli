@@ -1,16 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>specificationExtractor</RootNamespace>
+        <RootNamespace>ConsoleApp2</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-4.final" />
-        <PackageReference Include="sly" Version="3.1.4" />
-        
+      <ProjectReference Include="..\csly-cli-api\csly-cli-api.csproj" />
     </ItemGroup>
 
 </Project>

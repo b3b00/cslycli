@@ -7,7 +7,6 @@ using clsy.cli.builder.parser;
 using CommandLine;
 using decompiler;
 using sly.cli.options;
-using sly.lexer;
 using specificationExtractor;
 
 
@@ -144,7 +143,7 @@ public class Program
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include=""sly"" Version=""3.1.0"" />
+        <PackageReference Include=""sly"" Version=""3.1.4"" />
     </ItemGroup>
 
 </Project>";

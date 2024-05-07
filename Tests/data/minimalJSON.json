@@ -1,6 +1,8 @@
 {
+  "IsEpsilon": false,
   "Children": [
     {
+      "IsEpsilon": false,
       "Token": {
         "Channel": 0,
         "Position": {
@@ -21,6 +23,7 @@
         "IsEOS": false,
         "IsIndent": false,
         "IsUnIndent": false,
+        "IsIndentation": false,
         "IndentationLevel": 0,
         "IsWhiteSpace": false,
         "IsEOL": false,

@@ -258,4 +258,38 @@ parser MinimalParser;
         Check.That(dateTime).IsEqualTo("2024.04.23");
     }
     
+    [Fact]
+    public void TestLexerOptions()
+    {
+        var grammar = @"
+genericLexer MinimalLexer;
+[IndentationAware(false)]
+[IgnoreKeyWordCase(true)]
+
+[AlphaNumDashId] ID;
+[KeyWord] HELLO : ""hello"";
+[KeyWord] WORLD : ""world"";
+
+parser MinimalParser;
+
+-> root : HELLO WORLD ;
+";
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MinimalParser");
+        Check.That(model).IsOkModel();
+        Check.That(model.Value.LexerModel.Options.IgnoreKeyWordCase.Value).IsTrue();
+        Check.That(model.Value.LexerModel.Options.IndentationAware.Value).IsFalse();
+        Check.That(model.Value.LexerModel.Options.IgnoreWS).IsNull();
+        Check.That(model.Value.LexerModel.Options.IgnoreEOL).IsNull();
+
+        var generator = new LexerGenerator();
+        var lexer = generator.GenerateLexer(model.Value.LexerModel, "namespace");
+        ;
+        var json = builder.Getz(grammar, "hello world", "MyParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
+        Check.That(json.IsError).IsFalse();
+        json = builder.Getz(grammar, "HELLO woRld", "MyParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
+        Check.That(json.IsError).IsFalse();
+        
+    }
+    
 }

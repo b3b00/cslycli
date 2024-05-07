@@ -1,4 +1,5 @@
 ﻿using clsy.cli.builder.parser.cli.model;
+using clsy.cli.model.lexer;
 using csly.cli.model;
 using csly.cli.model.lexer;
 using csly.cli.model.parser;
@@ -23,10 +24,10 @@ public class CLIParser
         return new Model(genericLex as LexerModel, parser as ParserModel) ;
     }
 
-    [Production("parserRoot : PARSER[d] ID SEMICOLON[d] optimization* rule*")]
+    [Production("parserRoot : PARSER[d] ID SEMICOLON[d] parser_optimization* rule*")]
     public ICLIModel Parser(Token<CLIToken> name, List<ICLIModel> optimizations, List<ICLIModel> rules, ParserContext context)
     {
-        var optims = optimizations.Cast<Optimization>().ToList();
+        var optims = optimizations.Cast<ParserOptimization>().ToList();
         var model = new ParserModel()
         {
             UseMemoization = optims.Exists(x => x.UseMemoization),
@@ -40,10 +41,10 @@ public class CLIParser
 
     }
 
-    [Production("optimization : LEFTBRACKET[d] [USEMEMOIZATION|BROADENTOKENWINDOW] RIGHTBRACKET[d]")]
+    [Production("parser_optimization : LEFTBRACKET[d] [USEMEMOIZATION|BROADENTOKENWINDOW] RIGHTBRACKET[d]")]
     public ICLIModel Optimization(Token<CLIToken> optimizationToken, ParserContext context)
     {
-        return new Optimization()
+        return new ParserOptimization()
         {
             UseMemoization = optimizationToken.TokenID == CLIToken.USEMEMOIZATION,
             BroadenTokenWindow = optimizationToken.TokenID == CLIToken.BROADENTOKENWINDOW
@@ -56,10 +57,19 @@ public class CLIParser
 
    #region generic lexer
     
-    [Production("genericRoot : GENERICLEXER[d] ID SEMICOLON[d]  modedToken*")]
-    public ICLIModel Lexer(Token<CLIToken> name, List<ICLIModel> tokens, ParserContext context)
+    [Production("genericRoot : GENERICLEXER[d] ID SEMICOLON[d] lexer_option* modedToken*")]
+    public ICLIModel Lexer(Token<CLIToken> name, List<ICLIModel> optionList, List<ICLIModel> tokens, ParserContext context)
     {
-        return new LexerModel(tokens.Cast<TokenModel>().ToList(), name.Value);
+        var opts = optionList.Cast<LexerOptions>();
+        var options = new LexerOptions()
+        {
+            
+            IgnoreWS = opts.Select(x => x.IgnoreWS).FirstOrDefault(x => x.HasValue),
+            IndentationAware = opts.Select(x => x.IndentationAware).FirstOrDefault(x => x.HasValue),
+            IgnoreEOL = opts.Select(x => x.IgnoreEOL).FirstOrDefault(x => x.HasValue),
+            IgnoreKeyWordCase = opts.Select(x => x.IgnoreKeyWordCase).FirstOrDefault(x => x.HasValue) 
+        };
+        return new LexerModel(tokens.Cast<TokenModel>().ToList(),options, name.Value);
     }
 
     [Production("modedToken : mode* token")]
@@ -304,7 +314,29 @@ public class CLIParser
     
     #endregion
     
+  #region lexer options
   
+  // [Keyword("IndentationAware")] INDENTATIONAWARE,
+  // [Keyword("IgnoreWhiteSpaces")] IGNOREWHITESPACES,
+  // [Keyword("IgnoreEndOfLines")] IGNOREEOL,
+  // [Keyword("IgnoreKeyWordCase")] IGNOREKEYWORDCASING,
+
+  [Production(
+      "lexer_option : LEFTBRACKET[d] [IGNOREKEYWORDCASING|INDENTATIONAWARE|IGNOREWHITESPACES|IGNOREEOL] LEFTPAREN[d][TRUE|FALSE]RIGHTPAREN[d] RIGHTBRACKET[d]")]
+  public ICLIModel lexerOption(Token<CLIToken> option, Token<CLIToken> enabledFlag, ParserContext context)
+  {
+      bool enabled = enabledFlag.Value == "true";
+      return new LexerOptions()
+      {
+          IgnoreWS = option.TokenID == CLIToken.IGNOREWHITESPACES ? enabled : null,
+          IgnoreEOL = option.TokenID == CLIToken.IGNOREEOL  ? enabled : null,
+          IgnoreKeyWordCase = option.TokenID == CLIToken.IGNOREKEYWORDCASING ? enabled : null,
+          IndentationAware = option.TokenID == CLIToken.INDENTATIONAWARE ?  enabled : null
+      };
+  }
+
+  
+  #endregion
 
   #region  parser
 

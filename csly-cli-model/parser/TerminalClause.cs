@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Text;
 using System.Diagnostics.CodeAnalysis;
-using sly.lexer;
 
 namespace csly.cli.model.parser
 {

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using sly.parser.generator;
 
 namespace csly.cli.model.parser
 {
@@ -42,5 +41,10 @@ namespace csly.cli.model.parser
 
         public string NonTerminalName { get; set; }
         public bool IsRoot { get; set; }
+
+        public override string ToString()
+        {
+            return $"{NonTerminalName} : {string.Join(" ", Clauses.Select(x => x.ToString()))}";
+        }
     }
 }

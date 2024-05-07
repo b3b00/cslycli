@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-decompiler", "csly
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{CECA9DD8-5BC9-4196-A8A1-C6D2D27AC3CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-api", "csly-cli-api\csly-cli-api.csproj", "{68EB1250-C4D1-4617-96A0-ECCEB8B2DEE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,9 @@ Global
 		{CECA9DD8-5BC9-4196-A8A1-C6D2D27AC3CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CECA9DD8-5BC9-4196-A8A1-C6D2D27AC3CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CECA9DD8-5BC9-4196-A8A1-C6D2D27AC3CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68EB1250-C4D1-4617-96A0-ECCEB8B2DEE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68EB1250-C4D1-4617-96A0-ECCEB8B2DEE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68EB1250-C4D1-4617-96A0-ECCEB8B2DEE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68EB1250-C4D1-4617-96A0-ECCEB8B2DEE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

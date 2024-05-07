@@ -39,9 +39,9 @@ public class CslyProcessor
         var model = builder.CompileModel(grammar, "MinimalParser");
         if (model.IsOk)
         {
-            var r = builder.Getz(grammar, source, "TestParser",
+            var r = builder.Getz(grammar, source, model.Value.ParserModel.Name,
                 new List<(string format, SyntaxTreeProcessor processor)>()
-                    { ("DOT", (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToDotGraph) });
+                    { ("DOT", (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToDotGraph) },model.Value.ParserModel.Root);
             if (r.IsError)
             {
                 return new CliResult(r.Error.Select(x => $"parse error : {x}").ToList());

@@ -7,9 +7,7 @@
     <authors>b3b00</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>API for csly-cli dotnet tool</description>
-    <license type="expression">MIT</license>
-    
-    <!-- <icon>icon.png</icon> -->
+    <license type="expression">MIT</license>    
     <projectUrl>http://github.com/b3b00/cslycli</projectUrl>
   </metadata>
   <files>

@@ -8,9 +8,18 @@
         <version>1.0.0</version>
         <PackageVersion>1.0.0</PackageVersion>
     </PropertyGroup>
-
+    <PropertyGroup>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
+        <None Include="../LICENSE.md" Pack="true" PackagePath=""/>
+        <None Include="../README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj"  />
+      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj"  />
+        <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj"  />
     </ItemGroup>
 
     <ItemGroup>

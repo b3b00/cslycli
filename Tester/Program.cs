@@ -31,8 +31,8 @@ public static class Program
 
     public static void Main(string[] args)
     {
-        //TestDate();
-        TestScript();
+        TestDate();
+        //TestScript();
     }
 
     private static void TestScript()

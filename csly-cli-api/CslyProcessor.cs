@@ -44,7 +44,7 @@ public class CslyProcessor
                     { ("DOT", (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToDotGraph) });
             if (r.IsError)
             {
-                return new CliResult(r.Error);
+                return new CliResult(r.Error.Select(x => $"parse error : {x}").ToList());
             }
             else
             {
@@ -53,12 +53,31 @@ public class CslyProcessor
         }
         else
         {
-            return new CliResult(model.Error);
+            return new CliResult(model.Error.Select(x => $"grammar error : {x}").ToList());
         }
     }
 
     public static CliResult GetJson(string grammar, string source)
     {
-        return null;
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MinimalParser");
+        if (model.IsOk)
+        {
+            var r = builder.Getz(grammar, source, "TestParser",
+                new List<(string format, SyntaxTreeProcessor processor)>()
+                    { ("JSON", (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToDotGraph) });
+            if (r.IsError)
+            {
+                return new CliResult(r.Error.Select(x => $"parse error : {x}").ToList());
+            }
+            else
+            {
+                return new CliResult(r.Value[0].content);
+            }
+        }
+        else
+        {
+            return new CliResult(model.Error.Select(x => $"grammar error : {x}").ToList());
+        }
     }
 }

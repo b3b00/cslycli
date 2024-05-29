@@ -61,7 +61,7 @@ jobs:
     - name: publish api nuget
       if:  ${{success() && matrix.os == 'windows-latest' && env.PUBLISH_NUGET}}
       id: publish_nuget
-      uses: b3b00/publish-nuget@1.0.1
+      uses: b3b00/publish-nuget@1.0.2
       with:
           VERSION_REGEX: <version>(.*)<\/version>  
           PROJECT_FILE_PATH: csly-cli-api/csly-cli-api.csproj

@@ -1,6 +1,6 @@
 digraph syntaxtree {
 0 [  label="TEST
 \"#|$\"" shape=doublecircle height=0.50]
-1 [  label="root" shape=ellipse fontcolor=black height=0.50]
+1 [  label="root" shape=mrecord fontcolor=black height=0.50 style=solid]
 1->0 [  arrowshape=none];
 }

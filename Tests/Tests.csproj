@@ -7,12 +7,12 @@
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
-    <ItemGroup>        
+    <ItemGroup>
         <PackageReference Include="SharpCoreFileSystem" Version="1.0.4" />
         <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
         <PackageReference Include="NFluent" Version="3.0.4" />
-        <PackageReference Include="sly" Version="3.1.5" />
+        <PackageReference Include="sly" Version="3.1.6"/>
         <PackageReference Include="xunit" Version="2.4.2" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25,13 +25,12 @@
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>  
+    <ItemGroup>
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />      
       <ProjectReference Include="..\csly-cli-decompiler\csly-cli-decompiler.csproj" />
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
-      <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj" />
-        
+      <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj" />  
     </ItemGroup>
     <ItemGroup>
       <EmbeddedResource Include="data\badGrammar.txt" />
@@ -56,6 +55,8 @@
       <EmbeddedResource Include="data\extWithMarksMultiChain.txt" />
       <None Remove="data\dotExtMarks.txt" />
       <EmbeddedResource Include="data\dotExtMarks.txt" />
+      <None Remove="data\expr.txt" />
+      <EmbeddedResource Include="data\expr.txt" />
     </ItemGroup>
     <ItemGroup>
       <Compile Remove="data\lexerWithExt.cs" />

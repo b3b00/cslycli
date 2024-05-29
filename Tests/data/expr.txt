@@ -1,0 +1,29 @@
+genericLexer ExprLexer;
+
+[Int] NUMBER;
+
+
+[Sugar] PLUS : "+";
+[Sugar] MINUS : "-";
+[Sugar] TIMES : "*";
+[Sugar] DIVIDE : "/";
+
+[Sugar] LPAREN : "(";
+[Sugar] RPAREN : ")";
+
+
+parser ExprParser;
+
+
+-> root:  ExprParser_expressions ;
+
+
+       
+[Right 10] PLUS;
+[Left 10] MINUS;
+[Right 50] TIMES;
+[Left 50]DIVIDE;
+[Prefix 100] MINUS;
+
+[Operand] operand : NUMBER;
+[Operand] operand : LPAREN ExprParser_expressions RPAREN;

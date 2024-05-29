@@ -292,4 +292,21 @@ parser MinimalParser;
         
     }
     
+    
+    [Fact]
+    public void TestExpressions()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/expr.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "ExprParser");
+        Check.That(model).IsOkModel();
+        Check.That(model.Value).IsNotNull();
+        var json = builder.Getz(grammar, "1 / 2 / 3 + 4", "ExprParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
+        Check.That(json.IsError).IsFalse();
+        var content = json.Value.First().content;
+        Assert.NotNull(content);
+        Assert.NotEmpty(content);
+    }
+    
 }

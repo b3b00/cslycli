@@ -5,8 +5,8 @@
         <RootNamespace>csly_cli_api</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <version>1.0.9</version>
-        <PackageVersion>1.0.9</PackageVersion>
+        <version>1.1.9</version>
+        <PackageVersion>1.1.9</PackageVersion>
     </PropertyGroup>
     <PropertyGroup>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
@@ -23,8 +23,8 @@
         
     </ItemGroup>
 
-    <ItemGroup>        
-        <PackageReference Include="sly" Version="3.1.5" />
+    <ItemGroup>
+        <PackageReference Include="sly" Version="3.1.6"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
         <PackageReference Include="System.Collections.Immutable" Version="8.0.0"/>
         <PackageReference Include="System.Memory" Version="4.5.5"/>

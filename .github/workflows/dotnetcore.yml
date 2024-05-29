@@ -67,7 +67,7 @@ jobs:
           PROJECT_FILE_PATH: csly-cli-api/csly-cli-api.csproj
           NUSPEC_FILE: csly-cli-api/csly-cli-api.nuspec
           NUGET_KEY: ${{secrets.NUGET_KEY}}
-          VERSION_FILE_PATH: csly-cli-api/csly-cli-api.csproj
+          VERSION_FILE_PATH: csly-cli-api/csly-cli-api.nuspec
           INCLUDE_SYMBOLS: true      
     - name: Create Release
       if: ${{ success() && matrix.os == 'windows-latest' && steps.publish_nuget.outputs.VERSION != ''  && steps.publish_nuget.outputs.VERSION != null }}

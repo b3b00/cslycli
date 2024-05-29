@@ -135,7 +135,7 @@ public class Program
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <RootNamespace>{generate.NameSpace}</RootNamespace>                
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <version>0.0.1</version>

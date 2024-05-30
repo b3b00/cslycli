@@ -8,10 +8,11 @@ on:
   pull_request:
     branches: 
       - main
-permissions:
+permissions:  
   pull-requests: write
-jobs:  
+jobs:    
   build:
+    permissions: write-all
     env:
       TESTS_PROJECT: 'CliTests/CliTests.csproj' # path to test project or solution
       PUBLISH_NUGET: true # if true a nuget will be published on version change

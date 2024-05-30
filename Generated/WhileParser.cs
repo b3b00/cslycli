@@ -9,7 +9,7 @@ namespace ns
     public class WhileParser
     {
         [Infix("LESSER", Associativity.Right, 50)]
-        public int LESSER(int left, Token<WhileLexer> oper, int right)
+        public int lesser(int left, Token<WhileLexer> oper, int right)
         {
             return left;
         }
@@ -51,7 +51,7 @@ namespace ns
         }
 
         [Infix("TIMES", Associativity.Right, 50)]
-        public int TIMES(int left, Token<WhileLexer> oper, int right)
+        public int multiplyThis(int left, Token<WhileLexer> oper, int right)
         {
             return left;
         }
@@ -63,25 +63,25 @@ namespace ns
         }
 
         [Prefix("MINUS", Associativity.Left, 100)]
-        public int MINUS(Token<WhileLexer> oper, int value)
+        public int minus(Token<WhileLexer> oper, int value)
         {
             return value;
         }
 
         [Infix("OR", Associativity.Right, 10)]
-        public int OR(int left, Token<WhileLexer> oper, int right)
+        public int or(int left, Token<WhileLexer> oper, int right)
         {
             return left;
         }
 
         [Infix("AND", Associativity.Right, 50)]
-        public int AND(int left, Token<WhileLexer> oper, int right)
+        public int and(int left, Token<WhileLexer> oper, int right)
         {
             return left;
         }
 
         [Prefix("NOT", Associativity.Left, 100)]
-        public int NOT(Token<WhileLexer> oper, int value)
+        public int NotAtAll(Token<WhileLexer> oper, int value)
         {
             return value;
         }
@@ -100,14 +100,14 @@ namespace ns
 
         [Operand]
         [Production("operand : [ INT | TRUE | FALSE | STRING | ID ]")]
-        public int operand_____INT___TRUE___FALSE___STRING___ID__(Token<WhileLexer> p0)
+        public int scalarOperand(Token<WhileLexer> p0)
         {
             return default(int);
         }
 
         [Operand]
         [Production("operand : LPAREN WhileParser_expressions RPAREN")]
-        public int operand___LPAREN_WhileParser_expressions_RPAREN(Token<WhileLexer> p0, int p1, Token<WhileLexer> p2)
+        public int groupOperand(Token<WhileLexer> p0, int p1, Token<WhileLexer> p2)
         {
             return default(int);
         }

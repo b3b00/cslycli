@@ -56,7 +56,7 @@ genericLexer WhileLexer;
 
 parser WhileParser;
 
-
+@name(lesser);
 [Right 50] LESSER;
 [Right 50] GREATER;
 [Right 50] EQUALS;
@@ -66,13 +66,19 @@ parser WhileParser;
        
 [Right 10] PLUS;
 [Left 10] MINUS;
+@name(multiplyThis);
 [Right 50] TIMES;
 [Left 50]DIVIDE;
 
+@name(minus);
 [Prefix 100] MINUS;
 
+@name(or);
 [Right 10] OR;
+@name(and);
 [Right 50] AND;
+
+@name(NotAtAll);
 [Prefix 100] NOT;
 
 @name(program);
@@ -81,8 +87,10 @@ parser WhileParser;
 @name(sequence);
 statement : sequence;
 
-
+@name(scalarOperand);
 [Operand] operand : [INT | TRUE | FALSE | STRING | ID];
+
+@name(groupOperand);
 [Operand] operand : LPAREN WhileParser_expressions RPAREN;
 
 @name(sequenceStatement);
@@ -118,7 +126,7 @@ statementPrim: PRINT WhileParser_expressions;
             {
                 File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/{r.Result.ParserName}.cs", r.Result.Parser);
                 File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/{r.Result.LexerName}.cs", r.Result.Lexer);
-                Console.WriteLine(r.Result.Parser);
+                //Console.WriteLine(r.Result.Parser);
             }
             else
             {

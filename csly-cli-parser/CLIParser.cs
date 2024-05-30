@@ -353,35 +353,37 @@ public class CLIParser
         public GrammarNode Rule(List<ICLIModel> attributes, Token<CLIToken> root, ValueOption<ICLIModel> operand,Token<CLIToken> name, List<ICLIModel> clauses, ParserContext context)
         {
             var rule = new Rule(operand.IsSome);
-
-            if (attributes.Any())
-            {
-                rule.Attributes = attributes.Cast<RuleAttribute>()
-                    .ToDictionary(x => x.AttributeName, x => x.AttributeValue);
-            }
+            rule.SetAttributes(attributes);
             
             rule.NonTerminalName = name.Value;
             rule.Clauses = clauses.Cast<IClause>().ToList();
             rule.IsRoot = !root.IsEmpty;
             return rule;
         }
+
         
-        [Production("rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
-        public ICLIModel PrefixRule(Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
+        [Production("rule : ruleAttribute* LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
+        public ICLIModel PrefixRule(List<ICLIModel> attributes, Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
         {
-            return new PrefixRule(id.Value, id.TokenID == CLIToken.STRING, precedence.IntValue);
+            var rule =  new PrefixRule(id.Value, id.TokenID == CLIToken.STRING, precedence.IntValue);
+            rule.SetAttributes(attributes);
+            return rule;
         }
         
-        [Production("rule : LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
-        public ICLIModel PostfixRule(Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
+        [Production("rule : ruleAttribute* LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
+        public ICLIModel PostfixRule(List<ICLIModel> attributes, Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
         {
-            return new PostfixRule(id.Value, id.TokenID == CLIToken.STRING, precedence.IntValue);
+            var rule = new PostfixRule(id.Value, id.TokenID == CLIToken.STRING, precedence.IntValue);
+            rule.SetAttributes(attributes);
+            return rule;
         }
         
-        [Production("rule : LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
-        public ICLIModel InfixRule(Token<CLIToken> rightOrLeft, Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
+        [Production("rule : ruleAttribute* LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
+        public ICLIModel InfixRule(List<ICLIModel> attributes, Token<CLIToken> rightOrLeft, Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
         {
-            return new InfixRule(id.Value, id.TokenID == CLIToken.STRING, rightOrLeft.TokenID == CLIToken.LEFT ? Associativity.Left : Associativity.Right, precedence.IntValue);
+            var rule =  new InfixRule(id.Value, id.TokenID == CLIToken.STRING, rightOrLeft.TokenID == CLIToken.LEFT ? Associativity.Left : Associativity.Right, precedence.IntValue);
+            rule.SetAttributes(attributes);
+            return rule;
         }
 
 

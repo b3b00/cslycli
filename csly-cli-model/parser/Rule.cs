@@ -56,5 +56,10 @@ namespace csly.cli.model.parser
         {
             return $"{NonTerminalName} : {string.Join(" ", Clauses.Select(x => x.ToString()))}";
         }
+
+        public void SetAttributes(IList<ICLIModel> attributes)
+        {
+            Attributes = attributes.Cast<RuleAttribute>().ToDictionary(x => x.AttributeName, x => x.AttributeValue);
+        } 
     }
 }

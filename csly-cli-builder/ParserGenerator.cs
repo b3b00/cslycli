@@ -201,13 +201,19 @@ namespace {nameSpace} {{
     
     public  string GetVisitor(PrefixRule prefix, string lexer, string output)
     {
-        string name = prefix.Name;
-        if (prefix.IsExplicit)
+        string name = "";
+        if (prefix.TryGetMethodName(out name))
         {
-            name = $"prefix_{explicitPrefixCounter}";
-            explicitPrefixCounter++;
         }
-        
+        else {
+            name = prefix.Name;
+            if (prefix.IsExplicit)
+            {
+                name = $"prefix_{explicitPrefixCounter}";
+                explicitPrefixCounter++;
+            }
+        }
+
         return $@"
         public {output} {name}(Token<{lexer}> oper, {output} value) {{
             return value;
@@ -219,12 +225,15 @@ namespace {nameSpace} {{
     public  string GetVisitor(PostfixRule postfix, string lexer, string output)
     {
         string name = postfix.Name;
-        if (postfix.IsExplicit)
+        if (postfix.TryGetMethodName(out name))
         {
-            name = $"postfix_{explicitPostfixCounter}";
-            explicitPostfixCounter++;
+            if (postfix.IsExplicit)
+            {
+                name = $"postfix_{explicitPostfixCounter}";
+                explicitPostfixCounter++;
+            }
         }
-        
+
         return $@"
         public {output} {name}({output} value, Token<{lexer}> oper) {{
             return value;
@@ -233,8 +242,16 @@ namespace {nameSpace} {{
     
     public  string GetVisitor(InfixRule infix, string lexer, string output)
     {
+        string name = ""; 
+        if (infix.TryGetMethodName(out name))
+        {
+        }
+        else {
+            name = infix.Name;
+        }
+
         return $@"
-        public {output} {infix.Name}({output} left, Token<{lexer}> oper, {output} right) {{
+        public {output} {name}({output} left, Token<{lexer}> oper, {output} right) {{
             return left;
         }}";
     }

@@ -114,7 +114,7 @@ public class CslyProcessor
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include=""sly"" Version=""3.1.4"" />
+        <PackageReference Include=""sly"" Version=""3.1.6"" />
     </ItemGroup>
 
 </Project>";

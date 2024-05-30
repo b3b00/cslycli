@@ -32,24 +32,6 @@ public class CliResult<T>
     }
 }
 
-public class GeneratedSource
-{
-    
-    public string LexerName { get; set; }
-    public string Lexer { get; set; }
-
-    public string ParserName { get; set; }
-    public string Parser { get; set; }
-
-    public GeneratedSource(string lexerName, string lexer, string parserName, string parser)
-    {
-        LexerName = lexerName;
-        ParserName = parserName;
-        Lexer = lexer;
-        Parser = parser;
-    }
-}
-
 public class CslyProcessor
 {
     public static CliResult<string> GetDot(string grammar, string source)
@@ -120,9 +102,24 @@ public class CslyProcessor
             var parserGenerator = new ParserGenerator();
             parserSource = parserGenerator.GenerateParser(model.Value, nameSpace, outputType);
             
+            string csproj = $@"<Project Sdk=""Microsoft.NET.Sdk"">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>{nameSpace}</RootNamespace>                
+        <PackageOutputPath>./nupkg</PackageOutputPath>
+        <version>0.0.1</version>
+        <PackageVersion>0.0.1</PackageVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include=""sly"" Version=""3.1.4"" />
+    </ItemGroup>
+
+</Project>";
             
-            
-            return new CliResult<GeneratedSource>(new GeneratedSource(model.Value.LexerModel.Name, lexerSource, model.Value.ParserModel.Name, parserSource));
+            return new CliResult<GeneratedSource>(new GeneratedSource(model.Value.LexerModel.Name, lexerSource, model.Value.ParserModel.Name, parserSource, csproj));
         }
         else
         {

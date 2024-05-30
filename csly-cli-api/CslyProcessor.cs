@@ -84,7 +84,7 @@ public class CslyProcessor
         {
             var r = builder.Getz(grammar, source, "TestParser",
                 new List<(string format, SyntaxTreeProcessor processor)>()
-                    { ("JSON", (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToDotGraph) });
+                    { ("JSON", (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToJson) });
             if (r.IsError)
             {
                 return new CliResult<string>(r.Error.Select(x => $"parse error : {x}").ToList());

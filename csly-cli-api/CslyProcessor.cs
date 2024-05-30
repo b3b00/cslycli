@@ -1,5 +1,6 @@
 ﻿using clsy.cli.builder;
 using clsy.cli.builder.parser;
+using specificationExtractor;
 
 namespace csly_cli_api;
 
@@ -125,5 +126,13 @@ public class CslyProcessor
         {
             return new CliResult<GeneratedSource>(model.Error.Select(x => $"grammar error : {x}").ToList());
         }
+    }
+
+    public static CliResult<string> ExtractGrammar(string parser, string lexer)
+    {
+        var extractor = new SpecificationExtractor();
+        var grammar  = extractor.ExtractFromSource(lexer, parser);
+        return new CliResult<string>(grammar);
+
     }
 }

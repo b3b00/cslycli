@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0"/>
+        <PackageReference Include="xunit" Version="2.4.2"/>
+        <PackageReference Include="NFluent" Version="3.0.4" />
+        <PackageReference Include="System.Memory" Version="4.5.5"/>
+        <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
+        <PackageReference Include="System.Collections.Immutable" Version="8.0.0"/>
+        <PackageReference Include="SharpCoreFileSystem" Version="1.1.2"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="6.0.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+<!--      <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
+<!--      <ProjectReference Include="..\..\sharpfilesystem\SharpCoreFileSystem\SharpCoreFileSystem.csproj" />-->
+      <ProjectReference Include="..\csly-cli-api\csly-cli-api.csproj" />
+      <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
+      <ProjectReference Include="..\csly-cli-decompiler\csly-cli-decompiler.csproj" />
+      <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj" />
+      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
+      <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
+      <ProjectReference Include="..\csly-cli\csly-cli.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="data\badGrammar.txt" />
+      <EmbeddedResource Include="data\dotExtMarks.txt" />
+      <EmbeddedResource Include="data\expr.txt" />
+      <EmbeddedResource Include="data\ext.txt" />
+      <EmbeddedResource Include="data\extWithMarks.txt" />
+      <EmbeddedResource Include="data\extWithMarksMultiChain.txt" />
+      <EmbeddedResource Include="data\grammar1.txt" />
+      <EmbeddedResource Include="data\grammarWithImplicits.txt" />
+      <EmbeddedResource Include="data\grammarX.txt" />
+      <EmbeddedResource Include="data\lexer.csharp" />
+      <EmbeddedResource Include="data\lexerWithExt.csharp" />
+      <EmbeddedResource Include="data\manyLexemes.txt" />
+      <EmbeddedResource Include="data\meta.txt" />
+      <EmbeddedResource Include="data\minimalGrammar.txt" />
+      <EmbeddedResource Include="data\minimalGrammarWithExt.txt" />
+      <EmbeddedResource Include="data\minimalJSON.json" />
+      <EmbeddedResource Include="data\parser.csharp" />
+      <EmbeddedResource Include="data\simpleExpression.txt" />
+      <EmbeddedResource Include="data\simpleexpr\simpleexpressionparser.csharp" />
+      <EmbeddedResource Include="data\simpleexpr\simpleexpressiontoken.csharp" />
+      <EmbeddedResource Include="data\whileGrammar.txt" />
+    </ItemGroup>
+
+</Project>

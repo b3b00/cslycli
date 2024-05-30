@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ClassLibrary1</RootNamespace>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="sly" Version="3.1.6" />
+    </ItemGroup>
+
+</Project>

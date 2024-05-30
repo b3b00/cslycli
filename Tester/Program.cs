@@ -1,12 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Reflection;
-using clsy.cli.builder;
+using System.Text.Json;
 using clsy.cli.builder.parser;
-using csly.cli.model;
-using csly.cli.parser;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace cslyCliTester {
 
@@ -63,18 +58,21 @@ parser MinimalParser;
         var json = builder.Getz(grammar, "2024.04.23", "MyDateParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
         if (json.IsOk)
         {
-            File.WriteAllText("c:/temp/date.json",json.Value[0].content);
-            var tree = JsonConvert.DeserializeObject<JObject>(json.Value[0].content);
-            var token = tree.SelectToken("$.Children[0].Token");
-            var dateTime = token.SelectToken("Value").Value<string>();
-            if (dateTime == "2024.04.23")
-            {
-                Console.WriteLine("all is fine");
-            }
-            else
-            {
-                Console.WriteLine($"token is bad {dateTime} - expected 2024.04.23");
-            }
+            // File.WriteAllText("c:/temp/date.json",json.Value[0].content);
+            //
+            // var tree = JsonSerializer.Deserialize<JsonDocument>(json.Value[0].content);
+            // //var tree = JsonConvert.DeserializeObject<JObject>(json.Value[0].content);
+            // tree.RootElement.
+            // var token = tree.SelectToken("$.Children[0].Token");
+            // var dateTime = token.SelectToken("Value").Value<string>();
+            // if (dateTime == "2024.04.23")
+            // {
+            //     Console.WriteLine("all is fine");
+            // }
+            // else
+            // {
+            //     Console.WriteLine($"token is bad {dateTime} - expected 2024.04.23");
+            // }
         }
     }
 }

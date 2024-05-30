@@ -60,26 +60,33 @@ parser WhileParser;
 [Right 50] AND;
 [Prefix 100] NOT;
 
-
+@name(program);
 -> statement :  LPAREN statement RPAREN ;
 
-
+@name(sequence);
 statement : sequence;
 
 
 [Operand] operand : [INT | TRUE | FALSE | STRING | ID];
 [Operand] operand : LPAREN WhileParser_expressions RPAREN;
 
+@name(sequenceStatement);
 sequence : statementPrim additionalStatements*;
 
+@name(additionalStatement);
 additionalStatements : SEMICOLON statementPrim;
 
+@name(conditionalStatement);
 statementPrim: IF WhileParser_expressions THEN statement ELSE statement;
 
+@name(whileStatement);
 statementPrim: WHILE WhileParser_expressions DO statement;
 
+@name(assignmentStatement);
 statementPrim: ID ASSIGN WhileParser_expressions;
 
+@name(skipStatement);
 statementPrim: SKIP;
 
+@name(printStatement);
 statementPrim: PRINT WhileParser_expressions;

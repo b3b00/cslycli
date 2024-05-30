@@ -6,6 +6,8 @@ namespace csly.cli.model.parser
 {
     public class Rule : GrammarNode
     {
+
+        public const string? methodNameAttribute = "name";        
         public Rule( bool  isOperand = false)
         {
             Clauses = new List<IClause>();
@@ -37,10 +39,18 @@ namespace csly.cli.model.parser
             }
         }
 
+        public Dictionary<string, string> Attributes { get; set; }
+        
         public List<IClause> Clauses { get; set; }
 
         public string NonTerminalName { get; set; }
         public bool IsRoot { get; set; }
+
+        public bool TryGetMethodName(out string methodName)
+        {
+            methodName = null;
+            return Attributes != null ? Attributes.TryGetValue(methodNameAttribute, out methodName) : false;
+        }
 
         public override string ToString()
         {

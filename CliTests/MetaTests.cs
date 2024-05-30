@@ -8,7 +8,7 @@ using SharpFileSystem.FileSystems;
 using specificationExtractor;
 using Xunit;
 
-namespace Tests;
+namespace CliTests;
 
 public class MetaTests
 {

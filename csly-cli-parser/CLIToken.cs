@@ -123,7 +123,7 @@ public enum CLIToken
     [Sugar("->")]
     ARROW,
     
-    [Mode("EXT")]
+    [Mode("EXT","default")]
     [Sugar("@")]
     AT,
     

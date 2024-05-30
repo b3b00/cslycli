@@ -252,7 +252,7 @@ public class ParserBuilder
 
     public static string SyntaxTreeToJson(Type lexerType, Type parserTree, object syntaxTree)
     {
-        var serialization = JsonConvert.SerializeObject(syntaxTree,Formatting.Indented);
+        var serialization = JsonConvert.SerializeObject(syntaxTree, Formatting.Indented);
         return serialization;
     }
     

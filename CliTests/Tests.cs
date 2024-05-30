@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using Newtonsoft.Json;
@@ -15,7 +10,7 @@ using SharpFileSystem.FileSystems;
 using sly.lexer;
 using Xunit;
 
-namespace Tests;
+namespace CliTests;
 
 public class Tests
 {
@@ -308,5 +303,4 @@ parser MinimalParser;
         Assert.NotNull(content);
         Assert.NotEmpty(content);
     }
-    
 }

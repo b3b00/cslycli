@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using clsy.cli.builder;
 using csly.cli.model;
 using NFluent;
@@ -8,7 +6,7 @@ using sly.buildresult;
 using sly.lexer;
 using sly.parser;
 
-namespace Tests;
+namespace CliTests;
 
 public static class NFluentParseExtensions
     {

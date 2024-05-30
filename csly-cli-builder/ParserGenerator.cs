@@ -257,15 +257,23 @@ namespace {nameSpace} {{
     public  string GetVisitorHeader(Rule rule, string parser, string lexer, string output)
     {
         StringBuilder name = new StringBuilder();
-        foreach (var c in rule.RuleString)
+        string methodName = "";
+        if (rule.TryGetMethodName(out methodName))
         {
-            if (Char.IsDigit(c) || char.IsLetter(c))
+            name.Append(methodName);
+        }
+        else
+        {
+            foreach (var c in rule.RuleString)
             {
-                name.Append(c);
-            }
-            else
-            {
-                name.Append('_');
+                if (Char.IsDigit(c) || char.IsLetter(c))
+                {
+                    name.Append(c);
+                }
+                else
+                {
+                    name.Append('_');
+                }
             }
         }
 
@@ -280,10 +288,6 @@ namespace {nameSpace} {{
         {
             visitorNames[name.ToString()] = count;    
         }
-
-        
-        
-        //string name = rule.RuleString.Replace(" ","").Replace(":","_").Replace("*","").Replace("'","");
 
         string parameters = "";
         for (int i = 0; i < rule.Clauses.Count; i++)

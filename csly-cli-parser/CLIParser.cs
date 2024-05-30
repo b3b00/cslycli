@@ -348,21 +348,23 @@ public class CLIParser
   }
   
 
-        [Production("rule  : ARROW ? operand? ID COLON[d] clause+ SEMICOLON[d]")]
-        public GrammarNode Root(Token<CLIToken> root, ValueOption<ICLIModel> operand,Token<CLIToken> name, List<ICLIModel> clauses, ParserContext context)
+        [Production("rule  :  ruleAttribute* ARROW? operand? ID COLON[d] clause+ SEMICOLON[d]")]
+        //[Production("rule  :  ARROW ? operand? ID COLON[d] clause+ SEMICOLON[d]")]
+        public GrammarNode Rule(List<ICLIModel> attributes, Token<CLIToken> root, ValueOption<ICLIModel> operand,Token<CLIToken> name, List<ICLIModel> clauses, ParserContext context)
         {
             var rule = new Rule(operand.IsSome);
+
+            if (attributes.Any())
+            {
+                rule.Attributes = attributes.Cast<RuleAttribute>()
+                    .ToDictionary(x => x.AttributeName, x => x.AttributeValue);
+            }
+            
             rule.NonTerminalName = name.Value;
             rule.Clauses = clauses.Cast<IClause>().ToList();
             rule.IsRoot = !root.IsEmpty;
             return rule;
         }
-        
-        // [Production("rule : LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d] ID SEMICOLON[d]")]
-        // public ICLIModel OperandRule(Token<CLIToken> id, ParserContext context)
-        // {
-        //     return new OperandRule(id.Value, context.IsTerminal(id.Value));
-        // }
         
         [Production("rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
         public ICLIModel PrefixRule(Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
@@ -519,7 +521,15 @@ public class CLIParser
         #endregion
 
 
+            #region attributes
+
+        [Production("ruleAttribute :  AT[d] ID LEFTPAREN[d] ID RIGHTPAREN[d] SEMICOLON[d]")]
+        public ICLIModel RuleAttribute(Token<CLIToken> attributeName, Token<CLIToken> attributeValue, ParserContext context)
+        {
+            return new RuleAttribute(attributeName.Value, attributeValue.Value);
+        }
         
+        #endregion
 
 
         private IClause BuildTerminalOrNonTerminal(Token<CLIToken> token, ParserContext context)

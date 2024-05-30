@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+
 using System.Reflection;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
@@ -7,9 +7,9 @@ using NFluent;
 using SharpFileSystem.FileSystems;
 using sly.lexer;
 using Xunit;
-using LexerBuilder = sly.lexer.LexerBuilder;
 
-namespace Tests;
+
+namespace CliTests;
 
 public class ExtensionTests
 {

@@ -1,8 +1,5 @@
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
-using System.Threading;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using decompiler;
@@ -14,7 +11,8 @@ using sly.lexer;
 using specificationExtractor;
 using Xunit;
 
-namespace Tests;
+
+namespace CliTests;
 
 public class ExtractionTests
 {

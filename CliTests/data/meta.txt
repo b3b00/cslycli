@@ -58,7 +58,7 @@ genericLexer CLIToken;
 [Sugar] OPEN_EXT : ">>>";
 [Mode("EXT", "default")]
 [Sugar] ARROW : "->";
-[Mode("EXT")]
+[Mode("EXT","default")]
 [Sugar] AT : "@";
 [Mode("EXT")]
 [Sugar] DASH : "-";
@@ -105,7 +105,7 @@ range : CHAR DASH[d] CHAR;
 operand :  LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d];
 
 optimization : LEFTBRACKET[d] [USEMEMOIZATION|BROADENTOKENWINDOW] RIGHTBRACKET[d];
-rule  : ARROW ? operand? ID COLON[d] clause+ SEMICOLON[d];
+rule  : ruleAttribute* ARROW ? operand? ID COLON[d] clause+ SEMICOLON[d];
 rule : LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
 rule : LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
 rule : LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d];
@@ -126,3 +126,4 @@ discardeditem : item DISCARD?;
 clause : group ONEORMORE[d] ;
 clause : group ZEROORMORE [d];
 clause : group OPTION[d] ;
+ruleAttribute :  AT[d] ID LEFTPAREN[d] ID RIGHTPAREN[d] SEMICOLON[d];

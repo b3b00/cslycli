@@ -13,21 +13,19 @@ namespace csly_cli_api
         public static void Main(string[] args)
         {
             var grammar = @"
-genericLexer MissingReferenceLexer;
+genericLexer LeftRecursiveLexer;
 
 [Int] INT;
+ [Sugar] COMMA : "","";
 
-parser MissingReferenceParser;
+parser LeftRecursiveParser;
 
-root : INT;
+-> root : item;
 
-missingNt : toto;
+-> item : item (COMMA item)*;
 
-missingT : POUET;
+-> item : INT;
 
-missingChoice : [missingT|missingNt|missingReferenceInChoice];
-
-missingGroup : (missingT INT missingInGroup); 
 ";
 
             string source = @"

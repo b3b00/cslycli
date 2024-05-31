@@ -52,6 +52,7 @@
       <EmbeddedResource Include="data\grammar1.txt" />
       <EmbeddedResource Include="data\grammarWithImplicits.txt" />
       <EmbeddedResource Include="data\grammarX.txt" />
+      <EmbeddedResource Include="data\leftRecursive.txt" />
       <EmbeddedResource Include="data\lexer.csharp" />
       <EmbeddedResource Include="data\lexerWithExt.csharp" />
       <EmbeddedResource Include="data\manyLexemes.txt" />

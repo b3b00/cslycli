@@ -23,6 +23,8 @@ namespace csly.cli.model.parser
         public virtual bool IsOperand => _isOperand;
         public virtual bool IsInfix => false;
 
+        public bool IsExpression => IsInfix || IsPrefix || IsPostfix;
+        
         public string RuleString => NonTerminalName + " : " + string.Join(" ", Clauses.Select(x => x.ToString()));
 
         public string Key

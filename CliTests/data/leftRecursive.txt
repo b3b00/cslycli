@@ -1,0 +1,12 @@
+genericLexer LeftRecursiveLexer;
+
+[Int] INT;
+ [Sugar] COMMA : ",";
+
+parser LeftRecursiveParser;
+
+-> root : item;
+
+-> item : item (COMMA item)*;
+
+-> item : INT;

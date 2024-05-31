@@ -16,7 +16,7 @@ public class RuleReferences
     
     public void AddToken(string token)
     {
-        ruleNames.Add(token);
+        tokenNames.Add(token);
     }
     
     private void AddReference(string ruleName, Reference reference)
@@ -47,7 +47,7 @@ public class RuleReferences
         {
             foreach (var reference in rule.Value)
             {
-                if (ruleNames.All(x => x != reference.Name) && tokenNames.All(x => x != reference.Name)) 
+                if (rule.Key!= reference.Name && ruleNames.All(x => x != reference.Name) && tokenNames.All(x => x != reference.Name)) 
                 {
                     errors.Add($"rule {rule.Key} references {reference.Name} that does not exist.");
                 }

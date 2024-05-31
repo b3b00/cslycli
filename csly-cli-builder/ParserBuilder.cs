@@ -177,13 +177,23 @@ public class ParserBuilder
             model.AddError("model have root rule !");
         }
 
-        var visitor = new ReferencesVisitor();
-        ModelWalker<RuleReferences> walker = new ModelWalker<RuleReferences>(visitor);
-        var references = walker.Walk(model, new RuleReferences());
+        var referencesVisitor = new ReferencesVisitor();
+        ModelWalker<RuleReferences> referenceWalker = new ModelWalker<RuleReferences>(referencesVisitor);
+        var references = referenceWalker.Walk(model, new RuleReferences());
         ;
         var referenceErrors = references.CheckReferences();
         
         model.AddErrors(referenceErrors);
+
+        var lrc = new LeftRecursionChecker(model.result.ParserModel);
+        var leftRecursions = lrc.CheckLeftRecursion();
+        if (leftRecursions.foundRecursion)
+        {
+            foreach (var recursion in leftRecursions.recursions)
+            {
+                model.AddError($"found left recursion {string.Join(" > ",recursion)}.");
+            }
+        }
         
         
         return model;

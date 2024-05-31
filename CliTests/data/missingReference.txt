@@ -4,7 +4,7 @@ genericLexer MissingReferenceLexer;
 
 parser MissingReferenceParser;
 
-root : INT;
+-> root : INT;
 
 missingNt : toto;
 

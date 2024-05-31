@@ -408,8 +408,8 @@ public class CLIParser
             return new OneOrMoreClause(item);
         }
 
-        [Production("clause : item OPTION")]
-        public IClause OptionClause(IClause  item, Token<CLIToken> discarded, ParserContext context)
+        [Production("clause : item OPTION[d]")]
+        public IClause OptionClause(IClause  item, ParserContext context)
         {
             return new OptionClause(item);
         }
@@ -470,7 +470,7 @@ public class CLIParser
         #region  groups
 
         [Production("clause : group")]
-        public IClause GroupClause(IClause group) => group;
+        public IClause GroupClause(IClause group, ParserContext context) => group;
         
         [Production("group : LEFTPAREN[d] discardeditem* RIGHTPAREN[d] ")]
         public GroupClause Group( List<ICLIModel> clauses, ParserContext context)

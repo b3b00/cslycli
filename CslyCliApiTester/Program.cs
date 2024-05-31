@@ -13,107 +13,21 @@ namespace csly_cli_api
         public static void Main(string[] args)
         {
             var grammar = @"
-genericLexer WhileLexer;
+genericLexer MissingReferenceLexer;
 
-[String] STRING;
 [Int] INT;
-[AlphaId] ID; 
 
+parser MissingReferenceParser;
 
-[ KeyWord] IF:""if"";
-[ KeyWord] THEN:""then"";
-[ KeyWord] ELSE:""else"";
-[ KeyWord] WHILE:""while"";
-[ KeyWord] DO:""do"";
-[ KeyWord] SKIP:""skip"";
-[ KeyWord] TRUE:""true"";
-[ KeyWord] FALSE:""false"";
-[ KeyWord] NOT:""not"";
-[ KeyWord] AND:""and"";
-[ KeyWord] OR:""or"";
-[ KeyWord] PRINT:""print"";
+root : INT;
 
- [Sugar] GREATER : "">"";
+missingNt : toto;
 
-[Sugar] LESSER : ""<"";
+missingT : POUET;
 
-[Sugar] EQUALS : ""=="";
+missingChoice : [missingT|missingNt|missingReferenceInChoice];
 
-[Sugar] DIFFERENT : ""!="";
-
-[Sugar] CONCAT : ""."";
-
-[Sugar] ASSIGN : "":="";
-
-[Sugar] PLUS : ""+"";
-[Sugar] MINUS : ""-"";
-[Sugar] TIMES : ""*"";
-[Sugar] DIVIDE : ""/"";
-
-[Sugar] LPAREN : ""("";
-[Sugar] RPAREN : "")"";
-[Sugar] SEMICOLON : "";"";
-
-parser WhileParser;
-
-@name(lesser);
-[Right 50] LESSER;
-[Right 50] GREATER;
-[Right 50] EQUALS;
-[Right 50]DIFFERENT;
-
-[Right 10] CONCAT;
-       
-[Right 10] PLUS;
-[Left 10] MINUS;
-@name(multiplyThis);
-[Right 50] TIMES;
-[Left 50]DIVIDE;
-
-@name(minus);
-[Prefix 100] MINUS;
-
-@name(or);
-[Right 10] OR;
-@name(and);
-[Right 50] AND;
-
-@name(NotAtAll);
-[Prefix 100] NOT;
-
-@name(program);
--> statement :  LPAREN statement RPAREN ;
-
-@name(sequence);
-statement : sequence;
-
-@name(scalarOperand);
-[Operand] operand : [INT | TRUE | FALSE | STRING | ID];
-
-@name(groupOperand);
-[Operand] operand : LPAREN WhileParser_expressions RPAREN;
-
-@name(sequenceStatement);
-sequence : statementPrim additionalStatements*;
-
-@name(additionalStatement);
-additionalStatements : SEMICOLON statementPrim;
-
-@name(conditionalStatement);
-statementPrim: IF WhileParser_expressions THEN statement ELSE statement;
-
-@name(whileStatement);
-statementPrim: WHILE WhileParser_expressions DO statement;
-
-@name(assignmentStatement);
-statementPrim: ID ASSIGN WhileParser_expressions;
-
-@name(skipStatement);
-statementPrim: SKIP;
-
-@name(printStatement);
-statementPrim: PRINT WhileParser_expressions;
-
+missingGroup : (missingT INT missingInGroup); 
 ";
 
             string source = @"

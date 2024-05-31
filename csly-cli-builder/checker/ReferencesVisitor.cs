@@ -10,31 +10,31 @@ public class ReferencesVisitor : AbstractModelVisitor<RuleReferences>
 
     private string currentRule = null;
     
-    public RuleReferences Visit(TokenModel token, RuleReferences result)
+    public override RuleReferences Visit(TokenModel token, RuleReferences result)
     {
         result.AddToken(token.Name);
         return result;
     }
 
-    public RuleReferences Visit(Rule rule, RuleReferences result)
+    public override RuleReferences Visit(Rule rule, RuleReferences result)
     {
         currentRule = rule.RuleString;
         return result;
     }
 
 
-    public RuleReferences VisitManyClause(ManyClause many, RuleReferences result)
+    public override RuleReferences VisitManyClause(ManyClause many, RuleReferences result)
     {
         return result;
     }
 
-    public RuleReferences VisitNonTerminalClause(NonTerminalClause nonTerminalClause, RuleReferences result)
+    public override RuleReferences VisitNonTerminalClause(NonTerminalClause nonTerminalClause, RuleReferences result)
     {
         result.AddRuleReference(currentRule, nonTerminalClause.NonTerminalName);
         return result;
     }
 
-    public RuleReferences VisitTerminalClause(TerminalClause terminalClause, RuleReferences result)
+    public override RuleReferences VisitTerminalClause(TerminalClause terminalClause, RuleReferences result)
     {
         result.AddTokenReference(currentRule, terminalClause.TokenName);
         return result;

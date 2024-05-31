@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using clsy.cli.builder.checker;
 using csly.cli.model;
 using csly.cli.model.parser;
 using csly.cli.parser;
@@ -175,6 +176,16 @@ public class ParserBuilder
         {
             model.AddError("model have root rule !");
         }
+
+        var visitor = new ReferencesVisitor();
+        ModelWalker<RuleReferences> walker = new ModelWalker<RuleReferences>(visitor);
+        var references = walker.Walk(model, new RuleReferences());
+        ;
+        var referenceErrors = references.CheckReferences();
+        
+        model.AddErrors(referenceErrors);
+        
+        
         return model;
     }
     

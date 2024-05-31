@@ -1,0 +1,15 @@
+genericLexer MissingReferenceLexer;
+
+[Int] INT;
+
+parser MissingReferenceParser;
+
+root : INT;
+
+missingNt : toto;
+
+missingT : POUET;
+
+missingChoice : [missingT|missingNt|missingReferenceInChoice];
+
+missingGroup : (missingT INT missingInGroup); 

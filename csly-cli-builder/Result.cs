@@ -44,6 +44,15 @@ public class Result<T> : Result<T, List<string>>
         error.Add(errorMessage);
     }
     
+    public void AddErrors(IEnumerable<string> errors)
+    {
+        if (errors.Any())
+        {
+            error.AddRange(errors);
+            SetIsOk(false);
+        }
+    }
+    
     [ExcludeFromCodeCoverage]
     public override string ToString()
     {

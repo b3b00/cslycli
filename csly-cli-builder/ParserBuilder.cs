@@ -158,7 +158,7 @@ public class ParserBuilder
             }
             else {
                 Model model = result.Result as Model;
-                return model;
+                return CheckModel(model);
             }
         }
         else
@@ -167,6 +167,17 @@ public class ParserBuilder
             return buildParser.Errors.Select(x => x.Message).ToList();
         }
     }
+
+    public Result<Model> CheckModel( Result<Model> model)
+    {
+        bool hasRoot = model.result.ParserModel.Rules.Exists(x => x.IsRoot);
+        if (!hasRoot)
+        {
+            model.AddError("model have root rule !");
+        }
+        return model;
+    }
+    
     
    
     

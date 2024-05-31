@@ -303,4 +303,15 @@ parser MinimalParser;
         Assert.NotNull(content);
         Assert.NotEmpty(content);
     }
+    
+    [Fact]
+    public void TestNoRootGrammar()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/noRoot.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "NoRootParser");
+        Check.That(model).Not.IsOkModel();
+        Check.That(model.Error).Contains("model have root rule !");
+    }
 }

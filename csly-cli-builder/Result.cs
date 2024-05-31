@@ -6,9 +6,10 @@ namespace clsy.cli.builder;
 
 public class Result<T> : Result<T, List<string>>
 {
-    
+
     public Result(T value) : base(value)
     {
+        error = new List<string>();
     }
 
     public Result(List<string> error) : base (error)
@@ -32,6 +33,16 @@ public class Result<T> : Result<T, List<string>>
     {
         return new Result<T>(error);
     }
+
+    public void AddError(string errorMessage)
+    {
+        SetIsOk(false);
+        if (error == null)
+        {
+            error = new List<string>();
+        }
+        error.Add(errorMessage);
+    }
     
     [ExcludeFromCodeCoverage]
     public override string ToString()
@@ -46,12 +57,17 @@ public class Result<T> : Result<T, List<string>>
 
 public class Result<T,E> 
 {
-    internal readonly T result;
-    internal readonly E error;
+    internal T result;
+    internal E error;
 
-    public bool IsOk { get; private set; }
-    public bool IsError{ get; private set; }
+    private bool _isOk;
+    public bool IsOk => _isOk;
+    public bool IsError => !IsOk;
 
+    protected void SetIsOk(bool isOk)
+    {
+        _isOk = isOk;
+    }
 
     public E Error => error;
 
@@ -59,22 +75,19 @@ public class Result<T,E>
     
     public Result()
     {
-        IsOk = false;
-        IsError = false;
+        _isOk = false;
     }
     
     public Result(T value)
     {
         result = value;
-        IsOk = true;
-        IsError = false;
+        _isOk = true;
     }
 
     public Result(E error)
     {
         this.error = error;
-        IsOk = false;
-        IsError = true;
+        SetIsOk(false);
     }
 
     public static implicit operator T(Result<T,E> r) {

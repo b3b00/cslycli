@@ -1,0 +1,7 @@
+genericLexer NoRootLexer;
+
+[Int] INT;
+
+parser NoRootParser;
+
+root : INT;

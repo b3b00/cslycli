@@ -5,8 +5,8 @@
         <RootNamespace>csly_cli_api</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <version>1.2.3</version>
-        <PackageVersion>1.2.3</PackageVersion>
+        <version>1.2.5</version>
+        <PackageVersion>1.2.5</PackageVersion>
     </PropertyGroup>
     <PropertyGroup>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
@@ -17,7 +17,7 @@
         <None Include="../README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
     <ItemGroup>
-<!--      <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
+      <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj"  />
       <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj" />
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj"  />
@@ -26,10 +26,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="sly" Version="3.1.6"/>        
         <PackageReference Include="System.Collections.Immutable" Version="8.0.0"/>
         <PackageReference Include="System.Memory" Version="4.5.5"/>
         <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
     </ItemGroup>
 
 </Project>

@@ -90,6 +90,11 @@ public class ModelWalker<T>
                 result = WalkGroupClause(group, result);
                 break;
             }
+            case ChoiceClause choice:
+            {
+                result = WalkChoiceClause(choice, result);
+                break;
+            }
                 
         }
 
@@ -147,6 +152,8 @@ public class ModelWalker<T>
         }
         return result;
     }
+    
+
     
 
     #endregion

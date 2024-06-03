@@ -56,7 +56,7 @@ public class AbstractModelVisitor<T> : IModelVisitor<T>
         return result;
     }
 
-    public T VisitChoiceClause(ChoiceClause choice, T result)
+    public virtual T VisitChoiceClause(ChoiceClause choice, T result)
     {
         return result;
     }

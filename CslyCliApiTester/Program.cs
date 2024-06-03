@@ -16,6 +16,7 @@ namespace csly_cli_api
 genericLexer LeftRecursiveLexer;
 
 [Int] INT;
+[Double] DO;
  [Sugar] COMMA : "","";
 
 parser LeftRecursiveParser;
@@ -24,7 +25,7 @@ parser LeftRecursiveParser;
 
 -> item : item (COMMA item)*;
 
--> item : INT;
+-> item : [INT|D];
 
 ";
 

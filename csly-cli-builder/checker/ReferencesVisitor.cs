@@ -46,7 +46,10 @@ public class ReferencesVisitor : AbstractModelVisitor<RuleReferences>
 
     public override RuleReferences VisitTerminalClause(TerminalClause terminalClause, RuleReferences result)
     {
-        result.AddTokenReference(currentRule, terminalClause.TokenName);
+        if (!terminalClause.IsImplicit)
+        {
+            result.AddTokenReference(currentRule, terminalClause.TokenName);
+        }
         return result;
     }
 

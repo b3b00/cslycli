@@ -323,7 +323,7 @@ parser MinimalParser;
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "MissingReferenceParser");
         Check.That(model).Not.IsOkModel();
-        Check.That(model.Error).CountIs(3);
+        Check.That(model.Error).CountIs(4);
     }
     
     [Fact]

@@ -1,40 +1,24 @@
 ﻿using clsy.cli.builder;
 using clsy.cli.builder.parser;
+using csly.cli.model;
 using specificationExtractor;
 
 namespace csly_cli_api;
 
-
-
-public class CliResult<T>
-{
-    private bool _isOk;
-
-    public bool IsOK => _isOk;
-    
-    private T _result;
-
-    public T Result => _result;
-
-    private List<string> _errors;
-
-    public List<string> Errors => _errors;
-
-    public CliResult(List<string> errors)
-    {
-        _isOk = false;
-        _errors = errors;
-    }
-
-    public CliResult(T result)
-    {
-        _isOk = true;
-        _result = result;
-    }
-}
-
 public class CslyProcessor
 {
+
+    public static CliResult<Model> Compile(string grammar)
+    {
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MinimalParser");
+        if (model.IsOk)
+        {
+            return model.Value;
+        }
+        return model.Error;
+    }
+
     public static CliResult<string> GetDot(string grammar, string source)
     {
         var builder = new ParserBuilder();

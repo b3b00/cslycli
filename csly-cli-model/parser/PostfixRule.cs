@@ -29,3 +29,20 @@ public class PostfixRule : Rule
        
        
 }
+
+public class ManyPostfixRule : Rule
+{
+    private IList<PostfixRule> _postfixes;
+
+    public override  bool IsRule => false;
+    public override bool IsPrefix => false;
+    public override bool IsOperand => false;
+    public override bool IsInfix => true;
+
+    public IList<PostfixRule> Postfixes => _postfixes;
+     
+    public ManyPostfixRule(IList<PostfixRule> rules)
+    {
+        _postfixes = rules;
+    }
+}

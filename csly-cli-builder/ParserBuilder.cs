@@ -339,13 +339,26 @@ public class ParserBuilder
         {
             AddPrefix(builder, prefix);
         }
+        if (rule.IsPrefix && rule is ManyPrefixRule prefixes)
+        {
+            AddPrefixes(builder, prefixes);
+        }
         if (rule.IsPostfix && rule is PostfixRule postfix)
         {
             AddPostfix(builder, postfix);
         }
+        if (rule is ManyPostfixRule postfixes)
+        {
+            AddPostfixes(builder, postfixes);
+        }
         if (rule.IsInfix && rule is InfixRule infix)
         {
             AddInfix(builder, infix);
+        }
+
+        if (rule is ManyInfixRule infixes)
+        {
+            AddInfixes(builder, infixes);
         }
     }
     
@@ -402,7 +415,36 @@ public class ParserBuilder
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
     }
 
+    private void AddPrefixes(TypeBuilder builder, ManyPrefixRule prefixes)
+    {
+        string name = prefixes.GetName(ref explicitPrefixCounter);
+        
+        var methodBuilder = AddMethod(builder, $"prefix_{name}", TokenType, ObjectType);
+        
+        Type attributeType = typeof(PrefixAttribute);
+
+        foreach (var prefix in prefixes.Prefixes)
+        {
+            string operatorName = prefix.Name;
+            if (prefix.IsExplicit)
+            {
+                explicitPrefixCounter++;
+                operatorName = $"'{operatorName}'";
+            }
+
+
+            ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                new Type[3] { typeof(string), typeof(Associativity), typeof(int) });
+
+            CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                constructorInfo, new object[] { operatorName, Associativity.Left, prefix.Precedence });
+
+            methodBuilder.SetCustomAttribute(customAttributeBuilder);
+        }
+    }
+    
     private int explicitPostfixCounter = 0;
+    
     
     private void AddPostfix(TypeBuilder builder, PostfixRule postfix)
     {
@@ -429,6 +471,35 @@ public class ParserBuilder
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
     }
     
+    private void AddPostfixes(TypeBuilder builder, ManyPostfixRule postfixes)
+    {
+        string name = postfixes.GetName(ref explicitPostfixCounter);
+        
+        var methodBuilder = AddMethod(builder, $"postfix_{name}", TokenType, ObjectType);
+        
+        Type attributeType = typeof(PostfixAttribute);
+
+        foreach (var postfix in postfixes.Postfixes)
+        {
+            string operatorName = postfix.Name;
+            if (postfix.IsExplicit)
+            {
+                explicitPostfixCounter ++;
+                operatorName = $"'{operatorName}'";
+            }
+
+            ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                new Type[3] { typeof(string), typeof(Associativity), typeof(int) });
+
+            CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                constructorInfo, new object[] { operatorName, Associativity.Left, postfix.Precedence });
+
+            methodBuilder.SetCustomAttribute(customAttributeBuilder);
+        }
+    }
+    
+    private int explicitInfixCounter = 0;
+    
     private void AddInfix(TypeBuilder builder, InfixRule infix)
     {
         string operatorName = infix.Name;
@@ -449,6 +520,34 @@ public class ParserBuilder
             constructorInfo, new object[] { operatorName, infix.Associativity, infix.Precedence });
 
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
+    }
+    
+    private void AddInfixes(TypeBuilder builder, ManyInfixRule infixes)
+    {
+        string name = infixes.GetName(ref explicitInfixCounter);
+        
+        var methodBuilder = AddMethod(builder, $"infix_{name}",
+            ObjectType, TokenType, ObjectType); 
+        
+        Type attributeType = typeof(InfixAttribute);
+
+        foreach (var infix in infixes.Infixes)
+        {
+            string operatorName = infix.Name;
+            if (infix.IsExplicit)
+            {
+                explicitPostfixCounter ++;
+                operatorName = $"'{operatorName}'";
+            }
+
+            ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                new Type[3] { typeof(string), typeof(Associativity), typeof(int) });
+
+            CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                constructorInfo, new object[] { operatorName, infix.Associativity, infix.Precedence });
+
+            methodBuilder.SetCustomAttribute(customAttributeBuilder);
+        }
     }
     
     private static void AddOperandAttribute(MethodBuilder methodBuilder)

@@ -276,35 +276,7 @@ namespace {nameSpace} {{
     
     public  string GetVisitor(ManyPrefixRule prefixes, string lexer, string output)
     {
-        string name = ""; 
-        if (prefixes.TryGetMethodName(out name))
-        {
-            
-        }
-        else
-        {
-            StringBuilder nameBuilder = new StringBuilder();
-            foreach (var prefix in prefixes.Prefixes)
-            {
-                if (prefix.IsExplicit)
-                {
-                    nameBuilder.Append("prefix").Append(explicitPostfixCounter);
-                    explicitInfixCounter++;
-                }
-                else
-                {
-                    nameBuilder.Append(prefix.Name);
-                }
-
-                nameBuilder.Append("_");
-            }
-            name = nameBuilder.ToString();
-        }
-
-        if (name == "____1")
-        {
-            ;
-        }
+        string name = prefixes.GetName(ref explicitPrefixCounter); 
 
         return $@"
         public {output} {name}({output} left, Token<{lexer}> oper, {output} right) {{
@@ -316,32 +288,8 @@ namespace {nameSpace} {{
     private  int explicitPostfixCounter = 0;
     public  string GetVisitor(ManyPostfixRule postfixes, string lexer, string output)
     {
-        string name = ""; 
-        if (postfixes.TryGetMethodName(out name))
-        {
-            
-        }
-        else
-        {
-            StringBuilder nameBuilder = new StringBuilder();
-            foreach (var postfix in postfixes.Postfixes)
-            {
-                if (postfix.IsExplicit)
-                {
-                    nameBuilder.Append("postfix").Append(explicitPostfixCounter);
-                    explicitInfixCounter++;
-                }
-                else
-                {
-                    nameBuilder.Append(postfix.Name);
-                }
-
-                nameBuilder.Append("_");
-            }
-
-            name = nameBuilder.ToString();
-        }
-
+        string name = postfixes.GetName(ref explicitPostfixCounter); 
+        
         return $@"
         public {output} {name}({output} left, Token<{lexer}> oper, {output} right) {{
             return left;
@@ -368,31 +316,7 @@ namespace {nameSpace} {{
     
     public  string GetVisitor(ManyInfixRule infixes, string lexer, string output)
     {
-        string name = ""; 
-        if (infixes.TryGetMethodName(out name))
-        {
-            
-        }
-        else
-        {
-            StringBuilder nameBuilder = new StringBuilder();
-            foreach (var infix in infixes.Infixes)
-            {
-                if (infix.IsExplicit)
-                {
-                    nameBuilder.Append("infix").Append(explicitInfixCounter);
-                    explicitInfixCounter++;
-                }
-                else
-                {
-                    nameBuilder.Append(infix.Name);
-                }
-
-                nameBuilder.Append("_");
-            }
-
-            name = nameBuilder.ToString();
-        }
+        string name = infixes.GetName(ref explicitInfixCounter); 
 
         return $@"
         public {output} {name}({output} left, Token<{lexer}> oper, {output} right) {{

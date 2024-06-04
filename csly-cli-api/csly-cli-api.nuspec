@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>csly-cli-api</id>
-    <version>1.2.8</version>
+    <version>1.2.9</version>
     <title>csly-cli-api</title>
     <authors>b3b00</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

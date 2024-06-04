@@ -195,13 +195,29 @@ public class ParserBuilder
             }
         }
 
-        var tokenbyName = model.result.LexerModel.Tokens.GroupBy(x => x.Name);
-        foreach (var manyDefinitions in tokenbyName)
+     
+
+        var keywordDefinitionsByDefinition = model.result.LexerModel.Tokens
+            .Where(x => x.Type == GenericToken.KeyWord)
+            .GroupBy(x => x.Args[0]);
+        foreach (var keyword in keywordDefinitionsByDefinition)
         {
-            var count = manyDefinitions.Count();
+            var count = keyword.Count();
             if (count > 1)
             {
-                model.AddError($"token {manyDefinitions.Key} has {manyDefinitions.Count()} definitions.");
+                model.AddError($@"tokens {string.Join(", ",keyword.Select(x => x.Name))} define the same keyword ""{keyword.Key}""");
+            }
+        }
+        
+        var sugarDefinitionsByDefinition = model.result.LexerModel.Tokens
+            .Where(x => x.Type == GenericToken.SugarToken)
+            .GroupBy(x => x.Args[0]);
+        foreach (var sugar in sugarDefinitionsByDefinition)
+        {
+            var count = sugar.Count();
+            if (count > 1)
+            {
+                model.AddError($@"tokens {string.Join(", ",sugar.Select(x => x.Name))} define the same sugar token ""{sugar.Key}""");
             }
         }
         

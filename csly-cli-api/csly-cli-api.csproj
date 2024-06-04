@@ -17,7 +17,7 @@
         <None Include="../README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />
+<!--      <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj"  />
       <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj" />
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj"  />
@@ -30,6 +30,7 @@
         <PackageReference Include="System.Memory" Version="4.5.5"/>
         <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
+        <PackageReference Include="sly" Version="3.1.6"/>
     </ItemGroup>
 
 </Project>

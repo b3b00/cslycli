@@ -338,25 +338,50 @@ parser MinimalParser;
     }
 
     [Fact]
-    public void TestManyTokenDefinitions()
+    public void TestSameKeywordDefinition()
     {
         var grammar = @"
-genericLexer MinimalLexer;
+genericLexer SameKeywordLexer;
 
 [AlphaNumDashId] ID;
 [KeyWord] HELLO : ""hello"";
-[KeyWord] HELLO : ""hi"";
+[KeyWord] HI : ""hello"";
 [KeyWord] WORLD : ""world"";
 
-parser MinimalParser;
 
--> root : HELLO WORLD ;
+parser SameKeywordParser;
+
+-> root : [HELLO|HI] WORLD ;
 ";
         var builder = new ParserBuilder();
-        var model = builder.CompileModel(grammar, "LeftRecursiveParser");
+        var model = builder.CompileModel(grammar, "SameKeywordParser");
         Check.That(model).Not.IsOkModel();
         Check.That(model.Error).CountIs(1);
+        Check.That(model.Error[0]).Contains("hello");
         Check.That(model.Error[0]).Contains("HELLO");
+        Check.That(model.Error[0]).Contains("HI");
+    }
+    
+    [Fact]
+    public void TestSameSugarDefinition()
+    {
+        var grammar = @"
+genericLexer SameKeywordLexer;
+
+[Sugar] DOT : ""."";
+[Sugar] DOOT : ""."";
+
+parser SameKeywordParser;
+
+-> root : DOT* ;
+";
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "SameKeywordParser");
+        Check.That(model).Not.IsOkModel();
+        Check.That(model.Error).CountIs(1);
+        Check.That(model.Error[0]).Contains(".");
+        Check.That(model.Error[0]).Contains("DOT");
+        Check.That(model.Error[0]).Contains("DOOT");
     }
         
 }

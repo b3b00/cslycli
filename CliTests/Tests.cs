@@ -336,4 +336,27 @@ parser MinimalParser;
         Check.That(model).Not.IsOkModel();
         Check.That(model.Error).CountIs(2);
     }
+
+    [Fact]
+    public void TestManyTokenDefinitions()
+    {
+        var grammar = @"
+genericLexer MinimalLexer;
+
+[AlphaNumDashId] ID;
+[KeyWord] HELLO : ""hello"";
+[KeyWord] HELLO : ""hi"";
+[KeyWord] WORLD : ""world"";
+
+parser MinimalParser;
+
+-> root : HELLO WORLD ;
+";
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "LeftRecursiveParser");
+        Check.That(model).Not.IsOkModel();
+        Check.That(model.Error).CountIs(1);
+        Check.That(model.Error[0]).Contains("HELLO");
+    }
+        
 }

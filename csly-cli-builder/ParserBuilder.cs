@@ -194,7 +194,16 @@ public class ParserBuilder
                 model.AddError($"found left recursion {string.Join(" > ",recursion)}.");
             }
         }
-        
+
+        var tokenbyName = model.result.LexerModel.Tokens.GroupBy(x => x.Name);
+        foreach (var manyDefinitions in tokenbyName)
+        {
+            var count = manyDefinitions.Count();
+            if (count > 1)
+            {
+                model.AddError($"token {manyDefinitions.Key} has {manyDefinitions.Count()} definitions.");
+            }
+        }
         
         return model;
     }

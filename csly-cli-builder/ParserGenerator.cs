@@ -81,6 +81,24 @@ namespace {nameSpace} {{
                 builder.AppendLine(GetProduction(infix));
                 builder.AppendLine(GetVisitor(infix, lexer, output));
                 builder.AppendLine();
+            }
+            else if (rule is ManyInfixRule infixes)
+            {
+                builder.AppendLine(GetProduction(infixes));
+                builder.AppendLine(GetVisitor(infixes, lexer, output));
+                builder.AppendLine();
+            }
+            else if (rule is ManyPrefixRule prefixes)
+            {
+                builder.AppendLine(GetProduction(prefixes));
+                builder.AppendLine(GetVisitor(prefixes, lexer, output));
+                builder.AppendLine();
+            } 
+            else if (rule is ManyPostfixRule postfixes)
+            {
+                builder.AppendLine(GetProduction(postfixes));
+                builder.AppendLine(GetVisitor(postfixes, lexer, output));
+                builder.AppendLine();
             } 
             else if (rule is PrefixRule prefix)
             {
@@ -102,6 +120,8 @@ namespace {nameSpace} {{
                 builder.AppendLine(GetVisitor(rule, parser, lexer, output));
                 builder.AppendLine();
             }
+
+            
         }
         return builder.ToString();
     }
@@ -122,11 +142,45 @@ namespace {nameSpace} {{
     {
         return $"\t\t[Infix(\"{rule.Name}\", Associativity.{rule.Associativity}, {rule.Precedence})]";
     }
+    private  string GetProduction(ManyInfixRule rule)
+    {
+        StringBuilder builder = new StringBuilder();
+        foreach (var infix in rule.Infixes)
+        {
+            builder.AppendLine($"\t\t[Infix(\"{infix.Name}\", Associativity.{infix.Associativity}, {infix.Precedence})]");    
+        }
+
+        return builder.ToString();
+    }
+    
+    private  string GetProduction(ManyPrefixRule rule)
+    {
+        StringBuilder builder = new StringBuilder();
+        foreach (var prefix in rule.Prefixes)
+        {
+            builder.AppendLine($"\t\t[Prefix(\"{prefix.Name}\", Associativity.Left, {prefix.Precedence})]");    
+        }
+
+        return builder.ToString();
+    }
+    
+    private  string GetProduction(ManyPostfixRule rule)
+    {
+        StringBuilder builder = new StringBuilder();
+        foreach (var postfix in rule.Postfixes)
+        {
+            builder.AppendLine($"\t\t[Postfix(\"{postfix.Name}\", Associativity.Left, {postfix.Precedence})]");    
+        }
+
+        return builder.ToString();
+    }
     
     private  string GetProduction(PrefixRule prefix)
     {
         return $"\t\t[Prefix(\"{prefix.Name}\", Associativity.Left, {prefix.Precedence})]";
     }
+    
+    
     
     private  string GetProduction(PostfixRule postfix)
     {
@@ -220,8 +274,28 @@ namespace {nameSpace} {{
         }}";
     }
     
+    public  string GetVisitor(ManyPrefixRule prefixes, string lexer, string output)
+    {
+        string name = prefixes.GetName(ref explicitPrefixCounter); 
+
+        return $@"
+        public {output} {name}({output} left, Token<{lexer}> oper, {output} right) {{
+            return left;
+        }}";
+    }
+    
     
     private  int explicitPostfixCounter = 0;
+    public  string GetVisitor(ManyPostfixRule postfixes, string lexer, string output)
+    {
+        string name = postfixes.GetName(ref explicitPostfixCounter); 
+        
+        return $@"
+        public {output} {name}({output} left, Token<{lexer}> oper, {output} right) {{
+            return left;
+        }}";
+    }
+    
     public  string GetVisitor(PostfixRule postfix, string lexer, string output)
     {
         string name = postfix.Name;
@@ -240,11 +314,27 @@ namespace {nameSpace} {{
         }}";
     }
     
+    public  string GetVisitor(ManyInfixRule infixes, string lexer, string output)
+    {
+        string name = infixes.GetName(ref explicitInfixCounter); 
+
+        return $@"
+        public {output} {name}({output} left, Token<{lexer}> oper, {output} right) {{
+            return left;
+        }}";
+    }
+    
+    private  int explicitInfixCounter = 0;
     public  string GetVisitor(InfixRule infix, string lexer, string output)
     {
         string name = ""; 
         if (infix.TryGetMethodName(out name))
         {
+            if (infix.IsExplicit)
+            {
+                name = $"infix_{explicitInfixCounter}";
+                explicitInfixCounter++;
+            }
         }
         else {
             name = infix.Name;
@@ -287,9 +377,12 @@ namespace {nameSpace} {{
                 {
                     name.Append(c);
                 }
-                else
+                else if (c != '_')
                 {
-                    name.Append('_');
+                    if (name[name.Length - 1] != '_')
+                    {
+                        name.Append('_');
+                    }
                 }
             }
         }

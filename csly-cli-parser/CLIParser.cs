@@ -362,28 +362,71 @@ public class CLIParser
         }
 
         
-        [Production("rule : ruleAttribute* LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
-        public ICLIModel PrefixRule(List<ICLIModel> attributes, Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
+        [Production("rule : ruleAttribute* LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING]* SEMICOLON[d]")]
+        public ICLIModel PrefixRule(List<ICLIModel> attributes, Token<CLIToken> precedence, List<Token<CLIToken>> ids, ParserContext context)
         {
-            var rule =  new PrefixRule(id.Value, id.TokenID == CLIToken.STRING, precedence.IntValue);
-            rule.SetAttributes(attributes);
-            return rule;
+            if (ids.Count == 1)
+            {
+                var rule = new PrefixRule(ids[0].Value, ids[0].TokenID == CLIToken.STRING,
+                    precedence.IntValue);
+                rule.SetAttributes(attributes);
+                return rule;
+            }
+
+            var r = new ManyPrefixRule(ids.Select(x =>
+            {
+                var value = x.TokenID == CLIToken.STRING ? x.StringWithoutQuotes : x.Value;
+                var rule = new PrefixRule(value, x.TokenID == CLIToken.STRING,
+                    precedence.IntValue);
+                return rule;
+            }).ToList());
+            r.SetAttributes(attributes);
+            return r;
         }
         
-        [Production("rule : ruleAttribute* LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
-        public ICLIModel PostfixRule(List<ICLIModel> attributes, Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
+        [Production("rule : ruleAttribute* LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] [ID|STRING]* SEMICOLON[d]")]
+        public ICLIModel PostfixRule(List<ICLIModel> attributes, Token<CLIToken> precedence, List<Token<CLIToken>> ids, ParserContext context)
         {
-            var rule = new PostfixRule(id.Value, id.TokenID == CLIToken.STRING, precedence.IntValue);
-            rule.SetAttributes(attributes);
-            return rule;
+            if (ids.Count == 1)
+            {
+                var rule = new PostfixRule(ids[0].Value, ids[0].TokenID == CLIToken.STRING,
+                    precedence.IntValue);
+                rule.SetAttributes(attributes);
+                return rule;
+            }
+
+            var r = new ManyPostfixRule(ids.Select(x =>
+            {
+                var value = x.IsExplicit ? x.Value.Substring(1, x.Value.Length - 1) : x.Value;
+                var rule = new PostfixRule(value, x.TokenID == CLIToken.STRING,
+                    precedence.IntValue);
+                return rule;
+            }).ToList());
+            r.SetAttributes(attributes);
+            return r;
         }
         
-        [Production("rule : ruleAttribute* LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] [ID|STRING] SEMICOLON[d]")]
-        public ICLIModel InfixRule(List<ICLIModel> attributes, Token<CLIToken> rightOrLeft, Token<CLIToken> precedence, Token<CLIToken> id, ParserContext context)
+        [Production("rule : ruleAttribute* LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] [ID|STRING]+ SEMICOLON[d]")]
+        public ICLIModel InfixRule(List<ICLIModel> attributes, Token<CLIToken> rightOrLeft, Token<CLIToken> precedence, List<Token<CLIToken>> ids, ParserContext context)
         {
-            var rule =  new InfixRule(id.Value, id.TokenID == CLIToken.STRING, rightOrLeft.TokenID == CLIToken.LEFT ? Associativity.Left : Associativity.Right, precedence.IntValue);
-            rule.SetAttributes(attributes);
-            return rule;
+            if (ids.Count == 1)
+            {
+                var rule = new InfixRule(ids[0].Value, ids[0].TokenID == CLIToken.STRING,
+                    rightOrLeft.TokenID == CLIToken.LEFT ? Associativity.Left : Associativity.Right,
+                    precedence.IntValue);
+                rule.SetAttributes(attributes);
+                return rule;
+            }
+
+            var r = new ManyInfixRule(ids.Select(x =>
+            {
+                var rule = new InfixRule(x.Value, x.TokenID == CLIToken.STRING,
+                    rightOrLeft.TokenID == CLIToken.LEFT ? Associativity.Left : Associativity.Right,
+                    precedence.IntValue);
+                return rule;
+            }).ToList());
+            r.SetAttributes(attributes);
+            return r;
         }
 
 

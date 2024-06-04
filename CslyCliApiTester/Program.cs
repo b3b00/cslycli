@@ -13,19 +13,39 @@ namespace csly_cli_api
         public static void Main(string[] args)
         {
             var grammar = @"
-genericLexer LeftRecursiveLexer;
+genericLexer someLexer;
 
 [Int] INT;
-[Double] DO;
- [Sugar] COMMA : "","";
+[Sugar] PLUS : ""+""; 
+[KeyWord] ADD:""and"";
+[Sugar] MINUS : ""-"";
+[KeyWord] REMOVE:""remove"";
+[Sugar] TIMES : ""*"";
+[KeyWord] MUL:""mul"";
+[Sugar] SLASH : ""/"";  
+[KeyWord] DIV:""div"";
 
-parser LeftRecursiveParser;
 
--> root : item;
+parser someParser;
 
--> item : item (COMMA item)*;
+-> root : someParser_expressions;
 
--> item : [INT|D];
+[Right 10] PLUS ADD;
+@name(minus);
+[Right 10] MINUS REMOVE;
+
+[Right 50] TIMES MUL;
+@name(div);
+[Right 50] DIV SLASH;
+
+#@name(prefixPlus);
+[Prefix 100] PLUS ADD ""#"";
+
+[Prefix 100] MINUS REMOVE ""~"";
+
+
+[Operand] 
+integer : INT;
 
 ";
 
@@ -40,6 +60,20 @@ parser LeftRecursiveParser;
                 File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/{r.Result.ParserName}.cs", r.Result.Parser);
                 File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/{r.Result.LexerName}.cs", r.Result.Lexer);
                 //Console.WriteLine(r.Result.Parser);
+
+                var dot = CslyProcessor.GetDot(grammar, " 0 + ~1 + -2 div #3 ");
+                if (dot.IsOK)
+                {
+                    Console.WriteLine("parse is OK");
+                    Console.WriteLine(dot.Result);
+                }
+                else
+                {
+                    foreach (var error in dot.Errors)
+                    {
+                        Console.WriteLine(error);
+                    }
+                }
             }
             else
             {

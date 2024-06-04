@@ -9,7 +9,7 @@ namespace ns
     public class MinimalParser
     {
         [Production("root : INT")]
-        public int root___INT(Token<MinimalLexer> p0)
+        public int root_INT(Token<MinimalLexer> p0)
         {
             return default(int);
         }

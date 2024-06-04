@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reflection;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
+using csly_cli_api;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NFluent;
@@ -197,7 +198,7 @@ public class Tests
         Check.That(source).IsNotEmpty();
         Check.That(source)
             .Contains(
-                "public object root_____LPAREN___RPAREN______PLUS___MINUS___TIMES___DIVIDE______LBRACK___RBRACK___(Token<MyLexer1> p0, List<Token<MyLexer1>> p1, List<Token<MyLexer1>> p2)");
+                "public object root_LPAREN_RPAREN_PLUS_MINUS_TIMES_DIVIDE_LBRACK_RBRACK_(Token<MyLexer1> p0, List<Token<MyLexer1>> p1, List<Token<MyLexer1>> p2)");
     }
 
     [Fact]
@@ -382,6 +383,55 @@ parser SameKeywordParser;
         Check.That(model.Error[0]).Contains(".");
         Check.That(model.Error[0]).Contains("DOT");
         Check.That(model.Error[0]).Contains("DOOT");
+    }
+
+    [Fact]
+    public void ManyTokenForOperations()
+    {
+        var grammar = @"
+genericLexer someLexer;
+
+[Int] INT;
+[Sugar] PLUS : ""+""; 
+[KeyWord] ADD:""and"";
+[Sugar] MINUS : ""-"";
+[KeyWord] REMOVE:""remove"";
+[Sugar] TIMES : ""*"";
+[KeyWord] MUL:""mul"";
+[Sugar] SLASH : ""/"";  
+[KeyWord] DIV:""div"";
+
+
+parser someParser;
+
+-> root : someParser_expressions;
+
+[Right 10] PLUS ADD;
+@name(minus);
+[Right 10] MINUS REMOVE;
+
+[Right 50] TIMES MUL;
+@name(div);
+[Right 50] DIV SLASH;
+
+#@name(prefixPlus);
+[Prefix 100] PLUS ADD ""#"";
+
+[Prefix 100] MINUS REMOVE ""~"";
+
+
+[Operand] 
+integer : INT;
+
+";
+
+        string source = @"
+1 / 2 / 3 + 4
+";
+
+        var r = CslyProcessor.GetDot(grammar," 0 + ~1 + -2 div #3 ");
+        Check.That(r.IsOK).IsTrue();
+
     }
         
 }

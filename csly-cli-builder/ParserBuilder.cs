@@ -339,7 +339,7 @@ public class ParserBuilder
         {
             AddPrefix(builder, prefix);
         }
-        if (rule.IsPrefix && rule is ManyPrefixRule prefixes)
+        if (rule is ManyPrefixRule prefixes)
         {
             AddPrefixes(builder, prefixes);
         }

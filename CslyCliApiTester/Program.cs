@@ -61,7 +61,7 @@ integer : INT;
                 File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/{r.Result.LexerName}.cs", r.Result.Lexer);
                 //Console.WriteLine(r.Result.Parser);
 
-                var dot = CslyProcessor.GetDot(grammar, " 0 # 1 + 2 div 3 ");
+                var dot = CslyProcessor.GetDot(grammar, " 0 + ~1 + -2 div #3 ");
                 if (dot.IsOK)
                 {
                     Console.WriteLine("parse is OK");

@@ -1,3 +1,5 @@
+using sly.lexer;
+
 namespace csly.cli.model.parser;
 
 public class IndentClause : IClause
@@ -6,4 +8,6 @@ public class IndentClause : IClause
     {
         return "INDENT";
     }
+
+    public LexerPosition Position { get; set; }
 }

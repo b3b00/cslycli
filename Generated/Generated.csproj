@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>ClassLibrary1</RootNamespace>
+        <OutputType>Exe</OutputType>
     </PropertyGroup>
     
     <PropertyGroup>

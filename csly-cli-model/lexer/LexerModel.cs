@@ -26,4 +26,6 @@ public class LexerModel : ICLIModel
         var grouped = tokens.GroupBy(x => x.Name);
         TokensByName = grouped.ToDictionary(x => x.Key, x => x.ToList());
     }
+
+    public LexerPosition Position { get; set; }
 }

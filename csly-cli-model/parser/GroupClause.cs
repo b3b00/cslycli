@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Linq;
+using sly.lexer;
 
 namespace csly.cli.model.parser
 {
@@ -52,7 +53,8 @@ namespace csly.cli.model.parser
         {
             return $"({string.Join(" ",Clauses.Select(x => x.ToString()))})";
         }
-        
-       
+
+
+        public LexerPosition Position { get; set; }
     }
 }

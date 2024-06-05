@@ -1,5 +1,6 @@
 genericLexer MinimalLexer;
 
+@label("en","integer number");
 [Int] INT;
 
 parser MinimalParser;

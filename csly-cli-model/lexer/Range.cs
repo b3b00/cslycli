@@ -1,3 +1,5 @@
+using sly.lexer;
+
 namespace csly.cli.model.lexer;
 
 public class Range : ICLIModel
@@ -12,4 +14,6 @@ public class Range : ICLIModel
         StartCharacter = startCharacter;
         EndCharacter = endCharacter;
     }
+
+    public LexerPosition Position { get; set; }
 }

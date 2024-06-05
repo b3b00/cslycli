@@ -224,7 +224,17 @@ public class LexerSpecificationExtractor
                 if (member.AttributeLists.Any())
                 {
                     var attributes = member.AttributeLists;
+
+                    var isExtension = attributes.Any(x => x.Attributes.Any(y => y.Name.ToString().Contains("Extension")));
+
+                    if (isExtension) 
+                    {
+                        // we must ignore extension tokens as we do not know how to generate the extension form C# source
+                        continue;
+                    }
+                    
                     var modeAttributes = new List<string>() { "Mode", "Push,Pop" };
+                    
                     var modes = attributes.SelectMany(x => x.Attributes)
                         .Where(x => modeAttributes.Contains(x.Name.ToString()));
                     foreach (var attr in modes)
@@ -239,19 +249,39 @@ public class LexerSpecificationExtractor
                         builder.AppendLine(lexeme);
 
                     }
+
+                    var ext = attributes.All(x => x.Attributes.All(x => !x.Name.ToString().Contains("Extension")));
+                    
                     
                     foreach (var attr in attributes.SelectMany(x => x.Attributes).Where(x => !modeAttributes.Contains(x.Name.ToString())))
                     {
-                        string[] pstrings = new string[] { };
-                        if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
+                        if (attr.Name.ToString().Contains("LexemeLabel"))
                         {
-                            pstrings = attr.ArgumentList.Arguments.Select(x => x.Expression.ExprToString()).ToArray();
+                            string[] lpstrings = new string[] { };
+                            if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
+                            {
+                                lpstrings = attr.ArgumentList.Arguments.Select(x => x.Expression.ExprToString())
+                                    .ToArray();
+                            }
+
+                            var label = $@"@label(""{lpstrings[0]}"",""{lpstrings[1]}"");";
+                            builder.AppendLine(label);
                         }
+                        else
+                        {
+                            string[] pstrings = new string[] { };
+                            if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
+                            {
+                                pstrings = attr.ArgumentList.Arguments.Select(x => x.Expression.ExprToString())
+                                    .ToArray();
+                            }
 
-                        var lexeme = Lexeme(member.Identifier.Text, attr.Name.ToString(), pstrings);
-                        builder.AppendLine(lexeme);
-
+                            var lexeme = Lexeme(member.Identifier.Text, attr.Name.ToString(), pstrings);
+                            builder.AppendLine(lexeme);
+                        }
                     }
+
+                    builder.AppendLine();
                 }
             }
         }

@@ -1,10 +1,12 @@
 using sly.lexer;
 using sly.lexer.fsm;
+using sly.i18n;
 
 namespace ns
 {
     public enum MinimalLexer
     {
+        [LexemeLabel("en", "integer number")]
         [Int]
         INT,
     }

@@ -5,6 +5,7 @@ genericLexer MinimalLexer;
 -> '#'  -> ['0'-'9','A'-'F'] {6} -> END
 <<<
 
+@label("en","at");
 [Extension] AT
 >>>
 -> '@' -> END

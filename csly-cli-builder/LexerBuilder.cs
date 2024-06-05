@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using clsy.cli.builder.parser.cli.model;
 using clsy.cli.model.lexer;
 using csly.cli.model.lexer;
+using sly.i18n;
 using sly.lexer;
 using sly.lexer.fsm;
 
@@ -327,6 +328,7 @@ public class LexerBuilder
             foreach (var model in models)
             {
                 Add(model.Type, model.IdentifierType,builder, model.Args);    
+                AddLabelsAttributes(builder,model);
             }
         }
 
@@ -358,7 +360,6 @@ public class LexerBuilder
 
                     builder.SetCustomAttribute(customAttributeBuilder);
                 }
-               
                 AddJsonAttribute(builder);
             }
             else if (genericToken == GenericToken.Identifier)
@@ -416,6 +417,25 @@ public class LexerBuilder
                 builder.SetCustomAttribute(customAttributeBuilder);
 
                 AddJsonAttribute(builder);
+            }
+        }
+
+        private static void AddLabelsAttributes(FieldBuilder builder, TokenModel model)
+        {
+            if (model.TryGetLabels(out var labels))
+            {
+                foreach (var langLabel in labels)
+                {
+                    Type attributeType = typeof(LexemeLabelAttribute);
+
+                    ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                        new Type[2] { typeof(string), typeof(string) });
+
+                    CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                        constructorInfo, new object[] { langLabel.Key,langLabel.Value  });
+
+                    builder.SetCustomAttribute(customAttributeBuilder);
+                }
             }
         }
 

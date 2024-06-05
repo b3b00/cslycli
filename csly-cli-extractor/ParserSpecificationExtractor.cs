@@ -12,6 +12,10 @@ public class ParserSpecificationExtractor
     {
         if (affix == "PreFix")
         {
+            if (token.StartsWith("'") && token.EndsWith("'"))
+            {
+                token = $@"""{token.Substring(1, token.Length - 1)}""";
+            }
             return $"[Prefix {precedence}] {token};";
         }
         else if (affix == "PostFix")

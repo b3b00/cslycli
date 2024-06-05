@@ -53,6 +53,8 @@ public class ReferencesVisitor : AbstractModelVisitor<RuleReferences>
         return result;
     }
 
-
-
+    public override RuleReferences VisitorGroupClause(GroupClause group, RuleReferences result)
+    {
+        return result;
+    }
 }

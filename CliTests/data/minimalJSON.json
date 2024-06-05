@@ -17,7 +17,7 @@
         "PositionInTokenVisibleFlow": 0,
         "PositionInTokenFlow": 0,
         "TokenID": "INT",
-        "Label": "INT",
+        "Label": "integer number",
         "IsComment": false,
         "Discarded": false,
         "IsEOS": false,

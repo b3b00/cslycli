@@ -126,10 +126,10 @@ public class LexerDecompiler
                 {
                     foreach (var lexerOptions in options)
                     {
-                        builder.AppendLine($"[IgnoreEndOfLines({lexerOptions.IgnoreEOL})]");
-                        builder.AppendLine($"[IgnoreWhiteSpaces({lexerOptions.IgnoreWS})]");
-                        builder.AppendLine($"[IndentationAware({lexerOptions.IndentationAWare})]");
-                        builder.AppendLine($"[IgnoreKeyWordCase({lexerOptions.KeyWordIgnoreCase})]");
+                        builder.AppendLine($"[IgnoreEndOfLines({lexerOptions.IgnoreEOL.ToString().ToLower()})]");
+                        builder.AppendLine($"[IgnoreWhiteSpaces({lexerOptions.IgnoreWS.ToString().ToLower()})]");
+                        builder.AppendLine($"[IndentationAware({lexerOptions.IndentationAWare.ToString().ToLower()})]");
+                        builder.AppendLine($"[IgnoreKeyWordCase({lexerOptions.KeyWordIgnoreCase.ToString().ToLower()})]");
                     }
                 }
 

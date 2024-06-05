@@ -1,6 +1,7 @@
 
 genericLexer TemplateLexer;
 
+[IgnoreEndOfLines(false)]
 [Mode]
 [Sugar] SP : " ";
 

@@ -13,4 +13,7 @@ public class LexerOptions : ICLIModel
     
     public bool? IndentationAware { get; set; }
     public LexerPosition Position { get; set; }
+
+    public bool HasOptions => IgnoreWS.HasValue || IgnoreEOL.HasValue || IgnoreKeyWordCase.HasValue || IndentationAware.HasValue;
+    
 }

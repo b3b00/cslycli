@@ -18,7 +18,7 @@ public class LexerGenerator
     
     public string GenerateLexer(LexerModel model, string nameSpace)
     {
-        var head = GetHeader(model.Name, nameSpace);
+        var head = GetHeader(model, nameSpace);
         var body = GetBody(model);
         var foot = getFooter();
 
@@ -428,17 +428,64 @@ public class LexerGenerator
         }
     }
 
-    private string GetHeader(string name, string nameSpace)
+    private string GetHeader(LexerModel model, string nameSpace)
     {
-        return $@"
+        StringBuilder b = new StringBuilder($@"
 using sly.lexer;
 using sly.lexer.fsm;
 using sly.i18n;
 
-namespace {nameSpace} {{
+namespace {nameSpace} {{");
 
-    public enum {name} {{
-";
+        if (model.Options != null && model.Options.HasOptions)
+        {
+            b.Append("    [Lexer(");
+            bool previous = false;
+            if (model.Options.IgnoreWS.HasValue)
+            {
+                b.Append($"IgnoreWS={model.Options.IgnoreWS.Value.ToString().ToLower()}");
+                previous = true;
+            }
+
+            if (model.Options.IndentationAware.HasValue)
+            {
+                if (previous)
+                {
+                    b.Append(", ");
+                }
+
+                b.Append($"IndentationAWare={model.Options.IndentationAware.Value.ToString().ToLower()}");
+                previous = true;
+            }
+
+            if (model.Options.IgnoreEOL.HasValue)
+            {
+                if (previous)
+                {
+                    b.Append(", ");
+                }
+
+                b.Append($"IgnoreEOL={model.Options.IgnoreEOL.Value.ToString().ToLower()}");
+                previous = true;
+            }
+
+            if (model.Options.IgnoreKeyWordCase.HasValue)
+            {
+                if (previous)
+                {
+                    b.Append(", ");
+                }
+
+                previous = true;
+                b.Append($"KeyWordIgnoreCase={model.Options.IgnoreKeyWordCase.Value.ToString().ToLower()}");
+            }
+
+            b.AppendLine(")]");
+        }
+
+        b.AppendLine($@"    public enum {model.Name} {{");
+
+        return b.ToString();
     }
 
     private string getFooter()

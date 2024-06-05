@@ -121,6 +121,18 @@ public class LexerDecompiler
                 builder.AppendLine($"genericLexer {type.Name};").AppendLine();
                 var values = Enum.GetValues(type);
 
+                var options =type.GetCustomAttributes<LexerAttribute>();
+                if (options.Any())
+                {
+                    foreach (var lexerOptions in options)
+                    {
+                        builder.AppendLine($"[IgnoreEndOfLines({lexerOptions.IgnoreEOL})]");
+                        builder.AppendLine($"[IgnoreWhiteSpaces({lexerOptions.IgnoreWS})]");
+                        builder.AppendLine($"[IndentationAware({lexerOptions.IndentationAWare})]");
+                        builder.AppendLine($"[IgnoreKeyWordCase({lexerOptions.KeyWordIgnoreCase})]");
+                    }
+                }
+
                 foreach (Enum value in values)
                 {
 

@@ -23,7 +23,7 @@ namespace csly_cli_api
             var lexer = File.ReadAllText($"C:/Users/olduh/dev/csly/src/samples/SimpleTemplate/TemplateLexer.cs");
             var parser = File.ReadAllText($"C:/Users/olduh/dev/csly/src/samples/SimpleTemplate/TemplateParser.cs");
             var g = CslyProcessor.ExtractGrammar(parser, lexer);
-            File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/grammar.txt", g);
+            File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/grammar.txt", g.Result);
 
             var gr = CslyProcessor.Compile(g);
             if (gr.IsOK)

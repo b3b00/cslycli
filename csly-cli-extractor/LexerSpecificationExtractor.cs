@@ -223,6 +223,44 @@ public class LexerSpecificationExtractor
         if (lex != null)
         {
             builder.AppendLine($"genericLexer {lex.Identifier.Text};").AppendLine();
+
+            foreach (var attributes in lex.AttributeLists)
+            {
+                foreach (var attribute in attributes.Attributes)
+                {
+                    var args = attribute.ArgumentList.Arguments;
+
+                    foreach (var arg in args)
+                    {
+
+
+                        var value = arg.Expression;
+                        var name = arg.NameEquals.Name.ToString();
+                        if (name == "IgnoreEOL")
+                        {
+                            builder.AppendLine($"[IgnoreEndOfLines({value.ToString()})]");
+                        }
+
+                        if (name == "IndentationAWare")
+                        {
+                            builder.AppendLine($"[IndentationAware({value.ToString()})]");
+                        }
+
+                        if (name == "KeyWordIgnoreCase")
+                        {
+                            builder.AppendLine($"[IgnoreKeyWordCase({value.ToString()})]");
+                        }
+
+                        if (name == "IgnoreWS")
+                        {
+                            builder.AppendLine($"[IgnoreWhiteSpaces({value.ToString()})]");
+                        }
+                    }
+                }
+            }
+
+
+            
             foreach (var member in lex.Members)
             {
                 if (member.AttributeLists.Any())

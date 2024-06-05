@@ -226,6 +226,49 @@ public class ParserBuilder
     
     
    
+       public Result<string> Parse(string modelSource, string source, string parserName, string rootRule = null)
+    {
+        var model = CompileModel(modelSource, parserName);
+        
+        if (model.IsError)
+        {
+            return model.error;
+        }
+        
+        
+        var buildResult = BuildParser(model);
+        
+        var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType,typeof(object));
+        var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
+           
+        
+        //  return a list<string> if buildResult is error
+        var isErrorResult = buildResultType.GetProperty("IsError").GetValue(buildResult.parserBuildResult, null) as bool?;
+        if (isErrorResult.HasValue && isErrorResult.Value)
+        {
+            var errors = buildResultType.GetProperty("Errors").GetValue(buildResult.parserBuildResult, null) as
+                List<InitializationError>;
+            return errors.Select(x => x.Message).ToList();
+        }
+        
+        var resultProperty = buildResultType.GetProperty("Result");
+        var parser = resultProperty.GetValue(buildResult.parserBuildResult, null);
+
+        var parseMethod = parserType.GetMethod("Parse", new[] { typeof(string), typeof(string) });
+        var result = parseMethod.Invoke(parser, new object[] { source, null });
+
+        var ParseResultType = typeof(ParseResult<,>).MakeGenericType(buildResult.lexerType, typeof(object));
+
+        var x = ParseResultType.GetProperty("IsError").GetValue(result) as bool?;
+        if (x.HasValue && x.Value)
+        {
+            var errors = ParseResultType.GetProperty("Errors").GetValue(result) as List<ParseError>;
+            return errors.Select(x => x.ErrorMessage).ToList();
+        }
+
+        return "OK";
+        
+    }
     
       public Result<List<(string format,string content)>,List<string>> Getz(string modelSource, string source, string parserName, List<(string format,SyntaxTreeProcessor processor)> processors, string rootRule = null)
     {

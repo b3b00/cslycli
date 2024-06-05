@@ -433,5 +433,27 @@ integer : INT;
         Check.That(r.IsOK).IsTrue();
 
     }
+
+    [Fact]
+    public void ApiParse()
+    {
+        var grammar = @"
+genericLexer MinimalLexer;
+[Date] DATE : YYYYMMDD '.';
+
+parser MinimalParser;
+
+-> root : DATE ;
+";
+
+        var r = CslyProcessor.Parse(grammar, "2024.04.23");
+        Check.That(r.IsOK).IsTrue();
+
+        r = CslyProcessor.Parse(grammar, "coucou");
+        Check.That(r.IsOK).IsFalse();
+        
+        r = CslyProcessor.Parse(grammar, "2024.06.05.13.21");
+        Check.That(r.IsOK).IsFalse();
+    }
         
 }

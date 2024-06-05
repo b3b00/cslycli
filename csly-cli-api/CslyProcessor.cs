@@ -19,6 +19,28 @@ public class CslyProcessor
         return model.Error;
     }
 
+    public static CliResult<string> Parse(string grammar, string source)
+    {
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MinimalParser");
+        if (model.IsOk)
+        {
+            var r = builder.Parse(grammar, source, model.Value.ParserModel.Name, model.Value.ParserModel.Root);
+            if (r.IsError)
+            {
+                return new CliResult<string>(r.Error.Select(x => $"parse error : {x}").ToList());
+            }
+            else
+            {
+                return new CliResult<string>(r.Value);
+            }
+        }
+        else
+        {
+            return new CliResult<string>(model.Error.Select(x => $"grammar error : {x}").ToList());
+        }
+    }
+    
     public static CliResult<string> GetDot(string grammar, string source)
     {
         var builder = new ParserBuilder();

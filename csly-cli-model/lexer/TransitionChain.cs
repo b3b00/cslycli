@@ -1,4 +1,6 @@
 
+using sly.lexer;
+
 namespace csly.cli.model.lexer;
 
 public class TransitionChain: ICLIModel
@@ -15,5 +17,6 @@ public class TransitionChain: ICLIModel
         Transitions = transitions;
         IsEnded = isEnded;
     }
-    
+
+    public LexerPosition Position { get; set; }
 }

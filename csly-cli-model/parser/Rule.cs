@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using sly.lexer;
 
 namespace csly.cli.model.parser
 {
-    public class Rule : GrammarNode
+    public class Rule :  AttributedModel, GrammarNode
     {
 
         public const string? methodNameAttribute = "name";        
@@ -40,8 +41,6 @@ namespace csly.cli.model.parser
                 return key;
             }
         }
-
-        public Dictionary<string, string> Attributes { get; set; }
         
         public List<IClause> Clauses { get; set; }
 
@@ -51,7 +50,7 @@ namespace csly.cli.model.parser
         public bool TryGetMethodName(out string methodName)
         {
             methodName = null;
-            return Attributes != null ? Attributes.TryGetValue(methodNameAttribute, out methodName) : false;
+            return TryGetFirstValue(methodNameAttribute, out methodName);
         }
 
         public override string ToString()
@@ -59,9 +58,6 @@ namespace csly.cli.model.parser
             return $"{NonTerminalName} : {string.Join(" ", Clauses.Select(x => x.ToString()))}";
         }
 
-        public void SetAttributes(IList<ICLIModel> attributes)
-        {
-            Attributes = attributes.Cast<RuleAttribute>().ToDictionary(x => x.AttributeName, x => x.AttributeValue);
-        } 
+        public LexerPosition Position { get; set; }
     }
 }

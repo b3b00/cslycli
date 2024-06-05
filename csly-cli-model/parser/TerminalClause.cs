@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.Diagnostics.CodeAnalysis;
+using sly.lexer;
 
 namespace csly.cli.model.parser
 {
@@ -35,7 +36,8 @@ namespace csly.cli.model.parser
         {
             return IsImplicit ? $"'{ImplicitToken}'" : TokenName;
         }
-        
+
+        public LexerPosition Position { get; set; }
     }
 
 }

@@ -1,43 +1,13 @@
 using System.Diagnostics.CodeAnalysis;
+using csly.cli.model.parser;
 using sly.lexer;
 
 namespace csly.cli.model.lexer;
 
-public class PushModel : ICLIModel
+public class TokenModel : AttributedModel, ICLIModel
 {
-    public string Target { get; set; }
-
-    public PushModel(string target)
-    {
-        Target = target;
-    }
-}
-
-public class PopModel : ICLIModel
-{
-    public PopModel()
-    {
-    }
-}
-
-public class ModeModel : ICLIModel
-{
-    public List<string> Modes { get; set; }
-
-    public ModeModel(List<string> modes)
-    {
-        Modes = modes;
-    } 
     
-    public ModeModel(string mode, List<string> modes) : this(modes)
-    {
-        modes.Add(mode);
-    } 
-}
-
-
-public class TokenModel : ICLIModel
-{
+    public const string? LabelAttributeName = "label";   
     public GenericToken Type { get; set; }
     
     public IdentifierType IdentifierType { get; set; }
@@ -45,6 +15,8 @@ public class TokenModel : ICLIModel
     public string Name { get; set; }
     
     public string[] Args { get; set; }
+    
+    
 
     public List<string> Modes { get; private set; } = new List<string>();
     
@@ -55,20 +27,25 @@ public class TokenModel : ICLIModel
     public bool IsPush => !string.IsNullOrEmpty(PushMode);
 
 
-    public TokenModel(GenericToken type, string name, IdentifierType identifierType = IdentifierType.Alpha)
+    public TokenModel(List<AttributeModel> attributes, GenericToken type, string name, IdentifierType identifierType = IdentifierType.Alpha)
     {
         Type = type;
         Name = name;
         IdentifierType = identifierType;
+        SetAttributes(attributes);
     }
-    public TokenModel(GenericToken type, string name,  IdentifierType identifierType = IdentifierType.Alpha, params string[] args) : this(type,name,identifierType)
+    public TokenModel(List<AttributeModel> attributes, GenericToken type, string name,  IdentifierType identifierType = IdentifierType.Alpha, params string[] args) : this(attributes, type,name,identifierType)
     {
         Args = args;
     }
     
-    public TokenModel(GenericToken type, string name,  params string[] args) : this(type,name,IdentifierType.Alpha)
+    public TokenModel(List<AttributeModel> attributes, GenericToken type, string name,  params string[] args) : this(attributes, type,name,IdentifierType.Alpha)
     {
         Args = args;
+    }
+
+    protected TokenModel(GenericToken type, string name) : this(new List<AttributeModel>(), type, name)
+    {
     }
 
     public void AddMode(string mode)
@@ -86,4 +63,17 @@ public class TokenModel : ICLIModel
     {
         return $"[{Type} {Name}] {string.Join(", ",Args)}";
     }
+
+    public bool TryGetLabels(out Dictionary<string,string> labels)
+    {
+        if (TryGetValues(LabelAttributeName, out var values))
+        {
+            labels = values.ToDictionary(x => x[0], x => x[1]);
+            return true;
+        }
+        labels = null;
+        return false;
+    }
+
+    public LexerPosition Position { get; set; }
 }

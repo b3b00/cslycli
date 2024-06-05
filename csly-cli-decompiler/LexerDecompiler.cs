@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Text;
+using sly.i18n;
 using sly.lexer;
 
 namespace decompiler;
@@ -117,6 +118,50 @@ public class LexerDecompiler
 
                 foreach (Enum value in values)
                 {
+
+                    var modeAttributes = value.GetAttributesOfType<ModeAttribute>();
+                    if (modeAttributes.Any())
+                    {
+                        foreach (var modeAttribute in modeAttributes)
+                        {
+                            var mode = modeAttribute as ModeAttribute;
+                            if (mode.Modes.Length >= 1 && !(mode.Modes.Length == 1 && mode.Modes[0] != ModeAttribute.DefaultLexerMode))
+                            {
+                                var modes = string.Join(", ",mode.Modes.Select(x => $@"""{x}"""));
+                                builder.AppendLine($@"[Mode({modes})]");
+                            }
+                        }
+                    }
+
+                    var pushAttributes = value.GetAttributesOfType<PushAttribute>();
+                    if (pushAttributes.Any())
+                    {
+                        foreach (var pushAttribute in pushAttributes)
+                        {
+                            var push = pushAttribute as PushAttribute;
+                            builder.AppendLine($@"[Push(""{push.TargetMode}"")]");
+                        }
+                    }
+                    
+                    var popAttributes = value.GetAttributesOfType<PopAttribute>();
+                    if (popAttributes.Any())
+                    {
+                        foreach (var popAttribute in popAttributes)
+                        {
+                            builder.AppendLine($@"[Pop]");
+                        }
+                    }
+                    
+                    var labelAttributes = value.GetAttributesOfType<LexemeLabelAttribute>();
+                    if (labelAttributes.Any())
+                    {
+                        foreach (var labelAttribute in labelAttributes)
+                        {
+                            var label = labelAttribute as LexemeLabelAttribute;
+                            builder.AppendLine($@"@label(""{label.Language}"",""{label.Label}"")");
+                        }
+                    }
+                    
                     var attributes = value.GetAttributesOfType<LexemeAttribute>();
                     if (attributes.Any())
                     {
@@ -127,6 +172,8 @@ public class LexerDecompiler
                         }
                         
                     }
+
+                    builder.AppendLine();
                 }
 
                 return builder.ToString();

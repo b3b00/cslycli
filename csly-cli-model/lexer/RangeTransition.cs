@@ -1,3 +1,5 @@
+using sly.lexer;
+
 namespace csly.cli.model.lexer;
 
 public class RangeTransition : ITransition
@@ -21,4 +23,5 @@ public class RangeTransition : ITransition
     public string Mark { get; set; }
     
     public string Target { get; set; }
+    public LexerPosition Position { get; set; }
 }

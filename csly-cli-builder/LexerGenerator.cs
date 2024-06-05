@@ -268,9 +268,24 @@ public class LexerGenerator
         {
             foreach (var token in tokens.Value)
             {
+                AddLabels(token, builder);
 
+                if (token.IsPop)
+                {
+                    builder.AppendLine("\t\t[Pop]");   
+                }
 
+                if (token.IsPush)
+                {
+                    builder.AppendLine($@"      [Push(""{token.PushMode}"")]");
+                }
 
+                if (token.Modes.Count >= 1 && !(token.Modes.Count == 1 && token.Modes[0] != ModeAttribute.DefaultLexerMode))
+                {
+                    var modes = string.Join(", ",token.Modes.Select(x => $@"""{x}"""));
+                    builder.AppendLine($@"      [Mode({modes})]");
+                }
+                
                 switch (token.Type)
                 {
                     case GenericToken.Comment:
@@ -396,11 +411,23 @@ public class LexerGenerator
         return builder.ToString();
     }
 
+    private void AddLabels(TokenModel token, StringBuilder builder)
+    {
+        if (token.TryGetLabels(out var labels))
+        {
+            foreach (var label in labels)
+            {
+                builder.AppendLine($@"[LexemeLabel(""{label.Key}"",""{label.Value}"")]");
+            }
+        }
+    }
+
     private string GetHeader(string name, string nameSpace)
     {
         return $@"
 using sly.lexer;
 using sly.lexer.fsm;
+using sly.i18n;
 
 namespace {nameSpace} {{
 

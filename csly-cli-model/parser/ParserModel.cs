@@ -1,3 +1,5 @@
+using sly.lexer;
+
 namespace csly.cli.model.parser;
 
 public class ParserModel : ICLIModel
@@ -12,4 +14,5 @@ public class ParserModel : ICLIModel
     
     public string Root => Rules.FirstOrDefault(x => x.IsRoot)?.NonTerminalName;
     public string Name { get; set; }
+    public LexerPosition Position { get; set; }
 }

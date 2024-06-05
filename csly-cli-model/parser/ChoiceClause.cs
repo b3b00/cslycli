@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using sly.lexer;
 
 namespace csly.cli.model.parser
 {
@@ -37,8 +38,8 @@ namespace csly.cli.model.parser
 
         public bool IsTerminalChoice => Choices.Any(x => x is TerminalClause);
         public bool IsNonTerminalChoice => Choices.Any(x => x is NonTerminalClause);
-        
 
 
+        public LexerPosition Position { get; set; }
     }
 }

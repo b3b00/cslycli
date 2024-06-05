@@ -140,14 +140,16 @@ namespace {nameSpace} {{
     
     private  string GetProduction(InfixRule rule)
     {
-        return $"\t\t[Infix(\"{rule.Name}\", Associativity.{rule.Associativity}, {rule.Precedence})]";
+        string name = rule.IsExplicit ? $"'{rule.Name}'" : rule.Name;
+        return $"\t\t[Infix(\"{name}\", Associativity.{rule.Associativity}, {rule.Precedence})]";
     }
     private  string GetProduction(ManyInfixRule rule)
     {
         StringBuilder builder = new StringBuilder();
         foreach (var infix in rule.Infixes)
         {
-            builder.AppendLine($"\t\t[Infix(\"{infix.Name}\", Associativity.{infix.Associativity}, {infix.Precedence})]");    
+            string name = infix.IsExplicit ? $"'{infix.Name}'" : infix.Name;
+            builder.AppendLine($"\t\t[Infix(\"{name}\", Associativity.{infix.Associativity}, {infix.Precedence})]");    
         }
 
         return builder.ToString();
@@ -158,7 +160,8 @@ namespace {nameSpace} {{
         StringBuilder builder = new StringBuilder();
         foreach (var prefix in rule.Prefixes)
         {
-            builder.AppendLine($"\t\t[Prefix(\"{prefix.Name}\", Associativity.Left, {prefix.Precedence})]");    
+            string name = prefix.IsExplicit ? $"'{prefix.Name}'" : prefix.Name;
+            builder.AppendLine($"\t\t[Prefix(\"{name}\", Associativity.Left, {prefix.Precedence})]");    
         }
 
         return builder.ToString();
@@ -169,7 +172,8 @@ namespace {nameSpace} {{
         StringBuilder builder = new StringBuilder();
         foreach (var postfix in rule.Postfixes)
         {
-            builder.AppendLine($"\t\t[Postfix(\"{postfix.Name}\", Associativity.Left, {postfix.Precedence})]");    
+            string name = postfix.IsExplicit ? $"'{postfix.Name}'" : postfix.Name;
+            builder.AppendLine($"\t\t[Postfix(\"{name}\", Associativity.Left, {postfix.Precedence})]");    
         }
 
         return builder.ToString();
@@ -177,14 +181,16 @@ namespace {nameSpace} {{
     
     private  string GetProduction(PrefixRule prefix)
     {
-        return $"\t\t[Prefix(\"{prefix.Name}\", Associativity.Left, {prefix.Precedence})]";
+        string name = prefix.IsExplicit ? $"'{prefix.Name}'" : prefix.Name;
+        return $"\t\t[Prefix(\"{name}\", Associativity.Left, {prefix.Precedence})]";
     }
     
     
     
     private  string GetProduction(PostfixRule postfix)
     {
-        return $"\t\t[Postfix(\"{postfix.Name}\", Associativity.Left, {postfix.Precedence})]";
+        string name = postfix.IsExplicit ? $"'{postfix.Name}'" : postfix.Name;
+        return $"\t\t[Postfix(\"{name}\", Associativity.Left, {postfix.Precedence})]";
     }
     
     
@@ -279,8 +285,8 @@ namespace {nameSpace} {{
         string name = prefixes.GetName(ref explicitPrefixCounter); 
 
         return $@"
-        public {output} {name}({output} left, Token<{lexer}> oper, {output} right) {{
-            return left;
+        public {output} {name}(Token<{lexer}> oper, {output} value) {{
+            return value;
         }}";
     }
     
@@ -291,8 +297,8 @@ namespace {nameSpace} {{
         string name = postfixes.GetName(ref explicitPostfixCounter); 
         
         return $@"
-        public {output} {name}({output} left, Token<{lexer}> oper, {output} right) {{
-            return left;
+        public {output} {name}(Token<{lexer}> oper, {output} value) {{
+            return value;
         }}";
     }
     

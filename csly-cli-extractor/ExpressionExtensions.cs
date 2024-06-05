@@ -10,6 +10,10 @@ public static class ExpressionExtensions
     {
         switch (expr)
         {
+            case IdentifierNameSyntax idName:
+            {
+                return idName.Identifier.Text;
+            }
             case LiteralExpressionSyntax lit:
             {
                 if (lit.IsKind(SyntaxKind.CharacterLiteralExpression))

@@ -1,3 +1,5 @@
+using sly.lexer;
+
 namespace csly.cli.model.lexer;
 
 public interface ITransition : ICLIModel
@@ -32,5 +34,6 @@ public class TransitionRepeater : ICLIModel {
     public RepeaterType RepeaterType { get; private set; }
     
     public int Count { get; private set; }
-    
+
+    public LexerPosition Position { get; set; }
 }

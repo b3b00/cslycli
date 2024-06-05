@@ -1,5 +1,6 @@
 using sly.lexer;
 using sly.lexer.fsm;
+using sly.i18n;
 
 namespace ns
 {
@@ -7,6 +8,7 @@ namespace ns
     {
         [Extension]
         TEST,
+        [LexemeLabel("en", "at")]
         [Extension]
         AT,
     }

@@ -1,5 +1,6 @@
 using clsy.cli.builder.parser.cli.model;
 using csly.cli.model.parser;
+using sly.lexer;
 
 namespace csly.cli.model;
 
@@ -14,4 +15,5 @@ public class Model : ICLIModel
     public LexerModel LexerModel { get; set; }
     
     public ParserModel ParserModel { get; set; }
+    public LexerPosition Position { get; set; }
 }

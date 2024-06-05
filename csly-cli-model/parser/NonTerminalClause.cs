@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using sly.lexer;
 
 namespace csly.cli.model.parser
 {
@@ -15,5 +16,7 @@ namespace csly.cli.model.parser
         {
             return NonTerminalName;
         }
+
+        public LexerPosition Position { get; set; }
     }
 }

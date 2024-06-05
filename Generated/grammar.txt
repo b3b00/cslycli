@@ -1,0 +1,67 @@
+
+genericLexer someLexer;
+
+[Mode("EXT", "default")]
+@label("en","integer");
+@label("fr","entier");
+[Int] INT;
+
+@label("en","plus sign");
+@label("fr","plus");
+[Sugar] PLUS : "+";
+
+@label("en","addition");
+@label("fr","addition");
+[KeyWord] ADD : "add";
+
+@label("en","minus sign");
+@label("fr","moins");
+[Sugar] MINUS : "-";
+
+@label("en","substraction");
+@label("fr","soustraction");
+[KeyWord] REMOVE : "remove";
+
+@label("en","times sign");
+@label("fr","fois");
+[Sugar] TIMES : "*";
+
+@label("en","multiplication");
+@label("fr","multiplication");
+[KeyWord] MUL : "mul";
+
+@label("en","division sign");
+@label("fr","diviser");
+[Sugar] SLASH : "/";
+
+@label("en","division");
+@label("fr","division");
+[KeyWord] DIV : "div";
+
+[Mode("EXT", "default")]
+[Push("EXT")]
+[Sugar] OPEN : ">>>";
+
+[Pop]
+[Sugar] CLOSE : "<<<";
+
+
+
+parser someParser;
+
+-> root : someParser_expressions;
+[Right 10] PLUS;
+[Right 10] ADD;
+[Right 10] MINUS;
+[Right 10] REMOVE;
+[Right 50] TIMES;
+[Right 50] MUL;
+[Right 50] DIV;
+[Right 50] SLASH;
+[Prefix 100] PLUS;
+[Prefix 100] ADD;
+[Prefix 100] "#'";
+[Prefix 100] MINUS;
+[Prefix 100] REMOVE;
+[Prefix 100] "~'";
+[Operand] integer : INT;

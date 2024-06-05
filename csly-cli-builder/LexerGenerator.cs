@@ -280,7 +280,7 @@ public class LexerGenerator
                     builder.AppendLine($@"      [Push(""{token.PushMode}"")]");
                 }
 
-                if (token.Modes.Count >= 1 && !(token.Modes.Count == 1 && token.Modes[0] != ModeAttribute.DefaultLexerMode))
+                if (token.Modes.Count >= 1 && !(token.Modes.Count == 1 && token.Modes[0] == ModeAttribute.DefaultLexerMode))
                 {
                     var modes = string.Join(", ",token.Modes.Select(x => $@"""{x}"""));
                     builder.AppendLine($@"      [Mode({modes})]");

@@ -171,6 +171,16 @@ public class CLIParser
         context.AddEnumName(id.Value);
         return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType,id.Value,format, separator.CharValue.ToString()) {Position = id.Position};
     }
+    
+    [Production(
+        "token :attribute* LEFTBRACKET[d] UPTOTOKEN[d] RIGHTBRACKET[d] ID COLON[d] STRING* SEMICOLON[d]")]
+    public ICLIModel UpToToken(List<ICLIModel> attributes, Token<CLIToken> id, List<Token<CLIToken>> delimiters, ParserContext context)
+    {
+        var tokenType = GenericToken.UpTo;
+            
+        context.AddEnumName(id.Value);
+        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType,id.Value,delimiters.Select(x => x.StringWithoutQuotes).ToArray()) {Position = id.Position};
+    }
 
     [Production("token : attribute* LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d]")]
     public ICLIModel NoArgToken(List<ICLIModel> attributes, Token<CLIToken> type, Token<CLIToken> id, ParserContext context)

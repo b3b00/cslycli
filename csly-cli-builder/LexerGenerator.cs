@@ -363,6 +363,12 @@ public class LexerGenerator
                         builder.AppendLine($"\t\t[Keyword(\"{token.Args[0]}\")]");
                         break;
                     }
+                    case GenericToken.UpTo:
+                    {
+                        var delimiters = string.Join(", ",token.Args.Select(x => $@"""{x}"""));
+                        builder.AppendLine($"\t\t[UpTo({delimiters})]");
+                        break;
+                    }
                     case GenericToken.SugarToken:
                     {
                         builder.AppendLine($"\t\t[Sugar(\"{token.Args[0]}\")]");

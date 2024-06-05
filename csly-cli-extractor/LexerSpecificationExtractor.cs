@@ -171,6 +171,10 @@ public class LexerSpecificationExtractor
                 return Lexeme(name, genericType, args);
             }
         }
+        else if (type == "UpTo")
+        {
+            return $@"[UpTo] {name} : {string.Join(" ",args.Select(x => $@"""{x}"""))}; ";
+        }
 
         if (type == "Mode")
         {
@@ -233,7 +237,7 @@ public class LexerSpecificationExtractor
                         continue;
                     }
                     
-                    var modeAttributes = new List<string>() { "Mode", "Push,Pop" };
+                    var modeAttributes = new List<string>() { "Mode", "Push","Pop" };
                     
                     var modes = attributes.SelectMany(x => x.Attributes)
                         .Where(x => modeAttributes.Contains(x.Name.ToString()));
@@ -249,10 +253,7 @@ public class LexerSpecificationExtractor
                         builder.AppendLine(lexeme);
 
                     }
-
-                    var ext = attributes.All(x => x.Attributes.All(x => !x.Name.ToString().Contains("Extension")));
-                    
-                    
+                   
                     foreach (var attr in attributes.SelectMany(x => x.Attributes).Where(x => !modeAttributes.Contains(x.Name.ToString())))
                     {
                         if (attr.Name.ToString().Contains("LexemeLabel"))

@@ -604,20 +604,22 @@ public class CLIParser
                 if (token.TokenID == CLIToken.ID)
                 {
                     clause =  new TerminalClause(false, token.Value);
+                    clause.Position = token.Position;
                 }
                 else if (token.TokenID == CLIToken.STRING)
                 {
                     clause = new TerminalClause(true,token.StringWithoutQuotes) ;
+                    clause.Position = token.Position;
                 }
             }
             else
             {
 
                 clause = new NonTerminalClause(token.Value);
-
+                clause.Position = token.Position;
             }
 
-            clause.Position = token.Position;
+            
             return clause;
         }
 

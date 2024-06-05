@@ -58,6 +58,7 @@ public enum CLIToken
     [Keyword("SingleLineComment")] SINGLELINECOMMENT,
     [Keyword("MultiLineComment")] MULTILINECOMMENT,
     [Keyword("Extension")] EXTENSIONTOKEN,
+    [Keyword("UpTo")] UPTOTOKEN,
     [Keyword("Push")] PUSH,
     [Keyword("Mode")] MODE,
     [Keyword("Pop")] POP,

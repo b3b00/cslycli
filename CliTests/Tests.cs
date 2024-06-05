@@ -455,5 +455,56 @@ parser MinimalParser;
         r = CslyProcessor.Parse(grammar, "2024.06.05.13.21");
         Check.That(r.IsOK).IsFalse();
     }
+    
+    [Fact]
+    public void Upto()
+    {
+        var grammar = @"
+genericLexer TemplateLexer;
+
+[UpTo] TEXT : ""{%"" ""{="";
+
+[Push(""code"")]
+[Sugar] OPEN_CODE : ""{%"";
+
+[Push(""value"")]
+[Sugar] OPEN_VALUE : ""{="";
+
+[Mode(""value"", ""code"")]
+[AlphaId] ID;
+
+[Mode(""code"")]
+[Int] INT;
+
+[Mode(""code"")]
+[String] STRING;
+
+[Mode(""value"")]
+[Pop]
+[Sugar] CLOSE_VALUE : ""=}"";
+
+[Mode(""code"")]
+[Pop]
+[Sugar] CLOSE_CODE : ""%}"";
+
+
+
+parser TemplateParser;
+
+-> template : item *;
+item : TEXT;
+item : OPEN_VALUE ID CLOSE_VALUE;
+item : OPEN_CODE ID CLOSE_CODE;
+item : OPEN_CODE INT CLOSE_CODE;
+item : OPEN_CODE STRING CLOSE_CODE;
+";
+
+        var r = CslyProcessor.Parse(grammar, @"text{=value=}text{%28%}text{%""hello""%}text");
+        Check.That(r.IsOK).IsTrue();
+
+        r = CslyProcessor.Parse(grammar, "text{=value");
+        Check.That(r.IsOK).IsFalse();
+        
+    }
         
 }

@@ -88,6 +88,11 @@ public class LexerDecompiler
                 {
                     return $@"[KeyWord] {name} : ""{lexem.GenericTokenParameters[0].Replace("'","''")}"";";
                 }
+                case GenericToken.UpTo:
+                {
+                    var delimiters = string.Join(" ",lexem.GenericTokenParameters.Select(x => $@"""{x}"""));
+                    return $@"[UpTo] {name} : {delimiters};";
+                }
                 case GenericToken.SugarToken:
                 {
                     return $@"[Sugar] {name} : ""{lexem.GenericTokenParameters[0].Replace("'","''")}"";";

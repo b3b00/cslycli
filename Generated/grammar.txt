@@ -1,67 +1,153 @@
 
-genericLexer someLexer;
+genericLexer TemplateLexer;
 
-[Mode("EXT", "default")]
-@label("en","integer");
-@label("fr","entier");
+[Mode]
+[Sugar] SP : " ";
+
+[Mode]
+[Sugar] TAB : "	";
+
+[Mode]
+[Sugar] CRLF : "
+";
+
+[Mode]
+[Sugar] LF : "
+";
+
+[UpTo] TEXT : "{%" "{="; 
+
+[Push("code")]
+[Sugar] OPEN_CODE : "{%";
+
+[Push("value")]
+[Sugar] OPEN_VALUE : "{=";
+
+[Mode("value")]
+[Mode("code")]
+[AlphaId] ID;
+
+[Mode("value")]
+[Pop]
+[Sugar] CLOSE_VALUE : "=}";
+
+[Mode("code")]
+[Pop]
+[Sugar] CLOSE_CODE : "%}";
+
+[Mode("code")]
+[KeyWord] IF : "if";
+
+[Mode("code")]
+[KeyWord] ENDIF : "endif";
+
+[Mode("code")]
+[KeyWord] ELSE : "else";
+
+[Mode("code")]
+[KeyWord] FOR : "for";
+
+[Mode("code")]
+[KeyWord] AS : "as";
+
+[Mode("code")]
+[KeyWord] END : "end";
+
+[Mode("code")]
+[Sugar] RANGE : "..";
+
+[Mode("code")]
+[String] STRING;
+
+[Mode("code")]
 [Int] INT;
 
-@label("en","plus sign");
-@label("fr","plus");
+[Mode("code")]
+[KeyWord] TRUE : "TRUE";
+[KeyWord] TRUE : "true";
+
+[Mode("code")]
+[KeyWord] FALSE : "FALSE";
+[KeyWord] FALSE : "false";
+
+[Mode("code")]
+[Sugar] GREATER : ">";
+
+[Mode("code")]
+[Sugar] LESSER : "<";
+
+[Mode("code")]
+[Sugar] EQUALS : "==";
+
+[Mode("code")]
+[Sugar] DIFFERENT : "!=";
+
+[Mode("code")]
+[Sugar] CONCAT : "&";
+
+[Mode("code")]
+[Sugar] ASSIGN : ":=";
+
+[Mode("code")]
 [Sugar] PLUS : "+";
 
-@label("en","addition");
-@label("fr","addition");
-[KeyWord] ADD : "add";
-
-@label("en","minus sign");
-@label("fr","moins");
+[Mode("code")]
 [Sugar] MINUS : "-";
 
-@label("en","substraction");
-@label("fr","soustraction");
-[KeyWord] REMOVE : "remove";
-
-@label("en","times sign");
-@label("fr","fois");
+[Mode("code")]
 [Sugar] TIMES : "*";
 
-@label("en","multiplication");
-@label("fr","multiplication");
-[KeyWord] MUL : "mul";
+[Mode("code")]
+[Sugar] DIVIDE : "/";
 
-@label("en","division sign");
-@label("fr","diviser");
-[Sugar] SLASH : "/";
+[Mode("code")]
+[Sugar] OPEN_PAREN : "(";
 
-@label("en","division");
-@label("fr","division");
-[KeyWord] DIV : "div";
+[Mode("code")]
+[Sugar] CLOSE_PAREN : ")";
 
-[Mode("EXT", "default")]
-[Push("EXT")]
-[Sugar] OPEN : ">>>";
+[Mode("code")]
+[KeyWord] NOT : "NOT";
+[KeyWord] NOT : "not";
 
-[Pop]
-[Sugar] CLOSE : "<<<";
+[Mode("code")]
+[KeyWord] AND : "AND";
+[KeyWord] AND : "and";
+
+[Mode("code")]
+[KeyWord] OR : "OR";
+[KeyWord] OR : "or";
 
 
 
-parser someParser;
+parser TemplateParser;
 
--> root : someParser_expressions;
+-> template: item*;
+item : TEXT;
+item :OPEN_VALUE[d] ID CLOSE_VALUE[d];
+item : OPEN_CODE[d] IF[d] OPEN_PAREN[d] TemplateParser_expressions CLOSE_PAREN[d] CLOSE_CODE[d]
+                                     item* 
+                                  elseBlock? 
+                                  OPEN_CODE[d] ENDIF[d] CLOSE_CODE[d] ;
+if : OPEN_CODE[d] IF[d] OPEN_PAREN[d] TemplateParser_expressions CLOSE_PAREN[d] CLOSE_CODE[d];
+elseBlock : OPEN_CODE[d] ELSE[d] CLOSE_CODE[d] item*;
+item : OPEN_CODE[d] FOR[d] INT RANGE[d] INT AS[d] ID CLOSE_CODE[d] item* OPEN_CODE[d] END[d] CLOSE_CODE[d];
+item : OPEN_CODE[d] FOR[d] ID AS[d] ID CLOSE_CODE[d] item* OPEN_CODE[d] END[d] CLOSE_CODE[d];
+[Right 50] LESSER;
+[Right 50] GREATER;
+[Right 50] EQUALS;
+[Right 50] DIFFERENT;
+primary: INT;
+primary: TRUE;
+primary: FALSE;
+primary: STRING;
+primary: ID;
+[Operand] operand: primary;
 [Right 10] PLUS;
-[Right 10] ADD;
 [Right 10] MINUS;
-[Right 10] REMOVE;
 [Right 50] TIMES;
-[Right 50] MUL;
-[Right 50] DIV;
-[Right 50] SLASH;
-[Prefix 100] PLUS;
-[Prefix 100] ADD;
-[Prefix 100] "#'";
+[Right 50] DIVIDE;
 [Prefix 100] MINUS;
-[Prefix 100] REMOVE;
-[Prefix 100] "~'";
-[Operand] integer : INT;
+[Right 10] OR;
+[Right 50] AND;
+[Prefix 100] NOT;

@@ -280,7 +280,7 @@ public class LexerGenerator
                     builder.AppendLine($@"      [Push(""{token.PushMode}"")]");
                 }
 
-                if (token.Modes.Count >= 1 && !(token.Modes.Count == 1 && token.Modes[0] != ModeAttribute.DefaultLexerMode))
+                if (token.Modes.Count >= 1 && !(token.Modes.Count == 1 && token.Modes[0] == ModeAttribute.DefaultLexerMode))
                 {
                     var modes = string.Join(", ",token.Modes.Select(x => $@"""{x}"""));
                     builder.AppendLine($@"      [Mode({modes})]");
@@ -361,6 +361,12 @@ public class LexerGenerator
                     case GenericToken.KeyWord:
                     {
                         builder.AppendLine($"\t\t[Keyword(\"{token.Args[0]}\")]");
+                        break;
+                    }
+                    case GenericToken.UpTo:
+                    {
+                        var delimiters = string.Join(", ",token.Args.Select(x => $@"""{x}"""));
+                        builder.AppendLine($"\t\t[UpTo({delimiters})]");
                         break;
                     }
                     case GenericToken.SugarToken:

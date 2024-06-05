@@ -329,6 +329,7 @@ public class LexerBuilder
             {
                 Add(model.Type, model.IdentifierType,builder, model.Args);    
                 AddLabelsAttributes(builder,model);
+                AddModesAttributes(builder,model);
             }
         }
 
@@ -437,6 +438,53 @@ public class LexerBuilder
                     builder.SetCustomAttribute(customAttributeBuilder);
                 }
             }
+        }
+        
+        private static void AddModesAttributes(FieldBuilder builder, TokenModel model)
+        {
+            if (model.Modes.Count >= 1 && !(model.Modes.Count == 1 && model.Modes[0] == ModeAttribute.DefaultLexerMode))
+            {
+                
+                foreach (var mode in model.Modes)
+                {
+                    Type attributeType = typeof(ModeAttribute);
+
+                    ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                        new Type[1] { typeof(string[]) });
+
+                    CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                        constructorInfo, new object[] { new string[]{mode}  });
+
+                    builder.SetCustomAttribute(customAttributeBuilder);
+                }
+            }
+
+            if (model.IsPush)
+            {
+                Type attributeType = typeof(PushAttribute);
+
+                ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                    new Type[1] { typeof(string) });
+
+                CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                    constructorInfo, new object[] { model.PushMode  });
+
+                builder.SetCustomAttribute(customAttributeBuilder);
+            }
+            
+            if (model.IsPop)
+            {
+                Type attributeType = typeof(PopAttribute);
+
+                ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                    new Type[] { });
+
+                CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                    constructorInfo, new object[] {  });
+
+                builder.SetCustomAttribute(customAttributeBuilder);
+            }
+            
         }
 
         private static void AddJsonAttribute(FieldBuilder builder)

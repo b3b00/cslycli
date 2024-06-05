@@ -12,7 +12,7 @@ namespace csly_cli_api
 
         public static void Main(string[] args)
         {
-            Extract(args);
+            //Extract(args);
             GenerateAndBuild(args);
         }
 
@@ -54,7 +54,14 @@ namespace csly_cli_api
                 File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/{r.Result.ParserName}.cs", r.Result.Parser);
                 File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/{r.Result.LexerName}.cs", r.Result.Lexer);
                 //Console.WriteLine(r.Result.Parser);
-                var templatesource = @"hello-{=world=}-billy-{% if (a == 1) %}-bob-{%else%}-boubou-{%endif%}this is the end";
+                var templatesource = @"hello-{=world=}
+-billy-
+{% if (a == 1) %}
+-bob-
+{%else%}
+-boubou-
+{%endif%}
+this is the end";
                 var dot = CslyProcessor.GetDot(grammar, templatesource);
                 if (dot.IsOK)
                 {

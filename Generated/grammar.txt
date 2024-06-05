@@ -1,20 +1,6 @@
 
 genericLexer TemplateLexer;
 
-[IgnoreEndOfLines(false)]
-[Mode]
-[Sugar] SP : " ";
-
-[Mode]
-[Sugar] TAB : "	";
-
-[Mode]
-[Sugar] CRLF : "
-";
-
-[Mode]
-[Sugar] LF : "
-";
 
 [UpTo] TEXT : "{%" "{="; 
 

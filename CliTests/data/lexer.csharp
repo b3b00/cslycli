@@ -6,7 +6,6 @@ namespace ns
 {
     public enum MinimalLexer
     {
-        [LexemeLabel("en", "integer number")]
         [Int]
         INT,
     }

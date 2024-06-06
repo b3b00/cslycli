@@ -96,7 +96,9 @@ public class LexerSpecificationExtractor
             }
             case GenericToken.KeyWord:
             {
-                return $"[KeyWord] {name} : \"{args[0].Replace("\"","\\\"")}\";";
+                string definitions = string.Join(" ", args.Select(x => "\"" + x.Replace("\"", "\\\"") + "\""));
+                
+                return $"[KeyWord] {name} : {definitions};";
             }
             case GenericToken.SugarToken:
             {

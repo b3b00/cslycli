@@ -27,7 +27,8 @@ public static class Program
 
     public static void Main(string[] args)
     {
-        Compile("C:\\Users\\olduh\\dev\\BlazorCslyViz\\BlazorVizView\\samples\\grammar\\indented-while.txt");
+        //Compile("C:\\Users\\olduh\\dev\\BlazorCslyViz\\BlazorVizView\\samples\\grammar\\indented-while.txt");
+        Extract(@"C:\Users\olduh\dev\csly\src\samples\XML\MinimalXmlParser.cs","C:\\Users\\olduh\\dev\\csly\\src\\samples\\XML\\MinimalXmlLexer.cs", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\xml.txt");
     }
 
    
@@ -92,6 +93,40 @@ parser MinimalParser;
             }
         }
             
+    }
+
+    private static void Extract(string parserPath, string lexrerPath, string outputPath = null)
+    {
+        var e = CslyProcessor.ExtractGrammar(File.ReadAllText(parserPath), File.ReadAllText(lexrerPath));
+        if (e.IsOK)
+        {
+            if (outputPath != null)
+            {
+                File.WriteAllText(outputPath, e.Result);
+            }
+
+            Console.WriteLine("extraction ok");
+            var r = CslyProcessor.Compile(e.Result);
+            if (r.IsOK)
+            {
+                Console.WriteLine("compilation ok");
+            }
+            else
+            {
+                foreach (var error in r.Errors)
+                {
+                    Console.WriteLine(error);
+                }
+            }
+        }
+        else
+        {
+            foreach (var error in e.Errors)
+            {
+                Console.WriteLine(error);
+            }
+        }
+
     }
 }
 }

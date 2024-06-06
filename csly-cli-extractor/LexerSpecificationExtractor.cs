@@ -315,7 +315,22 @@ public class LexerSpecificationExtractor
                             string[] pstrings = new string[] { };
                             if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
                             {
-                                pstrings = attr.ArgumentList.Arguments.Select(x => x.Expression.ExprToString())
+                                Predicate<AttributeArgumentSyntax> filter = e =>
+                                {
+                                    if (e.NameColon != null && e.NameColon.Name.Identifier.Text == "channel")
+                                    {
+                                        return false;
+                                    }
+
+                                    if (e.NameColon != null && e.NameEquals.Name.Identifier.Text == "channel")
+                                    {
+                                        return false;
+                                    }
+
+                                    return true;
+                                };
+                                
+                                pstrings = attr.ArgumentList.Arguments.Where(x => filter(x)).Select(x => x.Expression.ExprToString())
                                     .ToArray();
                             }
 

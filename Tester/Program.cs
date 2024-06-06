@@ -2,6 +2,7 @@
 
 using System.Text.Json;
 using clsy.cli.builder.parser;
+using csly_cli_api;
 
 namespace cslyCliTester {
 
@@ -26,7 +27,7 @@ public static class Program
 
     public static void Main(string[] args)
     {
-        TestDate();
+        Compile("C:\\Users\\olduh\\dev\\BlazorCslyViz\\BlazorVizView\\samples\\grammar\\indented-while.txt");
     }
 
    
@@ -74,6 +75,23 @@ parser MinimalParser;
             //     Console.WriteLine($"token is bad {dateTime} - expected 2024.04.23");
             // }
         }
+    }
+
+    private static void Compile(string path)
+    {
+        var r = CslyProcessor.Compile(File.ReadAllText(path));
+        if (r.IsOK)
+        {
+            Console.WriteLine("compilation ok");
+        }
+        else
+        {
+            foreach (var error in r.Errors)
+            {
+                Console.WriteLine(error);
+            }
+        }
+            
     }
 }
 }

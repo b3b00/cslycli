@@ -451,7 +451,7 @@ public class CLIParser
         }
 
 
-        [Production("item : [ ID | STRING ] ")]
+        [Production("item : [ ID | STRING | INDENT | UINDENT ] ")]
         public IClause Clause(Token<CLIToken> item, ParserContext context)
         {
             return BuildTerminalOrNonTerminal(item, context);
@@ -459,7 +459,8 @@ public class CLIParser
         
         
         #region clauses
-       
+
+        
         [Production("clause : item ZEROORMORE[d]")]
         public IClause ZeroMoreClause(IClause item, ParserContext context)
         {
@@ -554,8 +555,7 @@ public class CLIParser
             {
                 if (!discard.IsEmpty)
                 {
-                    throw new ArgumentException(
-                        $" non terminal clause {nonterm.NonTerminalName} can not be discarded ! {discard.Position.Line}");
+                    context.AddError($" non terminal clause {nonterm.NonTerminalName} can not be discarded ! {discard.Position.Line}");
                 }
             }
 
@@ -604,7 +604,7 @@ public class CLIParser
 
         private IClause BuildTerminalOrNonTerminal(Token<CLIToken> token, ParserContext context)
         {
-            bool isTerminal = context.IsTerminal(token.Value) || token.TokenID == CLIToken.STRING;
+            bool isTerminal = context.IsTerminal(token.Value) || token.TokenID == CLIToken.STRING || token.TokenID == CLIToken.INDENT || token.TokenID == CLIToken.UINDENT;
 
             IClause clause = null;
 
@@ -621,6 +621,17 @@ public class CLIParser
                     clause = new TerminalClause(true,token.StringWithoutQuotes) ;
                     clause.Position = token.Position;
                 }
+                else if (token.TokenID == CLIToken.UINDENT)
+                {
+                    clause =  new TerminalClause(false, token.Value);
+                    clause.Position = token.Position;
+                }
+                else if (token.TokenID == CLIToken.INDENT)
+                {
+                    clause =  new TerminalClause(false, token.Value);
+                    clause.Position = token.Position;
+                }
+                
             }
             else
             {

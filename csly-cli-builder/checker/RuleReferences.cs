@@ -9,6 +9,12 @@ public class RuleReferences
     public HashSet<string> ruleNames = new HashSet<string>();
 
 
+    public RuleReferences()
+    {
+        tokenNames.Add("INDENT");
+        tokenNames.Add("UINDENT");
+    }
+
     public void AddRule(string rule)
     {
         ruleNames.Add(rule);

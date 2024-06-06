@@ -80,6 +80,10 @@ public enum CLIToken
     [Keyword("DDMMYYYY")] DDMMYYYY,
 
     
+    [Keyword("INDENT")] INDENT,
+    [Keyword("UINDENT")] UINDENT,
+    
+    
     
     
     

@@ -6,6 +6,16 @@ public class ParserContext
 
     public string _parserName;
 
+    public List<string> Errors { get; set; }= new List<string>();
+
+    public bool IsError { get; set; } = false;
+    
+    public void AddError(string error)
+    {
+        IsError = true;
+        Errors.Add(error);
+    }
+
     public ParserContext(string parserName)
     {
         _parserName = parserName;

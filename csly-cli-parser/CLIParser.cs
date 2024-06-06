@@ -13,6 +13,7 @@ namespace csly.cli.parser;
 
 
 [ParserRoot("root")]
+
 public class CLIParser
 {
     #region roots
@@ -32,6 +33,7 @@ public class CLIParser
         {
             UseMemoization = optims.Exists(x => x.UseMemoization),
             BroadenTokenWindow = optims.Exists(x => x.BroadenTokenWindow),
+            AutoCloseIndentations = optims.Exists(x => x.AutoCloseIndentation),
             Name = name.Value,
             Rules = rules.Cast<Rule>().ToList()
         };
@@ -43,13 +45,14 @@ public class CLIParser
 
     }
 
-    [Production("parser_optimization : LEFTBRACKET[d] [USEMEMOIZATION|BROADENTOKENWINDOW] RIGHTBRACKET[d]")]
+    [Production("parser_optimization : LEFTBRACKET[d] [USEMEMOIZATION|BROADENTOKENWINDOW|AUTOCLOSEINDENTATION] RIGHTBRACKET[d]")]
     public ICLIModel Optimization(Token<CLIToken> optimizationToken, ParserContext context)
     {
         return new ParserOptimization()
         {
             UseMemoization = optimizationToken.TokenID == CLIToken.USEMEMOIZATION,
             BroadenTokenWindow = optimizationToken.TokenID == CLIToken.BROADENTOKENWINDOW,
+            AutoCloseIndentation = optimizationToken.TokenID == CLIToken.AUTOCLOSEINDENTATION,
             Position = optimizationToken.Position
         };
     }

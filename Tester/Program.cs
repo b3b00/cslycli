@@ -28,8 +28,8 @@ public static class Program
     public static void Main(string[] args)
     {
         //Compile("C:\\Users\\olduh\\dev\\BlazorCslyViz\\BlazorVizView\\samples\\grammar\\indented-while.txt");
-        // Extract(@"C:\Users\olduh\dev\csly\src\samples\jsonparser\EbnfJsonGenericParser.cs","C:\\Users\\olduh\\dev\\csly\\src\\samples\\jsonparser\\JsonTokenGeneric.cs", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\json.txt");
-        Parse(@"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\json.txt", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\source\json.txt");
+        Extract(@"C:\Users\olduh\dev\csly\src\samples\IndentedWhile\parser\IndentedWhileParserGeneric.cs","C:\\Users\\olduh\\dev\\csly\\src\\samples\\IndentedWhile\\parser\\IndentedWhileTokenGeneric.cs", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\indented-while.txt");
+        Parse(@"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\indented-while.txt", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\source\indented-while.txt");
     }
 
    

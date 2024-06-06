@@ -102,6 +102,7 @@ public class ParserSpecificationExtractor
             }
             bool useMemo = parserAttributes.Exists(x => x.Name.ToString() == "UseMemoization");
             bool broadWindow = parserAttributes.Exists(x => x.Name.ToString() == "BroadenTokenWindow");
+            bool autoCloseIndentation = parserAttributes.Exists(x => x.Name.ToString() == "AutoCloseIndentations");
             
             builder.AppendLine($"parser {parserDecl.Identifier.Text};").AppendLine();
             if (useMemo)
@@ -112,6 +113,11 @@ public class ParserSpecificationExtractor
             if (broadWindow)
             {
                 builder.AppendLine("[BroadenTokenWindow]");
+            }
+
+            if (autoCloseIndentation)
+            {
+                builder.AppendLine("[AutoCloseIndentations]");
             }
             var methods= parserDecl.Members.Where(x => x is MethodDeclarationSyntax).Cast<MethodDeclarationSyntax>().ToList();
             foreach (var method in methods)

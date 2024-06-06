@@ -51,6 +51,7 @@ public class ParserDecompiler
         string root = null;
         bool useMemo = false;
         bool broadWindow = false;
+        bool autoCloseIndentations = false;
         
         var parserRootAttribute = type.GetCustomAttribute<ParserRootAttribute>();
         if (parserRootAttribute != null)
@@ -60,6 +61,7 @@ public class ParserDecompiler
 
         useMemo = type.GetCustomAttribute<UseMemoizationAttribute>() != null;
         broadWindow = type.GetCustomAttribute<BroadenTokenWindowAttribute>() != null;
+        autoCloseIndentations = type.GetCustomAttribute<AutoCloseIndentationsAttribute>() != null;
         
         StringBuilder builder = new StringBuilder();
         builder.AppendLine($"parser {type.Name};").AppendLine();
@@ -72,6 +74,11 @@ public class ParserDecompiler
         if (broadWindow)
         {
             builder.AppendLine("[BroadenTokenWindow]");
+        }
+        
+        if (autoCloseIndentations)
+        {
+            builder.AppendLine("[AutoCloseIndentations]");
         }
         
         var methods = type.GetMethods().ToList();

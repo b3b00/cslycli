@@ -69,6 +69,7 @@ public enum CLIToken
     // parser optimizations
     [Keyword("UseMemoization")] USEMEMOIZATION,
     [Keyword("BroadenTokenWindow")] BROADENTOKENWINDOW,
+    [Keyword("AutoCloseIndentations")] AUTOCLOSEINDENTATION,
     
     // lexer options
     [Keyword("IndentationAware")] INDENTATIONAWARE,

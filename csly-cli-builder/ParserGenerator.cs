@@ -50,6 +50,12 @@ public class ParserGenerator
         {
             optimizations += "    [BroadenTokenWindow]";
         }
+
+        if (model.AutoCloseIndentations)
+        {
+            optimizations += "    [AutoCloseIndentations]";
+        }
+        
         return $@"
 using sly.lexer;
 using sly.parser.generator;

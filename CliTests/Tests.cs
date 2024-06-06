@@ -313,7 +313,7 @@ parser MinimalParser;
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "NoRootParser");
         Check.That(model).Not.IsOkModel();
-        Check.That(model.Error).Contains("model have root rule !");
+        Check.That(model.Error).Contains("model have no root rule !");
     }
     
     [Fact]

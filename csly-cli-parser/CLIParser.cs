@@ -132,7 +132,7 @@ public class CLIParser
     
 
     [Production(
-        "token : attribute* LEFTBRACKET[d] [KEYWORDTOKEN|SUGARTOKEN|SINGLELINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d]")]
+        "token : attribute* LEFTBRACKET[d] [SUGARTOKEN|SINGLELINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d]")]
     public ICLIModel OneArgToken(List<ICLIModel> attributes, Token<CLIToken> type, Token<CLIToken> id, Token<CLIToken> value, ParserContext context)
     {
         var tokenType = type.TokenID switch
@@ -159,6 +159,16 @@ public class CLIParser
         };
         context.AddEnumName(id.Value);
         return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType,id.Value,arg1.StringWithoutQuotes.Replace("\\\\","\\"), arg2.StringWithoutQuotes.Replace("\\\\","\\")) {Position = type.Position};
+    }
+    
+    [Production(
+        "token : attribute* LEFTBRACKET[d] [KEYWORDTOKEN] RIGHTBRACKET[d] ID COLON[d]  STRING* SEMICOLON[d]")]
+    public ICLIModel ManyArgToken(List<ICLIModel> attributes, Token<CLIToken> type, Token<CLIToken> id, List<Token<CLIToken>> args, ParserContext context)
+    {
+        var tokenType = GenericToken.KeyWord;
+        context.AddEnumName(id.Value);
+        var aargs = args.Select(arg => arg.StringWithoutQuotes.Replace("\\\\", "\\")).ToArray();
+        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType,id.Value,aargs) {Position = type.Position};
     }
     
     [Production(

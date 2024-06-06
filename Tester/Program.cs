@@ -27,7 +27,9 @@ public static class Program
 
     public static void Main(string[] args)
     {
-        Compile("C:\\Users\\olduh\\dev\\BlazorCslyViz\\BlazorVizView\\samples\\grammar\\indented-while.txt");
+        //Compile("C:\\Users\\olduh\\dev\\BlazorCslyViz\\BlazorVizView\\samples\\grammar\\indented-while.txt");
+        // Extract(@"C:\Users\olduh\dev\csly\src\samples\jsonparser\EbnfJsonGenericParser.cs","C:\\Users\\olduh\\dev\\csly\\src\\samples\\jsonparser\\JsonTokenGeneric.cs", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\json.txt");
+        Parse(@"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\json.txt", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\source\json.txt");
     }
 
    
@@ -93,5 +95,62 @@ parser MinimalParser;
         }
             
     }
+
+    private static void Extract(string parserPath, string lexrerPath, string outputPath = null)
+    {
+        var e = CslyProcessor.ExtractGrammar(File.ReadAllText(parserPath), File.ReadAllText(lexrerPath));
+        if (e.IsOK)
+        {
+            if (outputPath != null)
+            {
+                File.WriteAllText(outputPath, e.Result);
+            }
+
+            Console.WriteLine("extraction ok");
+            var r = CslyProcessor.Compile(e.Result);
+            if (r.IsOK)
+            {
+                Console.WriteLine("compilation ok");
+            }
+            else
+            {
+                foreach (var error in r.Errors)
+                {
+                    Console.WriteLine(error);
+                }
+            }
+        }
+        else
+        {
+            foreach (var error in e.Errors)
+            {
+                Console.WriteLine(error);
+            }
+        }
+
+    }
+    
+    private static void Parse(string grammarPath, string sourcePath, string outputPath = null)
+        {
+            var e = CslyProcessor.GetDot(File.ReadAllText(grammarPath), File.ReadAllText(sourcePath));
+            if (e.IsOK)
+            {
+                if (outputPath != null)
+                {
+                    File.WriteAllText(outputPath, e.Result);
+                }
+    
+                Console.WriteLine("parse ok");
+                
+            }
+            else
+            {
+                foreach (var error in e.Errors)
+                {
+                    Console.WriteLine(error);
+                }
+            }
+    
+        }
 }
 }

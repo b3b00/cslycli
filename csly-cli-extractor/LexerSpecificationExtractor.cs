@@ -228,32 +228,36 @@ public class LexerSpecificationExtractor
             {
                 foreach (var attribute in attributes.Attributes)
                 {
-                    var args = attribute.ArgumentList.Arguments;
-
-                    foreach (var arg in args)
+                    if (attribute.Name.ToString() == "Lexer")
                     {
+                        var args = attribute.ArgumentList.Arguments;
 
-
-                        var value = arg.Expression;
-                        var name = arg.NameEquals.Name.ToString();
-                        if (name == "IgnoreEOL")
+                        if (args != null && args.Any())
                         {
-                            builder.AppendLine($"[IgnoreEndOfLines({value.ToString()})]");
-                        }
+                            foreach (var arg in args)
+                            {
+                                var value = arg.Expression;
+                                var name = arg.NameEquals.Name.ToString();
+                                if (name == "IgnoreEOL")
+                                {
+                                    builder.AppendLine($"[IgnoreEndOfLines({value.ToString()})]");
+                                }
 
-                        if (name == "IndentationAWare")
-                        {
-                            builder.AppendLine($"[IndentationAware({value.ToString()})]");
-                        }
+                                if (name == "IndentationAWare")
+                                {
+                                    builder.AppendLine($"[IndentationAware({value.ToString()})]");
+                                }
 
-                        if (name == "KeyWordIgnoreCase")
-                        {
-                            builder.AppendLine($"[IgnoreKeyWordCase({value.ToString()})]");
-                        }
+                                if (name == "KeyWordIgnoreCase")
+                                {
+                                    builder.AppendLine($"[IgnoreKeyWordCase({value.ToString()})]");
+                                }
 
-                        if (name == "IgnoreWS")
-                        {
-                            builder.AppendLine($"[IgnoreWhiteSpaces({value.ToString()})]");
+                                if (name == "IgnoreWS")
+                                {
+                                    builder.AppendLine($"[IgnoreWhiteSpaces({value.ToString()})]");
+                                }
+                            }
                         }
                     }
                 }

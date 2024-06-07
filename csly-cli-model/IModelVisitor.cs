@@ -12,6 +12,18 @@ public interface IModelVisitor<T>
     T Visit(LexerModel lexer, T result);
 
     T Visit(TokenModel token, T result);
+
+    T VisitExtension(ExtensionTokenModel extension, T result);
+
+    T VisitChain(TransitionChain chain, T result);
+
+    T VisitTransition(ITransition transition, T result);
+    
+    T VisitCharacterTransition(CharacterTransition characterTransition, T result);
+    
+    T VisitExceptTransition(ExceptTransition exceptTransition, T result);
+    
+    T VisitRangeTransition(RangeTransition rangeTransition, T result);
     
     #endregion
 

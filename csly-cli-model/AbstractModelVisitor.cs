@@ -16,6 +16,37 @@ public class AbstractModelVisitor<T> : IModelVisitor<T>
         return result;
     }
 
+    public virtual T VisitExtension(ExtensionTokenModel extension, T result)
+    {
+        return result;
+    }
+
+    public virtual T VisitChain(TransitionChain chain, T result)
+    {
+        return result;
+    }
+
+    public virtual T VisitTransition(ITransition transition, T result)
+    {
+        return result;
+    }
+
+    public virtual T VisitCharacterTransition(CharacterTransition characterTransition, T result)
+    {
+        return result;
+    }
+
+    public virtual T VisitExceptTransition(ExceptTransition exceptTransition, T result)
+    {
+        return result;
+    }
+
+    public virtual T VisitRangeTransition(RangeTransition rangeTransition, T result)
+    {
+        return result;
+    }
+
+
     public virtual T Visit(ParserModel parser, T result)
     {
         return result;

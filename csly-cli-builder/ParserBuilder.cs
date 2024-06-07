@@ -225,6 +225,16 @@ public class ParserBuilder
             }
         }
         
+        var extensionTokensVisitor = new ExtensionTokensVisitor();
+        var extensionTokensWalker = new ModelWalker<ExtensionTokenChecks>(extensionTokensVisitor);
+        var extensionTokensChecks = extensionTokensWalker.Walk(model, new ExtensionTokenChecks(true));
+        if (extensionTokensChecks.IsError)
+        {
+            model.AddErrors(extensionTokensChecks.Errors);
+        }
+        
+        
+        
         return model;
     }
     

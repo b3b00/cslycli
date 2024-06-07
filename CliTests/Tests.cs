@@ -384,6 +384,29 @@ parser SameKeywordParser;
         Check.That(model.Error[0]).Contains("DOT");
         Check.That(model.Error[0]).Contains("DOOT");
     }
+    
+    [Fact]
+    public void TestNotEndedExtensionToken()
+    {
+        var grammar = @"
+genericLexer NotEndedExtensionLexer;
+
+[Extension] TEST
+>>>
+-> '#'  -> ['0'-'9','A'-'F'] {6}
+<<<
+
+
+parser NotEndedExtensionParser;
+
+-> root : TEST* ;
+";
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "NotEndedExtensionParser");
+        Check.That(model.IsOk).IsFalse();
+        Check.That(model.Error).CountIs(1);
+        Check.That(model.Error[0]).Contains("TEST");
+    }
 
     [Fact]
     public void ManyTokenForOperations()

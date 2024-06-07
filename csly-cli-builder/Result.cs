@@ -44,7 +44,7 @@ public class Result<T> : Result<T, List<string>>
         error.Add(errorMessage);
     }
     
-    public void AddErrors(IEnumerable<string> errors)
+    public void AddErrors(IList<string> errors)
     {
         if (errors.Any())
         {

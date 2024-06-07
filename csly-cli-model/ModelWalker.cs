@@ -1,6 +1,7 @@
 using clsy.cli.builder.parser.cli.model;
 using csly.cli.model.lexer;
 using csly.cli.model.parser;
+using sly.lexer;
 
 namespace csly.cli.model;
 
@@ -33,8 +34,71 @@ public class ModelWalker<T>
     private T Walk(TokenModel token, T result)
     {
         result = _visitor.Visit(token, result);
+        if (token is ExtensionTokenModel extensionTokenModel)
+        {
+            result = Walk(extensionTokenModel, result);
+        }
+
         return result;
     }
+
+   
+
+    private T Walk(ExtensionTokenModel extension, T result)
+    {
+        result = _visitor.VisitExtension(extension,result);
+        if (extension.Chains.Any())
+        {
+            foreach (var chain in extension.Chains)
+            {
+                result = Walk(chain, result);
+            }
+
+        }
+
+        return result;
+    }
+    
+    private T Walk(TransitionChain chain, T result)
+    {
+        result = _visitor.VisitChain(chain, result);
+        if (chain.Transitions.Any())
+        {
+            foreach (var transition in chain.Transitions)
+            {
+                result = Walk(transition, result);
+            }
+        }
+        return result;
+    }
+    
+    private T Walk(ITransition transition, T result)
+    {
+        //result = _visitor.VisitTransition(transition, result);
+
+        switch (transition)
+        {
+            case CharacterTransition characterTransition:
+            {
+                result = _visitor.VisitCharacterTransition(characterTransition, result);
+                break;
+            }
+            case ExceptTransition exceptTransition:
+            {
+                result = _visitor.VisitExceptTransition(exceptTransition, result);
+                break;
+            }
+            case RangeTransition rangeTransition:
+            {
+                result = _visitor.VisitRangeTransition(rangeTransition, result);
+                break;
+            }
+        }
+        
+        return result;
+    }
+    
+    
 
     #endregion
     

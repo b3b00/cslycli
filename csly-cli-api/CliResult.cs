@@ -14,6 +14,8 @@ public class CliResult<T>
 
     public List<string> Errors => _errors;
 
+    public new IDictionary<string, long> Timings { get; set; } = new Dictionary<string, long>();
+
     public CliResult(List<string> errors)
     {
         _isOk = false;

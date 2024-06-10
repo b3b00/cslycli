@@ -49,6 +49,12 @@ namespace csly_cli_api
 
             var r = CslyProcessor.GenerateParser(grammar,"ns","object");
 
+            Console.WriteLine("*** parser generation ");
+            foreach (var timing in r.Timings)
+            {
+                Console.WriteLine($"   - ${timing.Key} : {timing.Value}");
+            }
+
             if (r.IsOK)
             {
                 File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/{r.Result.ParserName}.cs", r.Result.Parser);
@@ -63,6 +69,12 @@ namespace csly_cli_api
 {%endif%}
 this is the end";
                 var dot = CslyProcessor.GetDot(grammar, templatesource);
+                Console.WriteLine("*** DOT ");
+                foreach (var timing in dot.Timings)
+                {
+                    Console.WriteLine($"   - {timing.Key} : {timing.Value}");
+                }
+                
                 if (dot.IsOK)
                 {
                     Console.WriteLine("parse is OK");

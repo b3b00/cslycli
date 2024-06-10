@@ -57,7 +57,7 @@ public class ParserBuilder
     /// </summary>
     /// <param name="model">the parser model built from parser description file</param>
     /// <returns>a Parser</returns>
-    public (object parserBuildResult, Type parserType, Type lexerType) BuildParser(Model model)
+    public (object parserBuildResult, Type parserType, Type lexerType) BuildParser(Model model, Chrono chrono = null)
     {
         DynamicParserName = model.ParserModel.Name;
         var lexerBuilder = new LexerBuilder(model.LexerModel.Name);
@@ -90,7 +90,13 @@ public class ParserBuilder
         
         
         Type compiledType = typeBuilder.CreateType();
-        return (BuildIt(compiledType, model?.ParserModel?.Root, extensionBuilder), compiledType, EnumType);
+        var result =  (BuildIt(compiledType, model?.ParserModel?.Root, extensionBuilder), compiledType, EnumType);
+        if (chrono != null)
+        {
+            chrono.Tick("parser generation");   
+        }
+
+        return result;
     }
 
     public void AddParserRoot(TypeBuilder builder, string root)
@@ -143,31 +149,58 @@ public class ParserBuilder
         }
     }
     
-    public Result<Model> CompileModel(string modelSource, string parserName = "dynamicParser")
+    public Result<Model> CompileModel(string modelSource, string parserName = "dynamicParser", Chrono chrono = null)
     {
         ParserBuilder<CLIToken, ICLIModel> builder = new ParserBuilder<CLIToken, ICLIModel>();
         var instance = new CLIParser();
 
+        if (chrono != null && !chrono.IsStarted)
+        {
+            chrono.Start();
+        }
+        
         var buildParser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, "root");
+        
         if (buildParser.IsOk)
         {
             var context = new ParserContext(parserName);
             var result = buildParser.Result.ParseWithContext(modelSource, context);
             if (result.IsError)
             {
+                if (chrono != null)
+                {
+                    chrono.Tick("model compilation");
+                }
                 return result.Errors.Select(x => x.ErrorMessage).ToList();
             }
             else {
                 if (context.IsError)
                 {
+                    if (chrono != null)
+                    {
+                        chrono.Tick("model compilation");
+                    }
                     return context.Errors;
                 }
                 Model model = result.Result as Model;
-                return CheckModel(model);
+
+                var i = 0;
+                var check = CheckModel(model);
+                
+                if (chrono != null)
+                {
+                    chrono.Tick("model compilation");
+                }
+
+                return check;
             }
         }
         else
         {
+            if (chrono != null)
+            {
+                chrono.Tick("model compilation");
+            }
             // should not happen
             return buildParser.Errors.Select(x => x.Message).ToList();
         }
@@ -240,9 +273,9 @@ public class ParserBuilder
     
     
    
-       public Result<string> Parse(string modelSource, string source, string parserName, string rootRule = null)
+       public Result<string> Parse(string modelSource, string source, string parserName, string rootRule = null, Chrono chrono = null)
     {
-        var model = CompileModel(modelSource, parserName);
+        var model = CompileModel(modelSource, parserName,chrono);
         
         if (model.IsError)
         {
@@ -250,7 +283,7 @@ public class ParserBuilder
         }
         
         
-        var buildResult = BuildParser(model);
+        var buildResult = BuildParser(model, chrono);
         
         var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType,typeof(object));
         var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
@@ -283,8 +316,10 @@ public class ParserBuilder
         return "OK";
         
     }
-    
-      public Result<List<(string format,string content)>,List<string>> Getz(string modelSource, string source, string parserName, List<(string format,SyntaxTreeProcessor processor)> processors, string rootRule = null)
+
+    public Result<List<(string format, string content)>, List<string>> Getz(string modelSource, string source,
+        string parserName, List<(string format, SyntaxTreeProcessor processor)> processors, string rootRule = null,
+        Chrono chrono = null)
     {
         var model = CompileModel(modelSource, parserName);
         
@@ -294,7 +329,7 @@ public class ParserBuilder
         }
         
         
-        var buildResult = BuildParser(model);
+        var buildResult = BuildParser(model, chrono);
         
         var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType,typeof(object));
         var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
@@ -314,6 +349,10 @@ public class ParserBuilder
 
         var parseMethod = parserType.GetMethod("Parse", new[] { typeof(string), typeof(string) });
         var result = parseMethod.Invoke(parser, new object[] { source, null });
+        if (chrono != null)
+        {
+         chrono.Tick("source parsing");   
+        }
 
         var ParseResultType = typeof(ParseResult<,>).MakeGenericType(buildResult.lexerType, typeof(object));
 
@@ -338,6 +377,11 @@ public class ParserBuilder
             {
                 var processed = processor.processor(buildResult.lexerType, parser.GetType(), syntaxTree);
                 results.Add((processor.format,processed));
+            }
+
+            if (chrono != null)
+            {
+                chrono.Tick($"syntax tree processing {string.Join(", ", processors.Select(x => x.format))}");
             }
 
             return results;

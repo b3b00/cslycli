@@ -34,7 +34,9 @@ There are 4 usages of csly-cli :
   - extract parser specification file from an existing lexer/parser pair C# source file.
   - extract parser specification file from an existing .Net assembly containing a lexer/parser pair.
     
+### web playground
 
+a subset of the CLI functions is available as a PWA : [CSLY Playground]([https://](https://b3b00.github.io/CslyViz/)
 
 ### testing the parser
 

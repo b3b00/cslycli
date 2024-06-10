@@ -69,6 +69,8 @@ public class Result<T,E>
     internal T result;
     internal E error;
 
+    public new IDictionary<string, long> Timings { get; set; } = new Dictionary<string, long>();
+    
     private bool _isOk;
     public bool IsOk => _isOk;
     public bool IsError => !IsOk;

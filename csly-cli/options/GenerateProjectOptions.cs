@@ -16,5 +16,16 @@ public class GenerateProjectOptions
     
     [Option('d', "output-dir", Required = false, HelpText = "output directory")]
     public string OutputDir { get; set; } = "./";
+
+    public GenerateOptions ToGenerateOptions()
+    {
+        return new GenerateOptions()
+        {
+            Grammar = Grammar,
+            NameSpace = NameSpace,
+            OutputDir = OutputDir,
+            ParserOutput = ParserOutput
+        };
+    }
     
 }

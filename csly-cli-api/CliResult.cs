@@ -6,6 +6,8 @@ public class CliResult<T>
 
     public bool IsOK => _isOk;
     
+    public bool IsError => !_isOk;
+    
     private T _result;
 
     public T Result => _result;

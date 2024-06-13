@@ -15,7 +15,7 @@ public class TestOptions
     [Option('o',"outptut",Required = false,HelpText = "path to output")]
     public string Output { get; set; }
     
-    [Option('f',"format",Required = false,HelpText = "format of output file : DOT=grpahviz dot file, JSON=json")]
+    [Option('f',"format",Required = false,HelpText = "format of output file : DOT=grpahviz dot file, JSON=json, MERMAID=mermaidjs")]
     public IEnumerable<OutputFormat?> OutputTypes { get; set; }
 
     public bool HasOtput => !string.IsNullOrEmpty(Output);
@@ -26,5 +26,6 @@ public enum OutputFormat
 {
     NO = 0,
     JSON = 1,
-    DOT = 2
+    DOT = 2,
+    MERMAID = 3,
 }

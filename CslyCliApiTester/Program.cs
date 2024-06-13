@@ -18,14 +18,14 @@ namespace csly_cli_api
 
         public static void Extract(string[] args)
         {
-            // var parser = File.ReadAllText($"C:/Users/olduh/dev/csly-cli/Generated/someParser.cs");
-            // var lexer = File.ReadAllText($"C:/Users/olduh/dev/csly-cli/Generated/someLexer.cs");
+            var processor = new CslyProcessor(); 
+            
             var lexer = File.ReadAllText($"C:/Users/olduh/dev/csly/src/samples/SimpleTemplate/TemplateLexer.cs");
             var parser = File.ReadAllText($"C:/Users/olduh/dev/csly/src/samples/SimpleTemplate/TemplateParser.cs");
-            var g = CslyProcessor.ExtractGrammar(parser, lexer);
+            var g = processor.ExtractGrammar(parser, lexer);
             File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/grammar.txt", g.Result);
 
-            var gr = CslyProcessor.Compile(g);
+            var gr = processor.Compile(g);
             if (gr.IsOK)
             {
                 Console.WriteLine("recompiled grammar is ok");
@@ -41,13 +41,15 @@ namespace csly_cli_api
 
         public static void GenerateAndBuild(string[] args)
         {
+            var processor = new CslyProcessor();
+            
             var grammar = File.ReadAllText("C:/Users/olduh/dev/csly-cli/Generated/grammar.txt");
 
             string source = @"
 1 / 2 / 3 + 4
 ";
 
-            var r = CslyProcessor.GenerateParser(grammar,"ns","object");
+            var r = processor.GenerateParser(grammar,"ns","object");
 
             Console.WriteLine("*** parser generation ");
             foreach (var timing in r.Timings)
@@ -68,7 +70,7 @@ namespace csly_cli_api
 -boubou-
 {%endif%}
 this is the end";
-                var dot = CslyProcessor.GetDot(grammar, templatesource);
+                var dot = processor.GetDot(grammar, templatesource);
                 Console.WriteLine("*** DOT ");
                 foreach (var timing in dot.Timings)
                 {

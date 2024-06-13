@@ -81,7 +81,8 @@ parser MinimalParser;
 
     private static void Compile(string path)
     {
-        var r = CslyProcessor.Compile(File.ReadAllText(path));
+        var processor = new CslyProcessor();
+        var r = processor.Compile(File.ReadAllText(path));
         if (r.IsOK)
         {
             Console.WriteLine("compilation ok");
@@ -98,7 +99,8 @@ parser MinimalParser;
 
     private static void Extract(string parserPath, string lexrerPath, string outputPath = null)
     {
-        var e = CslyProcessor.ExtractGrammar(File.ReadAllText(parserPath), File.ReadAllText(lexrerPath));
+        var processor = new CslyProcessor();
+        var e = processor.ExtractGrammar(File.ReadAllText(parserPath), File.ReadAllText(lexrerPath));
         if (e.IsOK)
         {
             if (outputPath != null)
@@ -107,7 +109,7 @@ parser MinimalParser;
             }
 
             Console.WriteLine("extraction ok");
-            var r = CslyProcessor.Compile(e.Result);
+            var r = processor.Compile(e.Result);
             if (r.IsOK)
             {
                 Console.WriteLine("compilation ok");
@@ -132,7 +134,8 @@ parser MinimalParser;
     
     private static void Parse(string grammarPath, string sourcePath, string outputPath = null)
         {
-            var e = CslyProcessor.GetDot(File.ReadAllText(grammarPath), File.ReadAllText(sourcePath));
+            var processor = new CslyProcessor();
+            var e = processor.GetDot(File.ReadAllText(grammarPath), File.ReadAllText(sourcePath));
             if (e.IsOK)
             {
                 if (outputPath != null)

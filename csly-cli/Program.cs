@@ -5,6 +5,7 @@ using System.Linq;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using CommandLine;
+using csly_cli_api;
 using decompiler;
 using sly.cli.options;
 using specificationExtractor;
@@ -16,13 +17,14 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        var processor = new CslyProcessor();
         Parser.Default.ParseArguments<TestOptions, GenerateOptions, GenerateProjectOptions, ExtractOptions, DecompileOptions>(args)
             .MapResult(
-                (TestOptions test) => { return Test(test); },
-                (GenerateOptions generate) => { return Generate(generate); },
-                (GenerateProjectOptions generateProject) => { return GenerateProject(generateProject); },
-                (ExtractOptions extract) => { return Extract(extract);},
-                (DecompileOptions decompile) => { return Decompile(decompile);},
+                (TestOptions test) => { return Test(test, processor); },
+                (GenerateOptions generate) => { return Generate(generate, processor); },
+                (GenerateProjectOptions generateProject) => { return Generate(generateProject.ToGenerateOptions(), processor, true); },
+                (ExtractOptions extract) => { return Extract(extract, processor);},
+                (DecompileOptions decompile) => { return Decompile(decompile, processor);},
                 errors =>
                 {
                     foreach (var error in errors)
@@ -37,7 +39,7 @@ public class Program
 
     }
 
-    private static int Decompile(DecompileOptions decompile)
+    private static int Decompile(DecompileOptions decompile, CslyProcessor processor)
     {
         Decompiler decompiler = new Decompiler();
         var specification = decompiler.Decompile(decompile.LexerFqn, decompile.ParserFqn, decompile.AssemblyPath);
@@ -52,7 +54,7 @@ public class Program
         return 0;
     }
 
-    private static int Extract(ExtractOptions extract)
+    private static int Extract(ExtractOptions extract, CslyProcessor processor)
     {
 
         var extractor = new SpecificationExtractor();
@@ -70,21 +72,21 @@ public class Program
         return 0;
     }
 
-    private static int Generate(GenerateOptions generate)
+    private static int Generate(GenerateOptions generate, CslyProcessor processor, bool generateProject = false)
     {
         var fi = new FileInfo(generate.Grammar);
         var parserName = fi.Name.Replace(fi.Extension, "");
         var builder = new clsy.cli.builder.parser.ParserBuilder();
 
-        
+
 
         var grammar = File.ReadAllText(generate.Grammar);
 
-        var model = builder.CompileModel(grammar);
-        if (model.IsError)
+        var compilationResult = processor.Compile(grammar);
+        if (compilationResult.IsError)
         {
             Console.WriteLine("Errors in grammar specification file:");
-            foreach (var error in model.Error)
+            foreach (var error in compilationResult.Errors)
             {
                 Console.WriteLine(error);
             }
@@ -92,104 +94,41 @@ public class Program
             return 1;
         }
 
-        var lexerModel = model.Value.LexerModel;
-        var parserModel = model.Value.ParserModel;
-        
-        Console.WriteLine("Model compilation succeeded.");
+        var generationResult = processor.GenerateParser(grammar, generate.NameSpace, generate.ParserOutput);
 
-        var lexerGenerator = new LexerGenerator();
-        var enumCode = lexerGenerator.GenerateLexer(lexerModel, generate.NameSpace);
-        var path = Path.Combine(generate.OutputDir, lexerModel.Name + ".cs");
-        File.WriteAllText(path,enumCode);
-
-        var parserGenerator = new ParserGenerator();
-        var parserCode = parserGenerator.GenerateParser(model.Value,  generate.NameSpace, generate.ParserOutput);
-        path = Path.Combine(generate.OutputDir, parserModel.Name + ".cs");
-        File.WriteAllText(path,parserCode);
-        return 0;
-    }
-
-    private static int GenerateProject(GenerateProjectOptions generate)
-    {
-        var fi = new FileInfo(generate.Grammar);
-        var parserName = fi.Name.Replace(fi.Extension, "");
-        var builder = new clsy.cli.builder.parser.ParserBuilder();
-        var grammar = File.ReadAllText(generate.Grammar);
-
-        var model = builder.CompileModel(grammar);
-        if (model.IsError)
+        if (generationResult.IsOK)
         {
-            foreach (var error in model.Error)
+
+            var path = Path.Combine(generate.OutputDir, generationResult.Result.LexerName + ".cs");
+            File.WriteAllText(path, generationResult.Result.Lexer);
+            
+            path = Path.Combine(generate.OutputDir, generationResult.Result.ParserName + ".cs");
+            File.WriteAllText(path,generationResult.Result.Parser);
+            
+            if (generateProject)
             {
-                Console.Error.WriteLine(error);    
+                File.WriteAllText(Path.Combine(generate.OutputDir,generationResult.Result.ParserName)+".csproj",generationResult.Result.Project);
+                File.WriteAllText(Path.Combine(generate.OutputDir,"Program.cs"),generationResult.Result.Program);
             }
-            return 1;
+            return 0;
+        }
+        else
+        {
+            Console.WriteLine("Errors while generating source code:");
+            foreach (var error in generationResult.Errors)
+            {
+                Console.WriteLine(error);
+            }
+
+            return 2;
         }
 
-        var parserModel = model.Value.ParserModel;
-        var lexerModel = model.Value.LexerModel;
+       
 
-        Generate(new GenerateOptions() {Grammar = generate.Grammar, NameSpace = generate.NameSpace, ParserOutput = generate.ParserOutput, OutputDir = generate.OutputDir});
-        
-        string csproj = $@"<Project Sdk=""Microsoft.NET.Sdk"">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
-        <RootNamespace>{generate.NameSpace}</RootNamespace>                
-        <PackageOutputPath>./nupkg</PackageOutputPath>
-        <version>0.0.1</version>
-        <PackageVersion>0.0.1</PackageVersion>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include=""sly"" Version=""3.1.4"" />
-    </ItemGroup>
-
-</Project>";
-        File.WriteAllText(Path.Combine(generate.OutputDir,parserModel.Name)+".csproj",csproj);
-
-        string extender =  lexerModel.HasExtension ? $"Extended{lexerModel.Name}.Extend{lexerModel.Name}": "null";
-        
-        string program = $@"
-using sly.parser.generator;
-using System;
-
-namespace {generate.NameSpace} {{
-    
-
-    public class Program {{
-        public static void Main(string[] args) {{
-            var builder = new ParserBuilder<{lexerModel.Name}, object>();
-            var instance = new {parserModel.Name}();
-
-            var buildParser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, null,{extender});
-            if (buildParser.IsOk)
-            {{
-                var result = buildParser.Result.Parse(""<< HERE COMES YOUR SOURCE"");
-                if (result.IsOk)
-                {{
-                    Console.WriteLine(result.Result);
-                }}
-                else
-                {{
-                    foreach (var error in result.Errors)
-                    {{
-                        Console.WriteLine(error.ErrorMessage);
-                    }}
-                }}
-
-            }}
-        }}
-    }}
-}}
-";
-        File.WriteAllText(Path.Combine(generate.OutputDir,"Program.cs"),program);
-        
-        return 0;
     }
-    
-    private static int Test(TestOptions test)
+
+    private static int Test(TestOptions test, CslyProcessor processor)
     {
         var fi = new FileInfo(test.Grammar);
         var parserName = fi.Name.Replace(fi.Extension, "");
@@ -218,9 +157,18 @@ namespace {generate.NameSpace} {{
 
         if (test.OutputTypes.Any())
         {
-            formatters = test.OutputTypes.Select(x => (x.Value, (x == OutputFormat.DOT
-                ? ((SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToDotGraph)
-                : ((SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToJson)))).ToList();
+            var formats = new Dictionary<OutputFormat, SyntaxTreeProcessor>()
+            {
+                { OutputFormat.DOT, ParserBuilder.SyntaxTreeToDotGraph },
+                { OutputFormat.JSON, ParserBuilder.SyntaxTreeToJson },
+                { OutputFormat.MERMAID, ParserBuilder.SyntaxTreeToMermaid }
+            };
+            
+            formatters = test.OutputTypes
+                .Where(x => x.HasValue)
+                .Select(x => x.Value)
+                .Select(x => (x,formats[x]))
+                .ToList();
         }
         else
         {
@@ -251,7 +199,14 @@ namespace {generate.NameSpace} {{
             foreach (var value in result.Value)
             {
 
-                var outputFileExtension = value.format == OutputFormat.DOT.ToString() ? ".dot" : ".json";
+                var extensions = new Dictionary<string, string>()
+                {
+                    { nameof(OutputFormat.DOT), ".dot" },
+                    { nameof(OutputFormat.MERMAID), ".mermaid" },
+                    { nameof(OutputFormat.JSON), ".json" }
+                };
+
+                var outputFileExtension = extensions[value.format];
 
                 var outputFileName = Path.Combine(test.Output, parserName + outputFileExtension);
                 if (File.Exists(outputFileName))

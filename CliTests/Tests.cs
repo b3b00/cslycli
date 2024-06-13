@@ -15,6 +15,13 @@ namespace CliTests;
 
 public class Tests
 {
+    private CslyProcessor _processor;
+
+    public Tests()
+    {
+        _processor = new CslyProcessor();
+    }
+    
     [Fact]
     public void TestGrammar1()
     {
@@ -452,7 +459,7 @@ integer : INT;
 1 / 2 / 3 + 4
 ";
 
-        var r = CslyProcessor.GetDot(grammar," 0 + ~1 + -2 div #3 ");
+        var r = _processor.GetDot(grammar," 0 + ~1 + -2 div #3 ");
         Check.That(r.IsOK).IsTrue();
 
     }
@@ -468,14 +475,14 @@ parser MinimalParser;
 
 -> root : DATE ;
 ";
-
-        var r = CslyProcessor.Parse(grammar, "2024.04.23");
+        
+        var r = _processor.Parse(grammar, "2024.04.23");
         Check.That(r.IsOK).IsTrue();
 
-        r = CslyProcessor.Parse(grammar, "coucou");
+        r = _processor.Parse(grammar, "coucou");
         Check.That(r.IsOK).IsFalse();
         
-        r = CslyProcessor.Parse(grammar, "2024.06.05.13.21");
+        r = _processor.Parse(grammar, "2024.06.05.13.21");
         Check.That(r.IsOK).IsFalse();
     }
     
@@ -522,10 +529,10 @@ item : OPEN_CODE INT CLOSE_CODE;
 item : OPEN_CODE STRING CLOSE_CODE;
 ";
 
-        var r = CslyProcessor.Parse(grammar, @"text{=value=}text{%28%}text{%""hello""%}text");
+        var r = _processor.Parse(grammar, @"text{=value=}text{%28%}text{%""hello""%}text");
         Check.That(r.IsOK).IsTrue();
 
-        r = CslyProcessor.Parse(grammar, "text{=value");
+        r = _processor.Parse(grammar, "text{=value");
         Check.That(r.IsOK).IsFalse();
         
     }

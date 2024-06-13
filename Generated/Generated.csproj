@@ -12,10 +12,11 @@
         
     </PropertyGroup>
     
-    <ItemGroup><!--      <PackageReference Include="sly" Version="3.1.6" />-->
+    <ItemGroup>
+              <PackageReference Include="sly" Version="3.1.6" />
         
     
-      <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />
+<!--      <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
     </ItemGroup>
 
 </Project>

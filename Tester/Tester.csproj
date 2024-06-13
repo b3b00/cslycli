@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="sly" Version="3.1.6" />
+        <PackageReference Include="sly" Version="3.1.7" />
         <ProjectReference Include="..\csly-cli-api\csly-cli-api.csproj" />
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />

@@ -14,6 +14,7 @@ using sly.parser;
 using sly.parser.generator;
 using sly.parser.generator.visitor;
 using sly.parser.generator.visitor.dotgraph;
+using sly.parser.generator.visitor.mermaid;
 using sly.parser.parser;
 
 namespace clsy.cli.builder.parser;
@@ -406,6 +407,24 @@ public class ParserBuilder
         var dot = (graph as DotGraph);
 
         return dot.Compile();
+    }
+    
+    public static string SyntaxTreeToMermaid(Type lexerType, Type parserType, object syntaxTree)
+    {
+        var graphvizType = typeof(MermaidEBNFSyntaxTreeVisitor<>).MakeGenericType(lexerType);
+        var visitor = graphvizType.GetConstructor(new Type[] { }).Invoke(new object[]{});
+        
+        var visited = graphvizType
+            .GetMethod("VisitTree", new Type[] { syntaxTree.GetType() })
+            .Invoke(visitor, new object[] { syntaxTree });
+
+        var graph = graphvizType?
+            .GetProperty("Graph")
+            ?.GetValue(visitor);
+
+        var mermaid = (graph as MermaidGraph);
+
+        return mermaid.Compile();
     }
 
     public static string SyntaxTreeToJson(Type lexerType, Type parserTree, object syntaxTree)

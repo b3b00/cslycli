@@ -26,6 +26,14 @@ public interface ICslyProcessor
     /// <param name="source">source</param>
     /// <returns></returns>
     CliResult<string> GetDot(string grammar, string source);
+    
+    /// <summary>
+    /// Returns a mermaid js flow chart representation of the syntax tree of a source (according to a grammar spec)
+    /// </summary>
+    /// <param name="grammar">Grammar spec</param>
+    /// <param name="source">source</param>
+    /// <returns></returns>
+    CliResult<string> GetMermaid(string grammar, string source);
 
     /// <summary>
     /// Returns a json representation of the syntax tree of a source (according to a grammar spec)
@@ -51,4 +59,6 @@ public interface ICslyProcessor
     /// <param name="lexer">lexer source file content</param>
     /// <returns></returns>
     CliResult<string> ExtractGrammar(string parser, string lexer);
+    
+    
 }

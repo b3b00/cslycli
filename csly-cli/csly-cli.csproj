@@ -9,8 +9,8 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>csly-cli</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-        <version>2.2.3</version>
-        <PackageVersion>2.2.3</PackageVersion>
+        <version>2.2.4</version>
+        <PackageVersion>2.2.4</PackageVersion>
         
     </PropertyGroup>
     <PropertyGroup>
@@ -28,7 +28,9 @@
 
     
     
-    <ItemGroup>      
+    <ItemGroup>     
+      
+      <ProjectReference Include="..\csly-cli-api\csly-cli-api.csproj" />     
       
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />

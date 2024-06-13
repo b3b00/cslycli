@@ -5,6 +5,7 @@ using System.Linq;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using CommandLine;
+using csly_cli_api;
 using decompiler;
 using sly.cli.options;
 using specificationExtractor;
@@ -16,13 +17,14 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        var processor = new CslyProcessor();
         Parser.Default.ParseArguments<TestOptions, GenerateOptions, GenerateProjectOptions, ExtractOptions, DecompileOptions>(args)
             .MapResult(
-                (TestOptions test) => { return Test(test); },
-                (GenerateOptions generate) => { return Generate(generate); },
-                (GenerateProjectOptions generateProject) => { return GenerateProject(generateProject); },
-                (ExtractOptions extract) => { return Extract(extract);},
-                (DecompileOptions decompile) => { return Decompile(decompile);},
+                (TestOptions test) => { return Test(test, processor); },
+                (GenerateOptions generate) => { return Generate(generate, processor); },
+                (GenerateProjectOptions generateProject) => { return Generate(generateProject.ToGenerateOptions(), processor, true); },
+                (ExtractOptions extract) => { return Extract(extract, processor);},
+                (DecompileOptions decompile) => { return Decompile(decompile, processor);},
                 errors =>
                 {
                     foreach (var error in errors)
@@ -37,7 +39,7 @@ public class Program
 
     }
 
-    private static int Decompile(DecompileOptions decompile)
+    private static int Decompile(DecompileOptions decompile, CslyProcessor processor)
     {
         Decompiler decompiler = new Decompiler();
         var specification = decompiler.Decompile(decompile.LexerFqn, decompile.ParserFqn, decompile.AssemblyPath);
@@ -52,7 +54,7 @@ public class Program
         return 0;
     }
 
-    private static int Extract(ExtractOptions extract)
+    private static int Extract(ExtractOptions extract, CslyProcessor processor)
     {
 
         var extractor = new SpecificationExtractor();
@@ -155,9 +157,18 @@ public class Program
 
         if (test.OutputTypes.Any())
         {
-            formatters = test.OutputTypes.Select(x => (x.Value, (x == OutputFormat.DOT
-                ? ((SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToDotGraph)
-                : ((SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToJson)))).ToList();
+            var formats = new Dictionary<OutputFormat, SyntaxTreeProcessor>()
+            {
+                { OutputFormat.DOT, ParserBuilder.SyntaxTreeToDotGraph },
+                { OutputFormat.JSON, ParserBuilder.SyntaxTreeToJson },
+                { OutputFormat.MERMAID, ParserBuilder.SyntaxTreeToMermaid }
+            };
+            
+            formatters = test.OutputTypes
+                .Where(x => x.HasValue)
+                .Select(x => x.Value)
+                .Select(x => (x,formats[x]))
+                .ToList();
         }
         else
         {
@@ -188,7 +199,14 @@ public class Program
             foreach (var value in result.Value)
             {
 
-                var outputFileExtension = value.format == OutputFormat.DOT.ToString() ? ".dot" : ".json";
+                var extensions = new Dictionary<string, string>()
+                {
+                    { nameof(OutputFormat.DOT), ".dot" },
+                    { nameof(OutputFormat.MERMAID), ".mermaid" },
+                    { nameof(OutputFormat.JSON), ".json" }
+                };
+
+                var outputFileExtension = extensions[value.format];
 
                 var outputFileName = Path.Combine(test.Output, parserName + outputFileExtension);
                 if (File.Exists(outputFileName))

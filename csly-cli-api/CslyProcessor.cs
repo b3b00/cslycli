@@ -5,57 +5,6 @@ using specificationExtractor;
 
 namespace csly_cli_api;
 
-public interface ICslyProcessor
-{
-    /// <summary>
-    /// Compiles and check a grammar specification 
-    /// </summary>
-    /// <param name="grammar">the grammar specification</param>
-    /// <returns></returns>
-    CliResult<Model> Compile(string grammar);
-
-    /// <summary>
-    /// Parses a source according to a grammar specification
-    /// </summary>
-    /// <param name="grammar">The grammar specification</param>
-    /// <param name="source">The source</param>
-    /// <returns></returns>
-    CliResult<string> Parse(string grammar, string source);
-
-    /// <summary>
-    /// Returns a graphviz dot representation of the syntax tree of a source (according to a grammar spec)
-    /// </summary>
-    /// <param name="grammar">Grammar spec</param>
-    /// <param name="source">source</param>
-    /// <returns></returns>
-    CliResult<string> GetDot(string grammar, string source);
-
-    /// <summary>
-    /// Returns a json representation of the syntax tree of a source (according to a grammar spec)
-    /// </summary>
-    /// <param name="grammar">Grammar spec</param>
-    /// <param name="source">source</param>
-    /// <returns></returns>
-    CliResult<string> GetJson(string grammar, string source);
-
-    /// <summary>
-    /// generates C# source for lexer and parse according to a grammar spec.
-    /// </summary>
-    /// <param name="grammar">grammar spec</param>
-    /// <param name="nameSpace">namespace of the generated source</param>
-    /// <param name="outputType">expected output type for the parser</param>
-    /// <returns></returns>
-    CliResult<GeneratedSource> GenerateParser(string grammar, string nameSpace, string outputType);
-
-    /// <summary>
-    /// Extracts a grammar spec from C# lexer and parser source file 
-    /// </summary>
-    /// <param name="parser">parser source file content</param>
-    /// <param name="lexer">lexer source file content</param>
-    /// <returns></returns>
-    CliResult<string> ExtractGrammar(string parser, string lexer);
-}
-
 public class CslyProcessor : ICslyProcessor
 {
 
@@ -164,6 +113,48 @@ public class CslyProcessor : ICslyProcessor
             };
         }
     }
+    
+    /// <summary>
+    /// Returns a mermaid js flow chart representation of the syntax tree of a source (according to a grammar spec)
+    /// </summary>
+    /// <param name="grammar">Grammar spec</param>
+    /// <param name="source">source</param>
+    /// <returns></returns>
+   
+    
+    public CliResult<string> GetMermaid(string grammar, string source)
+    {
+        var chrono = new Chrono();
+        var model = _parserBuilder.CompileModel(grammar, "MinimalParser", chrono);
+        if (model.IsOk)
+        {
+            var r = _parserBuilder.Getz(grammar, source, model.Value.ParserModel.Name,
+                new List<(string format, SyntaxTreeProcessor processor)>()
+                    { ("DOT", (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToMermaid) },model.Value.ParserModel.Root, chrono);
+            if (r.IsError)
+            {
+                chrono.Stop();
+                return new CliResult<string>(r.Error.Select(x => $"parse error : {x}").ToList()) {
+                    Timings = chrono.LabeledElapsedMilliseconds
+                };
+            }
+            else
+            {
+                chrono.Stop();
+                return new CliResult<string>(r.Value[0].content)
+                {
+                    Timings = chrono.LabeledElapsedMilliseconds
+                };
+            }
+        }
+        else
+        {
+            chrono.Stop();
+            return new CliResult<string>(model.Error.Select(x => $"grammar error : {x}").ToList()) {
+                Timings = chrono.LabeledElapsedMilliseconds
+            };
+        }
+    }
    
     /// <summary>
     /// Returns a json representation of the syntax tree of a source (according to a grammar spec)
@@ -242,7 +233,44 @@ public class CslyProcessor : ICslyProcessor
 
 </Project>";
             chrono.Tick("project source generation");
-            return new CliResult<GeneratedSource>(new GeneratedSource(model.Value.LexerModel.Name, lexerSource, model.Value.ParserModel.Name, parserSource, csproj));
+            
+            string extender =  lexerModel.HasExtension ? $"Extended{lexerModel.Name}.Extend{lexerModel.Name}": "null";
+            
+            string program = $@"
+using sly.parser.generator;
+using System;
+
+namespace {nameSpace} {{
+    
+
+    public class Program {{
+        public static void Main(string[] args) {{
+            var builder = new ParserBuilder<{lexerModel.Name}, object>();
+            var instance = new {parserModel.Name}();
+
+            var buildParser = builder.BuildParser(instance, ParserType.EBNF_LL_RECURSIVE_DESCENT, null,{extender});
+            if (buildParser.IsOk)
+            {{
+                var result = buildParser.Result.Parse(""<< HERE COMES YOUR SOURCE"");
+                if (result.IsOk)
+                {{
+                    Console.WriteLine(result.Result);
+                }}
+                else
+                {{
+                    foreach (var error in result.Errors)
+                    {{
+                        Console.WriteLine(error.ErrorMessage);
+                    }}
+                }}
+
+            }}
+        }}
+    }}
+}}
+";
+            
+            return new CliResult<GeneratedSource>(new GeneratedSource(model.Value.LexerModel.Name, lexerSource, model.Value.ParserModel.Name, parserSource, csproj, program));
         }
         else
         {

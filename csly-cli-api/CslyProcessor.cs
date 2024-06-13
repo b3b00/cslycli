@@ -5,20 +5,78 @@ using specificationExtractor;
 
 namespace csly_cli_api;
 
-public class CslyProcessor
+public interface ICslyProcessor
 {
-
     /// <summary>
     /// Compiles and check a grammar specification 
     /// </summary>
     /// <param name="grammar">the grammar specification</param>
     /// <returns></returns>
-    public static CliResult<Model> Compile(string grammar)
+    CliResult<Model> Compile(string grammar);
+
+    /// <summary>
+    /// Parses a source according to a grammar specification
+    /// </summary>
+    /// <param name="grammar">The grammar specification</param>
+    /// <param name="source">The source</param>
+    /// <returns></returns>
+    CliResult<string> Parse(string grammar, string source);
+
+    /// <summary>
+    /// Returns a graphviz dot representation of the syntax tree of a source (according to a grammar spec)
+    /// </summary>
+    /// <param name="grammar">Grammar spec</param>
+    /// <param name="source">source</param>
+    /// <returns></returns>
+    CliResult<string> GetDot(string grammar, string source);
+
+    /// <summary>
+    /// Returns a json representation of the syntax tree of a source (according to a grammar spec)
+    /// </summary>
+    /// <param name="grammar">Grammar spec</param>
+    /// <param name="source">source</param>
+    /// <returns></returns>
+    CliResult<string> GetJson(string grammar, string source);
+
+    /// <summary>
+    /// generates C# source for lexer and parse according to a grammar spec.
+    /// </summary>
+    /// <param name="grammar">grammar spec</param>
+    /// <param name="nameSpace">namespace of the generated source</param>
+    /// <param name="outputType">expected output type for the parser</param>
+    /// <returns></returns>
+    CliResult<GeneratedSource> GenerateParser(string grammar, string nameSpace, string outputType);
+
+    /// <summary>
+    /// Extracts a grammar spec from C# lexer and parser source file 
+    /// </summary>
+    /// <param name="parser">parser source file content</param>
+    /// <param name="lexer">lexer source file content</param>
+    /// <returns></returns>
+    CliResult<string> ExtractGrammar(string parser, string lexer);
+}
+
+public class CslyProcessor : ICslyProcessor
+{
+
+    private ParserBuilder _parserBuilder;
+    
+    public CslyProcessor()
     {
-        var builder = new ParserBuilder();
+        _parserBuilder = new ParserBuilder();
+    }
+    
+    /// <summary>
+    /// Compiles and check a grammar specification 
+    /// </summary>
+    /// <param name="grammar">the grammar specification</param>
+    /// <returns></returns>
+    public CliResult<Model> Compile(string grammar)
+    {
+        
         Chrono chrono = new Chrono();
         chrono.Start();
-        var model = builder.CompileModel(grammar, "MinimalParser",chrono);
+        var model = _parserBuilder.CompileModel(grammar, "MinimalParser",chrono);
         chrono.Stop();
         if (model.IsOk)
         {
@@ -35,16 +93,15 @@ public class CslyProcessor
     /// <param name="grammar">The grammar specification</param>
     /// <param name="source">The source</param>
     /// <returns></returns>
-    public static CliResult<string> Parse(string grammar, string source)
+    public CliResult<string> Parse(string grammar, string source)
     {
-        var builder = new ParserBuilder();
         var chrono = new Chrono();
         chrono.Start();
-        var model = builder.CompileModel(grammar, "Dummy__@@_4589_Parser", chrono);
+        var model = _parserBuilder.CompileModel(grammar, "Dummy__@@_4589_Parser", chrono);
         
         if (model.IsOk)
         {
-            var r = builder.Parse(grammar, source, model.Value.ParserModel.Name, model.Value.ParserModel.Root, chrono);
+            var r = _parserBuilder.Parse(grammar, source, model.Value.ParserModel.Name, model.Value.ParserModel.Root, chrono);
             chrono.Tick("source parsing");
             if (r.IsError)
             {
@@ -74,14 +131,13 @@ public class CslyProcessor
     /// <param name="grammar">Grammar spec</param>
     /// <param name="source">source</param>
     /// <returns></returns>
-    public static CliResult<string> GetDot(string grammar, string source)
+    public CliResult<string> GetDot(string grammar, string source)
     {
-        var builder = new ParserBuilder();
         var chrono = new Chrono();
-        var model = builder.CompileModel(grammar, "MinimalParser", chrono);
+        var model = _parserBuilder.CompileModel(grammar, "MinimalParser", chrono);
         if (model.IsOk)
         {
-            var r = builder.Getz(grammar, source, model.Value.ParserModel.Name,
+            var r = _parserBuilder.Getz(grammar, source, model.Value.ParserModel.Name,
                 new List<(string format, SyntaxTreeProcessor processor)>()
                     { ("DOT", (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToDotGraph) },model.Value.ParserModel.Root, chrono);
             if (r.IsError)
@@ -115,14 +171,14 @@ public class CslyProcessor
     /// <param name="grammar">Grammar spec</param>
     /// <param name="source">source</param>
     /// <returns></returns>
-    public static CliResult<string> GetJson(string grammar, string source)
+    public CliResult<string> GetJson(string grammar, string source)
     {
-        var builder = new ParserBuilder();
+        
         var chrono = new Chrono();
-        var model = builder.CompileModel(grammar, "MinimalParser",chrono);
+        var model = _parserBuilder.CompileModel(grammar, "MinimalParser",chrono);
         if (model.IsOk)
         {
-            var r = builder.Getz(grammar, source, "TestParser",
+            var r = _parserBuilder.Getz(grammar, source, "TestParser",
                 new List<(string format, SyntaxTreeProcessor processor)>()
                     { ("JSON", (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToJson) }, model.Value.ParserModel.Root,chrono);
             if (r.IsError)
@@ -147,12 +203,11 @@ public class CslyProcessor
     /// <param name="nameSpace">namespace of the generated source</param>
     /// <param name="outputType">expected output type for the parser</param>
     /// <returns></returns>
-    public static CliResult<GeneratedSource> GenerateParser(string grammar, string nameSpace, string outputType)
+    public CliResult<GeneratedSource> GenerateParser(string grammar, string nameSpace, string outputType)
     {
         Chrono chrono = new Chrono();
         
-        var builder = new ParserBuilder();
-        var model = builder.CompileModel(grammar, "MinimalParser", chrono);
+        var model = _parserBuilder.CompileModel(grammar, "MinimalParser", chrono);
         if (model.IsOk)
         {
             string lexerSource = "";
@@ -201,7 +256,7 @@ public class CslyProcessor
     /// <param name="parser">parser source file content</param>
     /// <param name="lexer">lexer source file content</param>
     /// <returns></returns>
-    public static CliResult<string> ExtractGrammar(string parser, string lexer)
+    public CliResult<string> ExtractGrammar(string parser, string lexer)
     {
         var extractor = new SpecificationExtractor();
         var grammar  = extractor.ExtractFromSource(lexer, parser);

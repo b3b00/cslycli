@@ -162,7 +162,7 @@ public class LexerGenerator
                 }
                 else
                 {
-                    return $".MultiRangeTransitionTo({toNode},{ranges})";
+                    return $@".MultiRangeTransitionTo(""{toNode}"",{ranges})";
                 }
 
                 return "";
@@ -211,7 +211,7 @@ public class LexerGenerator
                 case RepeaterType.ZeroOrMore:
                 {
                     string loopingNode = Guid.NewGuid().ToString();
-                    builder.AppendLine($".Mark({loopingNode})");
+                    builder.AppendLine($@".Mark(""{loopingNode})""");
                     builder.AppendLine(doTransition(loopingNode));
                     break;
                 }
@@ -219,7 +219,7 @@ public class LexerGenerator
                 {
                     string loopingNode = Guid.NewGuid().ToString();
                     builder.AppendLine(doTransition(null))
-                        .AppendLine($".Mark({loopingNode})")
+                        .AppendLine($@".Mark(""{loopingNode}"")")
                         .AppendLine($"{doTransition(loopingNode)}");
 
                     break;

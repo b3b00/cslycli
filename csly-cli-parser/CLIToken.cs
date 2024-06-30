@@ -9,6 +9,7 @@ public enum CLIToken
 {
     EOS = 0,
 
+    [Mode]
     [LexemeLabel("en","semicolon")]
     [LexemeLabel("fr","point-virgule")]
     [Sugar(";")]
@@ -56,6 +57,9 @@ public enum CLIToken
     [LexemeLabel("fr","deux point")]
     [LexemeLabel("en","colon")]
     [Sugar(":")] COLON,
+    [Mode("EXT")]
+    [LexemeLabel("fr","sauf")]
+    [LexemeLabel("en","except")]
     [Sugar("^")] NOT,
     
     [LexemeLabel("fr","mot clé 'genericLexer'")]
@@ -269,6 +273,7 @@ public enum CLIToken
     [Mode("default","EXT")]
     [Sugar(",")]
     COMMA,
+    
     
     [LexemeLabel("fr","mot clé END")]
     [LexemeLabel("en","END keyword")]

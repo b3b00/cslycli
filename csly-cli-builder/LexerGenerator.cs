@@ -15,6 +15,8 @@ public class LexerGenerator
     {
         
     }
+
+    private int _markCounter = 0;
     
     public string GenerateLexer(LexerModel model, string nameSpace)
     {
@@ -210,14 +212,16 @@ public class LexerGenerator
                 }
                 case RepeaterType.ZeroOrMore:
                 {
-                    string loopingNode = Guid.NewGuid().ToString();
+                    _markCounter++;
+                    string loopingNode = $"mark#{_markCounter}";
                     builder.AppendLine($@".Mark(""{loopingNode})""");
                     builder.AppendLine(doTransition(loopingNode));
                     break;
                 }
                 case RepeaterType.OneOrMore:
                 {
-                    string loopingNode = Guid.NewGuid().ToString();
+                    _markCounter++;
+                    string loopingNode = $"mark#{_markCounter}";
                     builder.AppendLine(doTransition(null))
                         .AppendLine($@".Mark(""{loopingNode}"")")
                         .AppendLine($"{doTransition(loopingNode)}");

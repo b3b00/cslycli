@@ -8,7 +8,9 @@ namespace hexa
     {
         [Int]
         INT,
-        [Hexa]
+        [Hexa("6x")]
         HEXA,
+        [AlphaId]
+        ID,
     }
 }

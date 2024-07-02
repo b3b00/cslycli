@@ -220,7 +220,7 @@ public class CslyProcessor : ICslyProcessor
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <RootNamespace>{nameSpace}</RootNamespace>                
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <version>0.0.1</version>

@@ -7,7 +7,7 @@
         <RootNamespace>csly.cli.parser</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="sly" Version="3.1.8-alpha1"/>
+        <PackageReference Include="sly" Version="3.1.8-alpha3"/>
 <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
         <PackageReference Include="System.Collections.Immutable" Version="8.0.0"/>
         <PackageReference Include="System.Memory" Version="4.5.5"/>

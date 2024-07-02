@@ -1,3 +1,4 @@
+using hexa;
 using sly.parser.generator;
 
 namespace ns;
@@ -12,8 +13,8 @@ public class Program
 
     private static void Some()
     {
-        ParserBuilder<someLexer, int> builder = new ParserBuilder<someLexer, int>();
-        var some = new someParser();
+        ParserBuilder<HexaLexer, int> builder = new ParserBuilder<HexaLexer, int>();
+        var some = new HexaParser();
         var r = builder.BuildParser(some, ParserType.EBNF_LL_RECURSIVE_DESCENT, "root");
         if (r.IsOk)
         {

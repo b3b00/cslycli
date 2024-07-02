@@ -35,6 +35,19 @@ public class LexerSpecificationExtractor
             {
                 return $"[Double] {name};";
             }
+            case GenericToken.Hexa:
+            {
+                if (args.Length == 0)
+                {
+                    return $"[Hexa] {name};";
+                }
+                else if (args.Length == 1)
+                {
+                    return $"[Hexa] {name} : \"{args[0].Replace("\"","\\\"")}\";";
+                }
+
+                break;
+            }
             case GenericToken.Identifier:
             {
                 string attr = "AlphaId";
@@ -131,6 +144,10 @@ public class LexerSpecificationExtractor
         else if (type == "Int")
         {
             return Lexeme(name, GenericToken.Int, args);
+        }
+        else if (type == "Hexa")
+        {
+            return Lexeme(name, GenericToken.Hexa, args);
         }
         else if (type == "Double")
         {

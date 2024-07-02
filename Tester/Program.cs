@@ -28,8 +28,9 @@ public static class Program
     public static void Main(string[] args)
     {
         //Compile("C:\\Users\\olduh\\dev\\BlazorCslyViz\\BlazorVizView\\samples\\grammar\\indented-while.txt");
-        Extract(@"C:\Users\olduh\dev\csly\src\samples\IndentedWhile\parser\IndentedWhileParserGeneric.cs","C:\\Users\\olduh\\dev\\csly\\src\\samples\\IndentedWhile\\parser\\IndentedWhileTokenGeneric.cs", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\indented-while.txt");
-        Parse(@"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\indented-while.txt", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\source\indented-while.txt");
+        // Extract(@"C:\Users\olduh\dev\csly\src\samples\IndentedWhile\parser\IndentedWhileParserGeneric.cs","C:\\Users\\olduh\\dev\\csly\\src\\samples\\IndentedWhile\\parser\\IndentedWhileTokenGeneric.cs", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\indented-while.txt");
+        // Parse(@"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\indented-while.txt", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\source\indented-while.txt");
+        TestErrorMessages();
     }
 
    
@@ -155,5 +156,60 @@ parser MinimalParser;
             }
     
         }
+
+    private static void TestErrorMessages()
+    {
+        string grammar = @"
+genericLexer HexaLexer;
+
+[Int] INT;
+
+[Hexa] HEXA : ""00x"";
+            
+
+
+
+
+
+parser HexaParser;
+
+
+
+-> root : HEXA+ INT;
+";
+        var processor = new CslyProcessor();
+        var r = processor.Compile(grammar);
+        if (r.IsOK)
+        {
+            Console.WriteLine("ok");
+        }
+        else
+        {
+            foreach (var error in r.Errors)
+            {
+                Console.WriteLine(error);
+            }
+        }
+
+        var x = processor.GenerateParser(grammar,"hexa", "Object");
+        if (x.IsOK)
+        {
+            File.WriteAllText("C:\\Users\\olduh\\dev\\csly-cli\\Generated\\SomeLexer.cs",x.Result.Lexer);
+            File.WriteAllText("C:\\Users\\olduh\\dev\\csly-cli\\Generated\\SomeParser.cs",x.Result.Parser);
+        }
+
+        var t = processor.GetDot(grammar, "00x12 00xAB 00xab 999");
+        if (t.IsOK)
+        {
+            Console.WriteLine("parse ok");
+        }
+        else
+        {
+            foreach (var error in t.Errors)
+            {
+                Console.WriteLine(error);
+            }
+        }
+    }
 }
 }

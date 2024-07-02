@@ -135,7 +135,7 @@ public class CLIParser
     
 
     [Production(
-        "token : attribute* LEFTBRACKET[d] [SUGARTOKEN|SINGLELINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d]")]
+        "token : attribute* LEFTBRACKET[d] [SUGARTOKEN|SINGLELINECOMMENT|HEXATOKEN] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d]")]
     public ICLIModel OneArgToken(List<ICLIModel> attributes, Token<CLIToken> type, Token<CLIToken> id, Token<CLIToken> value, ParserContext context)
     {
         var tokenType = type.TokenID switch
@@ -143,6 +143,7 @@ public class CLIParser
             CLIToken.KEYWORDTOKEN => GenericToken.KeyWord,
             CLIToken.SUGARTOKEN => GenericToken.SugarToken,
             CLIToken.SINGLELINECOMMENT => GenericToken.Comment,
+            CLIToken.HEXATOKEN => GenericToken.Hexa, 
             _ => GenericToken.SugarToken
         };
         context.AddEnumName(id.Value);
@@ -195,7 +196,7 @@ public class CLIParser
         return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType,id.Value,delimiters.Select(x => x.StringWithoutQuotes).ToArray()) {Position = id.Position};
     }
 
-    [Production("token : attribute* LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN] RIGHTBRACKET[d] ID SEMICOLON[d]")]
+    [Production("token : attribute* LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN|HEXATOKEN] RIGHTBRACKET[d] ID SEMICOLON[d]")]
     public ICLIModel NoArgToken(List<ICLIModel> attributes, Token<CLIToken> type, Token<CLIToken> id, ParserContext context)
     {
         var tokenType = type.TokenID switch
@@ -206,6 +207,7 @@ public class CLIParser
             CLIToken.ALPHAIDTOKEN => GenericToken.Identifier,
             CLIToken.ALPHANUMIDTOKEN => GenericToken.Identifier,
             CLIToken.ALPHANUMDASHIDTOKEN => GenericToken.Identifier,
+            CLIToken.HEXATOKEN => GenericToken.Hexa, 
             _ => GenericToken.SugarToken
         };
         var idType = type.TokenID switch

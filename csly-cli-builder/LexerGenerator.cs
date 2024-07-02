@@ -315,6 +315,19 @@ public class LexerGenerator
                         builder.AppendLine("\t\t[Double]");
                         break;
                     }
+                    case GenericToken.Hexa:
+                    {
+                        if (token.Args == null || token.Args.Length == 0)
+                        {
+                            builder.AppendLine($@"      [Hexa]");
+                        }
+                        else if (token.Args != null && token.Args.Length == 1)
+                        {
+                            builder.AppendLine($@"      [Hexa(""{token.Args[0]}"")]");
+                        }
+
+                        break;
+                    }
                     case GenericToken.Date:
                     {
                         string args = token.Args.Any()

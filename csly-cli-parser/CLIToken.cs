@@ -114,6 +114,9 @@ public enum CLIToken
     [LexemeLabel("fr","mot clé 'UpTo'")]
     [LexemeLabel("en","'UpTo' keyword")]
     [Keyword("UpTo")] UPTOTOKEN,
+    [LexemeLabel("fr","mot clé 'Hexa'")]
+    [LexemeLabel("en","'Hexa' keyword")]
+    [Keyword("Hexa")] HEXATOKEN,
     [LexemeLabel("fr","mot clé 'Push'")]
     [LexemeLabel("en","'Push' keyword")]
     [Keyword("Push")] PUSH,

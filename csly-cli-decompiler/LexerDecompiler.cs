@@ -84,6 +84,19 @@ public class LexerDecompiler
                         return $@"[MultiLineComment] {name} : ""{lexem.GenericTokenParameters[0].Replace("'","''")} {lexem.GenericTokenParameters[1].Replace("'","''")}"";";
                     }
                 }
+                case GenericToken.Hexa:
+                {
+                    if (lexem.GenericTokenParameters.Length == 0)
+                    {
+                        return $@"[Hexa] {name} ;";
+                    }
+                    else
+                    {
+                        return $"[Hexa] {name} : \"{lexem.GenericTokenParameters[0].Replace("'","''")}\";";
+                    }
+
+                    break;
+                }
                 case GenericToken.KeyWord:
                 {
                     return $@"[KeyWord] {name} : ""{lexem.GenericTokenParameters[0].Replace("'","''")}"";";

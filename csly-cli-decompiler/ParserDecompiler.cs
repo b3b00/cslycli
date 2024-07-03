@@ -119,7 +119,7 @@ public class ParserDecompiler
         StringBuilder builder = new StringBuilder();
         if (!string.IsNullOrEmpty(nodeName))
         {
-            builder.AppendLine($@"@node(""{nodeName}"")");
+            builder.AppendLine($@"@node(""{nodeName}"");");
         }
         
         builder.AppendLine($"{(isRoot ? "-> ":"")}{(isOperand ? "[Operand] ":"")}{production.RuleString};");

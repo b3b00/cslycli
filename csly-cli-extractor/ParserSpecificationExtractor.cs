@@ -44,7 +44,7 @@ public class ParserSpecificationExtractor
         StringBuilder builder = new StringBuilder();
         if (!string.IsNullOrEmpty(nodeName))
         {
-            builder.AppendLine($@"@node(""{nodeName}"")");
+            builder.AppendLine($@"@node(""{nodeName}"");");
         }
         // Production
         if (type == "Production")

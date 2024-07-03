@@ -9,8 +9,8 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>csly-cli</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-        <version>2.2.8-alpha2</version>
-        <PackageVersion>2.2.8-alpha2</PackageVersion>
+        <version>2.2.8</version>
+        <PackageVersion>2.2.8</PackageVersion>
         
     </PropertyGroup>
     <PropertyGroup>

@@ -198,7 +198,7 @@ parser HexaParser;
             File.WriteAllText("C:\\Users\\olduh\\dev\\csly-cli\\Generated\\SomeParser.cs",x.Result.Parser);
         }
 
-        var t = processor.GetDot(grammar, "6x12 6xAB 0xab 999");
+        var t = processor.GetDot(grammar, "6x12 6xAB 66x28 999");
         if (t.IsOK)
         {
             Console.WriteLine("parse ok");

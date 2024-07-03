@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="sly" Version="3.1.8-alpha3"/>
+        <PackageReference Include="sly" Version="3.1.8"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-4.final" />        
         <PackageReference Include="System.Collections.Immutable" Version="8.0.0"/>
         <PackageReference Include="System.Memory" Version="4.5.5"/>

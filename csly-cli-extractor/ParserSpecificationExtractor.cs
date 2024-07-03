@@ -38,8 +38,14 @@ public class ParserSpecificationExtractor
     }
     
     
-    private string Rule(string type, string rootRule, params string[] args)
+    private string Rule(string type, string rootRule,string nodeName, params string[] args)
     {
+
+        StringBuilder builder = new StringBuilder();
+        if (!string.IsNullOrEmpty(nodeName))
+        {
+            builder.AppendLine($@"@node(""{nodeName}"")");
+        }
         // Production
         if (type == "Production")
         {
@@ -47,22 +53,22 @@ public class ParserSpecificationExtractor
             var split =  rule.Split(new[] { ':' });
             var nonTerminal = split[0].Trim();
             bool isRoot = nonTerminal == rootRule;
-            return $"{(isRoot? "-> ":"")}{args[0]};";
+            builder.AppendLine($"{(isRoot? "-> ":"")}{args[0]};");
         }
         // Prefix
         if (type == "Prefix")
         {
-            return Operation("PreFix", "", args[2], args[0]);
+            builder.AppendLine(Operation("PreFix", "", args[2], args[0]));
         }
         // Postfix
         if (type == "Postfix")
         {
-            return Operation("PostFix", "", args[2], args[0]);
+            builder.AppendLine(Operation("PostFix", "", args[2], args[0]));
         }
         // Infix
         if (type == "Infix")
         {
-            return Operation("InFix", args[1], args[2], args[0]);
+            builder.AppendLine(Operation("InFix", args[1], args[2], args[0]));
         }
         // Operation
         if (type == "Operation")
@@ -71,9 +77,9 @@ public class ParserSpecificationExtractor
             string precedence = args[3];
             string affix = args[1];
             string associativity = args[2];
-            return Operation(affix, associativity, precedence, token);
+            builder.AppendLine(Operation(affix, associativity, precedence, token));
         }
-        return "";
+        return builder.ToString();
     }
     
     public string ExtractFromFile(string parserCsFileName)
@@ -130,10 +136,20 @@ public class ParserSpecificationExtractor
                     var allAttributes = attributes.SelectMany(x => x.Attributes).ToList();
                     var operand = allAttributes.FirstOrDefault(x => x.Name.ToString().Contains("Operand"));
                     
+                    var nodeNameAttribute = allAttributes.FirstOrDefault(x => x.Name.ToString().Contains("NodeName"));
+                    string nodeName = null;
+                    if (nodeNameAttribute != null)
+                    {
+                        nodeName = nodeNameAttribute.ArgumentList.Arguments.First().Expression.ExprToString();
+                    }
                     
                     foreach (var attr in attributes.SelectMany(x => x.Attributes))
                     {
                         if (attr.Name.ToString().Contains("Operand"))
+                        {
+                            continue;
+                        }
+                        if (attr.Name.ToString().Contains("NodeName"))
                         {
                             continue;
                         }
@@ -148,7 +164,7 @@ public class ParserSpecificationExtractor
                             builder.Append("[Operand] ");
                         }
 
-                        builder.AppendLine(Rule(attr.Name.ToString(),rootRule, pstrings));
+                        builder.AppendLine(Rule(attr.Name.ToString(),rootRule, nodeName,pstrings));
                     }
                 }
             }

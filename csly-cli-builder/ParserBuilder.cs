@@ -494,6 +494,7 @@ public class ParserBuilder
             AddOperandAttribute(methodBuilder);
         }
         _AddProductionAttribute(methodBuilder, rule.RuleString);
+        _AddNodeNameAttribute(methodBuilder, rule);
     }
     
     private  void _AddProductionAttribute(MethodBuilder builder, string rule)
@@ -505,8 +506,24 @@ public class ParserBuilder
             
         CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
             constructorInfo, new object[] { rule });
-
+        
         builder.SetCustomAttribute(customAttributeBuilder);
+    }
+
+    private void _AddNodeNameAttribute(MethodBuilder builder, Rule rule)
+    {
+        if (rule.TryGetNodeName(out var nodeName))
+        {
+            Type attributeType = typeof(NodeNameAttribute);
+        
+            ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                new Type[1] { typeof(string) });
+            
+            CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                constructorInfo, new object[] { nodeName });
+
+            builder.SetCustomAttribute(customAttributeBuilder);
+        }
     }
     
     private int explicitPrefixCounter = 0;
@@ -533,6 +550,7 @@ public class ParserBuilder
             constructorInfo, new object[] { operatorName,Associativity.Left,prefix.Precedence });
 
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
+        _AddNodeNameAttribute(methodBuilder, prefix);
     }
 
     private void AddPrefixes(TypeBuilder builder, ManyPrefixRule prefixes)
@@ -560,6 +578,7 @@ public class ParserBuilder
                 constructorInfo, new object[] { operatorName, Associativity.Left, prefix.Precedence });
 
             methodBuilder.SetCustomAttribute(customAttributeBuilder);
+            _AddNodeNameAttribute(methodBuilder, prefixes);
         }
     }
     
@@ -589,6 +608,7 @@ public class ParserBuilder
             constructorInfo, new object[] { operatorName,Associativity.Left,postfix.Precedence });
 
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
+        _AddNodeNameAttribute(methodBuilder, postfix);
     }
     
     private void AddPostfixes(TypeBuilder builder, ManyPostfixRule postfixes)
@@ -615,6 +635,7 @@ public class ParserBuilder
                 constructorInfo, new object[] { operatorName, Associativity.Left, postfix.Precedence });
 
             methodBuilder.SetCustomAttribute(customAttributeBuilder);
+            _AddNodeNameAttribute(methodBuilder, postfixes);
         }
     }
     
@@ -640,6 +661,7 @@ public class ParserBuilder
             constructorInfo, new object[] { operatorName, infix.Associativity, infix.Precedence });
 
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
+        _AddNodeNameAttribute(methodBuilder, infix);
     }
     
     private void AddInfixes(TypeBuilder builder, ManyInfixRule infixes)
@@ -667,6 +689,7 @@ public class ParserBuilder
                 constructorInfo, new object[] { operatorName, infix.Associativity, infix.Precedence });
 
             methodBuilder.SetCustomAttribute(customAttributeBuilder);
+            _AddNodeNameAttribute(methodBuilder, infixes);
         }
     }
     
@@ -710,6 +733,9 @@ public class ParserBuilder
     }
 
 
+    
+    
+    
     private Type BuildTypeParameter(IClause clause)
     {
         switch (clause)

@@ -85,30 +85,35 @@ namespace {nameSpace} {{
             if (rule is InfixRule infix)
             {
                 builder.AppendLine(GetProduction(infix));
+                SetAttributes(infix, builder);
                 builder.AppendLine(GetVisitor(infix, lexer, output));
                 builder.AppendLine();
             }
             else if (rule is ManyInfixRule infixes)
             {
                 builder.AppendLine(GetProduction(infixes));
+                SetAttributes(infixes, builder);
                 builder.AppendLine(GetVisitor(infixes, lexer, output));
                 builder.AppendLine();
             }
             else if (rule is ManyPrefixRule prefixes)
             {
                 builder.AppendLine(GetProduction(prefixes));
+                SetAttributes(prefixes, builder);
                 builder.AppendLine(GetVisitor(prefixes, lexer, output));
                 builder.AppendLine();
             } 
             else if (rule is ManyPostfixRule postfixes)
             {
                 builder.AppendLine(GetProduction(postfixes));
+                SetAttributes(postfixes, builder);
                 builder.AppendLine(GetVisitor(postfixes, lexer, output));
                 builder.AppendLine();
             } 
             else if (rule is PrefixRule prefix)
             {
                 builder.AppendLine(GetProduction(prefix));
+                SetAttributes(prefix,builder);
                 builder.AppendLine(GetVisitor(prefix, lexer, output));
                 builder.AppendLine();
                 builder.AppendLine();
@@ -116,6 +121,7 @@ namespace {nameSpace} {{
             else if (rule is PostfixRule postfix)
             {
                 builder.AppendLine(GetProduction(postfix));
+                SetAttributes(postfix,builder);
                 builder.AppendLine(GetVisitor(postfix, lexer, output));
                 builder.AppendLine();
                 builder.AppendLine();
@@ -123,6 +129,7 @@ namespace {nameSpace} {{
             else
             {
                 builder.AppendLine(GetProduction(rule, parser));
+                SetAttributes(rule, builder);
                 builder.AppendLine(GetVisitor(rule, parser, lexer, output));
                 builder.AppendLine();
             }
@@ -132,7 +139,15 @@ namespace {nameSpace} {{
         return builder.ToString();
     }
 
- 
+    private void SetAttributes(Rule rule, StringBuilder builder)
+    {
+        if (rule.TryGetNodeName(out var nodeName))
+        {
+            builder.AppendLine($@"[NodeName(""{nodeName}"")]");
+        }
+    }
+
+
     private  string GetProduction(Rule rule, string parser)
     {
         StringBuilder builder = new StringBuilder();

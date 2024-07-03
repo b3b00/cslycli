@@ -102,6 +102,10 @@ public class ExtractionTests
         var model = builder.CompileModel(specification, "SimpleExpressionParser");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
+        var rootRule = model.Value.ParserModel.Rules.FirstOrDefault(x => x.IsRoot);
+        Check.That(rootRule).IsNotNull();
+        Check.That(rootRule.TryGetNodeName(out var nodeName)).IsTrue();
+        Check.That(nodeName).IsEqualTo("racine");
     }
     
     [Fact]

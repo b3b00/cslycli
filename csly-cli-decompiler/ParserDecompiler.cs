@@ -87,6 +87,7 @@ public class ParserDecompiler
             var productions = method.GetAttributes<ProductionAttribute>();
             var operands = method.GetAttributes<OperandAttribute>();
             var operations = method.GetAttributes<OperationAttribute>();
+            var nodeNames = method.GetAttributes<NodeNameAttribute>();
 
             foreach (var operation in operations)
             {
@@ -94,21 +95,35 @@ public class ParserDecompiler
             }
 
             bool isOperand = operands.Any();
+
+            string nodeName = null;
+            if (nodeNames.Any())
+            {
+                nodeName = nodeNames[0].Name;
+            }
+            
             foreach (var production in productions)
             {
-                builder.AppendLine(GetProduction(production, isOperand, root));
+                builder.AppendLine(GetProduction(production, isOperand, root, nodeName));
             }
         }
 
         return builder.ToString();
     }
 
-    private string GetProduction(ProductionAttribute production, bool isOperand, string? rootRule)
+    private string GetProduction(ProductionAttribute production, bool isOperand, string? rootRule, string? nodeName)
     {
         var split =  production.RuleString.Split(new[] { ':' });
         var nonTerminal = split[0].Trim();
-        bool isRoot = nonTerminal == rootRule;   
-        return $"{(isRoot ? "-> ":"")}{(isOperand ? "[Operand] ":"")}{production.RuleString};";
+        bool isRoot = nonTerminal == rootRule;
+        StringBuilder builder = new StringBuilder();
+        if (!string.IsNullOrEmpty(nodeName))
+        {
+            builder.AppendLine($@"@node(""{nodeName}"");");
+        }
+        
+        builder.AppendLine($"{(isRoot ? "-> ":"")}{(isOperand ? "[Operand] ":"")}{production.RuleString};");
+        return builder.ToString();
     }
 
     private string GetOperation(OperationAttribute operation, Type lexerType)

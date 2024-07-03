@@ -8,7 +8,9 @@ namespace csly.cli.model.parser
     public class Rule :  AttributedModel, GrammarNode
     {
 
-        public const string? methodNameAttribute = "name";        
+        public const string? methodNameAttribute = "name";
+        
+        public const string? nodeNameAttribute = "node";
         public Rule( bool  isOperand = false)
         {
             Clauses = new List<IClause>();
@@ -51,6 +53,12 @@ namespace csly.cli.model.parser
         {
             methodName = null;
             return TryGetFirstValue(methodNameAttribute, out methodName);
+        }
+
+        public bool TryGetNodeName(out string nodeName)
+        {
+            nodeName = null;
+            return TryGetFirstValue(nodeNameAttribute, out nodeName);
         }
 
         public override string ToString()

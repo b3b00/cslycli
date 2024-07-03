@@ -174,8 +174,12 @@ genericLexer HexaLexer;
 parser HexaParser;
 
 
-
--> root : HEXA+ INT;
+@node(""racine"");
+-> root : hexa+ int;
+@node(""hexadecimal"");
+hexa : HEXA;
+@node(""entier"");
+int : INT;
 ";
         var processor = new CslyProcessor();
         var r = processor.Compile(grammar);
@@ -198,9 +202,10 @@ parser HexaParser;
             File.WriteAllText("C:\\Users\\olduh\\dev\\csly-cli\\Generated\\SomeParser.cs",x.Result.Parser);
         }
 
-        var t = processor.GetDot(grammar, "6x12 6xAB 66x28 999");
+        var t = processor.GetDot(grammar, "6x12 6xAB 6x28 999");
         if (t.IsOK)
         {
+            File.WriteAllText("c:/temp/tree.dot",t.Result);
             Console.WriteLine("parse ok");
         }
         else

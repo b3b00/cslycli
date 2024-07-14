@@ -10,11 +10,10 @@ namespace csly.cli.model.tree
     public class OperationMetaData
     {
         
-        public OperationMetaData(int precedence, sly.parser.generator.Associativity assoc, MethodInfo method, sly.parser.generator.Affix affix, string oper)
+        public OperationMetaData(int precedence, sly.parser.generator.Associativity assoc,sly.parser.generator.Affix affix, string oper)
         {
             Precedence = precedence;
             Associativity = assoc;
-            VisitorMethod = method;
             OperatorToken = oper;
             Affix = affix;
         }
@@ -22,8 +21,6 @@ namespace csly.cli.model.tree
         public int Precedence { get; set; }
 
         public sly.parser.generator.Associativity Associativity { get; set; }
-
-        public MethodInfo VisitorMethod { get; set; }
 
         public sly.parser.generator.Affix Affix { get; set; }
 

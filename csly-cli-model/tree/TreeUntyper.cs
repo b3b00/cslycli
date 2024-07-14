@@ -1,5 +1,6 @@
 using sly.parser.syntax.tree;
 using sly.lexer;
+using sly.parser.generator;
 using sly.parser.syntax.grammar;
 
 namespace csly.cli.model.tree;
@@ -42,9 +43,17 @@ public class TreeUntyper<T> where T :struct
 
     public SyntaxNode Untype(SyntaxNode<T> node)
     {
-        return new SyntaxNode(node.Name, node.Children.Select(x => Untype(x)).ToList());
+        var n = new SyntaxNode(node.Name, node.Children.Select(x => Untype(x)).ToList());
+        n.Operation = Untype(node.Operation);
+        return n;
     }
-    
+
+
+    public OperationMetaData Untype(OperationMetaData<T> operation)
+    {
+        return new OperationMetaData(operation.Precedence, operation.Associativity, operation.Affix,
+            operation.OperatorToken.ToString());
+    }
     
     public Token Untype(Token<T> token)
     {

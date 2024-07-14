@@ -12,6 +12,8 @@ public class TreeUntyper<T> where T :struct
     {
         return node switch
         {
+            GroupSyntaxNode<T> group => Untype(group),
+            ManySyntaxNode<T> many => Untype(many),
             EmptyNode<T> empty => Untype(empty),
             SyntaxEpsilon<T> epsilon => Untype(epsilon),
             SyntaxLeaf<T> leaf => Untype(leaf),
@@ -38,13 +40,37 @@ public class TreeUntyper<T> where T :struct
 
     public OptionSyntaxNode Untype(OptionSyntaxNode<T> option)
     {
-        return new OptionSyntaxNode(option.Name, option.Children.Select(x => Untype(x)).ToList());
+        var n = new OptionSyntaxNode(option.Name, option.Children.Select(x => Untype(x)).ToList());
+        n.Operation = Untype(option.Operation);
+        n.IsEpsilon = option.IsEpsilon;
+        n.IsByPassNode = option.IsByPassNode;
+        return n;
     }
 
     public SyntaxNode Untype(SyntaxNode<T> node)
     {
         var n = new SyntaxNode(node.Name, node.Children.Select(x => Untype(x)).ToList());
         n.Operation = Untype(node.Operation);
+        n.IsEpsilon = node.IsEpsilon;
+        n.IsByPassNode = node.IsByPassNode;
+        return n;
+    }
+    
+    public SyntaxNode Untype(ManySyntaxNode<T> node)
+    {
+        var n = new ManySyntaxNode(node.Name, node.Children.Select(x => Untype(x)).ToList());
+        n.Operation = Untype(node.Operation);
+        n.IsEpsilon = node.IsEpsilon;
+        n.IsByPassNode = node.IsByPassNode;
+        return n;
+    }
+    
+    public SyntaxNode Untype(GroupSyntaxNode<T> group)
+    {
+        var n = new GroupSyntaxNode(group.Name, group.Children.Select(x => Untype(x)).ToList());
+        n.Operation = Untype(group.Operation);
+        n.IsEpsilon = group.IsEpsilon;
+        n.IsByPassNode = group.IsByPassNode;
         return n;
     }
 

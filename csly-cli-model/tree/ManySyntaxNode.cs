@@ -7,6 +7,10 @@ namespace csly.cli.model.tree
         public ManySyntaxNode(string name) : base(name, new List<ISyntaxNode>())
         {
         }
+        
+        public ManySyntaxNode(string name, List<ISyntaxNode> children) : base(name, children)
+        {
+        }
 
         public bool IsManyTokens { get; set; }
 

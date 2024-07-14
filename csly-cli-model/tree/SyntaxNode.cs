@@ -49,14 +49,22 @@ namespace csly.cli.model.tree
         }
 
         private bool _isEpsilon = false;
-        public bool IsEpsilon => _isEpsilon;
+        public bool IsEpsilon
+        {
+            get => _isEpsilon;
+            set => _isEpsilon = value;
+        }
 
         public List<ISyntaxNode> Children { get; }
 
 
         public bool IsByPassNode { get; set; } = false;
 
-        public bool IsEmpty => Children == null || !Children.Any();
+        public bool IsEmpty
+        {
+            get => Children == null || !Children.Any();
+            set => throw new NotImplementedException();
+        }
 
         public sly.parser.generator.Affix ExpressionAffix { get; set; }
 

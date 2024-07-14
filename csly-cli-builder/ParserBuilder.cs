@@ -4,6 +4,7 @@ using System.Text;
 using clsy.cli.builder.checker;
 using csly.cli.model;
 using csly.cli.model.parser;
+using csly.cli.model.tree;
 using csly.cli.parser;
 using Newtonsoft.Json;
 using sly.buildresult;
@@ -376,6 +377,12 @@ public class ParserBuilder
             List<(string format, string content)> results = new List<(string format, string content)>();
             foreach (var processor in processors)
             {
+                var untyperType = typeof(TreeUntyper<>).MakeGenericType(buildResult.lexerType);
+                var iSyntaxNodeType = typeof(sly.parser.syntax.tree.ISyntaxNode<>).MakeGenericType(buildResult.lexerType);
+                var untypeMethod = untyperType.GetMethod("Untype", new[] { iSyntaxNodeType });
+                var untyped = untypeMethod.Invoke(parser, new object[] { syntaxTree });
+                var tree = untyped as ISyntaxNode;
+                
                 var processed = processor.processor(buildResult.lexerType, parser.GetType(), syntaxTree);
                 results.Add((processor.format,processed));
             }

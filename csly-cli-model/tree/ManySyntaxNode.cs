@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace sly.parser.syntax.tree
+namespace csly.cli.model.tree
 {
     public class ManySyntaxNode : SyntaxNode 
     {

@@ -5,15 +5,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using sly.lexer;
 
-namespace sly.lexer
+namespace csly.cli.model.tree
 {
-    public enum CommentType
-    {
-        Single,
-        Multi,
-        No
-    }
+
 
     [DebuggerDisplay("{TokenID} : {Value} - {IsExplicit}")]
     public class Token 

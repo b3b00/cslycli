@@ -1,21 +1,54 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
 using sly.parser.generator;
 
-namespace sly.parser.syntax.tree
+
+namespace csly.cli.model.tree
 {
+    
+    public class OperationMetaData
+    {
+        
+        public OperationMetaData(int precedence, sly.parser.generator.Associativity assoc, MethodInfo method, sly.parser.generator.Affix affix, string oper)
+        {
+            Precedence = precedence;
+            Associativity = assoc;
+            VisitorMethod = method;
+            OperatorToken = oper;
+            Affix = affix;
+        }
+
+        public int Precedence { get; set; }
+
+        public sly.parser.generator.Associativity Associativity { get; set; }
+
+        public MethodInfo VisitorMethod { get; set; }
+
+        public sly.parser.generator.Affix Affix { get; set; }
+
+        public bool IsBinary => Affix == Affix.InFix;
+
+        public bool IsUnary => Affix != Affix.InFix;
+
+        public bool IsExplicitOperatorToken => !string.IsNullOrEmpty(OperatorToken);
+
+        public string OperatorToken { get; set; }
+
+        public override string ToString()
+        {
+            return $"{OperatorToken} / {Affix} : {Precedence} / {Associativity}";
+        }
+    }
+    
     public class SyntaxNode : ISyntaxNode 
     {
 
-        public SyntaxNode(string name, List<ISyntaxNode> children = null, MethodInfo visitor = null)
+        public SyntaxNode(string name, List<ISyntaxNode> children = null)
         {
             _isEpsilon = children == null || !children.Any() || (children.Count == 1 && children[0].IsEpsilon);
             Name = name;
             Children = children ?? new List<ISyntaxNode>();
-            Visitor = visitor;
         }
 
         private bool _isEpsilon = false;
@@ -23,14 +56,12 @@ namespace sly.parser.syntax.tree
 
         public List<ISyntaxNode> Children { get; }
 
-        [JsonIgnore]
-        public MethodInfo Visitor { get; set; }
 
         public bool IsByPassNode { get; set; } = false;
 
         public bool IsEmpty => Children == null || !Children.Any();
 
-        public Affix ExpressionAffix { get; set; }
+        public sly.parser.generator.Affix ExpressionAffix { get; set; }
 
 
         public bool Discarded => false;
@@ -44,11 +75,11 @@ namespace sly.parser.syntax.tree
 
         public bool IsExpressionNode => Operation != null;
 
-        public bool IsBinaryOperationNode => IsExpressionNode && Operation.Affix == Affix.InFix;
-        public bool IsUnaryOperationNode => IsExpressionNode && Operation.Affix != Affix.InFix;
+        public bool IsBinaryOperationNode => IsExpressionNode && Operation.Affix == sly.parser.generator.Affix.InFix;
+        public bool IsUnaryOperationNode => IsExpressionNode && Operation.Affix != sly.parser.generator.Affix.InFix;
         public int Precedence => IsExpressionNode ? Operation.Precedence : -1;
 
-        public Associativity Associativity =>
+        public sly.parser.generator.Associativity Associativity =>
             IsExpressionNode && IsBinaryOperationNode ? Operation.Associativity : Associativity.None;
 
         public bool IsLeftAssociative => Associativity == Associativity.Left;
@@ -117,7 +148,7 @@ namespace sly.parser.syntax.tree
             {
                 if (Operation.IsExplicitOperatorToken)
                 {
-                    expressionSuffix = Operation.ExplicitOperatorToken;
+                    expressionSuffix = Operation.OperatorToken;
                 }
                 else
                 {

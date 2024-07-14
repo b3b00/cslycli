@@ -1,6 +1,6 @@
 using sly.lexer;
 
-namespace sly.parser.syntax.tree
+namespace csly.cli.model.tree
 {
     public class SyntaxLeaf : ISyntaxNode 
     {

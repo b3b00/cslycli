@@ -1,7 +1,7 @@
 using sly.lexer;
 using System.Diagnostics.CodeAnalysis;
 
-namespace sly.parser.syntax.tree
+namespace csly.cli.model.tree
 {
     public class SyntaxEpsilon : ISyntaxNode 
     {

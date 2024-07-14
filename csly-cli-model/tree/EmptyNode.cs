@@ -1,4 +1,4 @@
-namespace sly.parser.syntax.tree;
+namespace csly.cli.model.tree;
 
 public class EmptyNode : ISyntaxNode 
 {

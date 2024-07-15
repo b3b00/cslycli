@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace csly_cli_api;
 
 public class CliResult<T>

@@ -6,7 +6,6 @@ public class EmptyNode : ISyntaxNode
     public bool Discarded => false;
     public string Name => "epsilon";
 
-
     public bool HasByPassNodes
     {
         get { return false; }

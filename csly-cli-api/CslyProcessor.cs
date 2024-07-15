@@ -1,4 +1,7 @@
-﻿using clsy.cli.builder;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using csly.cli.model;
 using csly.cli.model.tree;
@@ -301,7 +304,7 @@ namespace {nameSpace} {{
         {
             var r = _parserBuilder.Getz(grammar, source, "TestParser",
                 new List<(string format, SyntaxTreeProcessor processor)>()
-                    { ("JSON", (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToJson) }, model.Value.ParserModel.Root,
+                    { ("JSON", ParserBuilder.SyntaxTreeToJson) }, model.Value.ParserModel.Root,
                 chrono);
             if (r.IsError)
             {

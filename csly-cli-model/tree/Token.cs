@@ -106,6 +106,7 @@ namespace csly.cli.model.tree
         public bool IsEOL { get; set; }
         
         public bool IsExplicit { get; set; }
+        
 
         [JsonConverter(typeof(StringEnumConverter))]
         public CommentType CommentType { get; set; } = CommentType.No;

@@ -6,6 +6,8 @@ using sly.parser.syntax.grammar;
 namespace csly.cli.model.tree;
 
 
+
+
 public class TreeUntyper<T> where T :struct
 {
     public static ISyntaxNode? Untype(ISyntaxNode<T> node)
@@ -53,6 +55,7 @@ public class TreeUntyper<T> where T :struct
         n.Operation = Untype(node.Operation);
         n.IsEpsilon = node.IsEpsilon;
         n.IsByPassNode = node.IsByPassNode;
+        
         return n;
     }
     
@@ -88,7 +91,16 @@ public class TreeUntyper<T> where T :struct
     
     private static Token Untype(Token<T> token)
     {
-        return new Token(token.TokenID.ToString(), token.SpanValue, token.Position, token.CommentType, token.Channel, token.IsWhiteSpace, token.DecimalSeparator);
+        return new Token(token.TokenID.ToString(), token.SpanValue, token.Position, token.CommentType, token.Channel,
+            token.IsWhiteSpace, token.DecimalSeparator)
+        {
+            IsExplicit = token.IsExplicit,
+            End = token.End,
+            IsWhiteSpace = token.IsWhiteSpace,
+            IsEOL = token.IsEOL,
+            IsEOS = token.IsEOS,
+            Label = token.Label
+        };
     }
     
     

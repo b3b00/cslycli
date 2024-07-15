@@ -2,6 +2,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using clsy.cli.builder.checker;
+using clsy.cli.model.tree.visitor;
+using clsy.cli.model.tree.visitor.mermaid;
 using csly.cli.model;
 using csly.cli.model.parser;
 using csly.cli.model.tree;
@@ -14,13 +16,11 @@ using sly.lexer.fsm;
 using sly.parser;
 using sly.parser.generator;
 using sly.parser.generator.visitor;
-using sly.parser.generator.visitor.dotgraph;
-using sly.parser.generator.visitor.mermaid;
 using sly.parser.parser;
 
 namespace clsy.cli.builder.parser;
 
-public delegate string SyntaxTreeProcessor(Type parserType, Type lexerType, object tree);
+public delegate string SyntaxTreeProcessor(Type parserType, Type lexerType, ISyntaxNode tree);
 
 public class ParserBuilder
 {
@@ -384,7 +384,7 @@ public class ParserBuilder
                 var untyped = untypeMethod.Invoke(null, new object[] { syntaxTree });
                 var tree = untyped as ISyntaxNode;
                 
-                var processed = processor.processor(buildResult.lexerType, parser.GetType(), syntaxTree);
+                var processed = processor.processor(buildResult.lexerType, parser.GetType(), tree);
                 results.Add((processor.format,processed));
             }
 
@@ -487,22 +487,12 @@ public class ParserBuilder
 
 
 
-    public static string SyntaxTreeToDotGraph(Type lexerType, Type parserType, object syntaxTree)
+    public static string SyntaxTreeToDotGraph(Type lexerType, Type parserType, ISyntaxNode syntaxTree)
     {
-        var graphvizType = typeof(GraphVizEBNFSyntaxTreeVisitor<>).MakeGenericType(lexerType);
-        var visitor = graphvizType.GetConstructor(new Type[] { }).Invoke(new object[]{});
-        
-        var visited = graphvizType
-            .GetMethod("VisitTree", new Type[] { syntaxTree.GetType() })
-            .Invoke(visitor, new object[] { syntaxTree });
-
-        var graph = graphvizType?
-            .GetProperty("Graph")
-            ?.GetValue(visitor);
-
-        var dot = (graph as DotGraph);
-
-        return dot.Compile();
+        var visitor = new GraphVizEBNFSyntaxTreeVisitor();
+        var root =visitor.VisitTree(syntaxTree);
+        var graph = visitor.Graph;
+        return graph.Compile();
     }
     
     public static string SyntaxTreeToMermaid(Type lexerType, Type parserType, object syntaxTree)

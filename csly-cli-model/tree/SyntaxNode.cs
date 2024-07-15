@@ -54,7 +54,6 @@ namespace csly.cli.model.tree
             get => _isEpsilon;
             set => _isEpsilon = value;
         }
-
         public List<ISyntaxNode> Children { get; }
 
 
@@ -76,6 +75,7 @@ namespace csly.cli.model.tree
 
         #region expression syntax nodes
 
+        [JsonIgnore]
         public OperationMetaData Operation { get; set; } = null;
 
         public bool IsExpressionNode => Operation != null;

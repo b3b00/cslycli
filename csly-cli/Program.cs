@@ -6,6 +6,7 @@ using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using CommandLine;
 using csly_cli_api;
+using csly.cli.model.tree;
 using decompiler;
 using sly.cli.options;
 using specificationExtractor;
@@ -134,7 +135,7 @@ public class Program
         var parserName = fi.Name.Replace(fi.Extension, "");
         var builder = new clsy.cli.builder.parser.ParserBuilder();
 
-        SyntaxTreeProcessor emptyProcessor = (Type type, Type lexerType, object tree) => { return ""; };
+        SyntaxTreeProcessor emptyProcessor = (Type type, Type lexerType, ISyntaxNode tree) => { return ""; };
 
         var grammarSource = File.ReadAllText(test.Grammar);
 

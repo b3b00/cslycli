@@ -490,7 +490,7 @@ public class ParserBuilder
     public static string SyntaxTreeToDotGraph(Type lexerType, Type parserType, ISyntaxNode syntaxTree)
     {
         var visitor = new GraphVizEBNFSyntaxTreeVisitor();
-        var root =visitor.VisitTree(syntaxTree);
+        visitor.VisitTree(syntaxTree);
         var graph = visitor.Graph;
         return graph.Compile();
     }

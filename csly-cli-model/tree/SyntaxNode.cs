@@ -107,7 +107,7 @@ namespace csly.cli.model.tree
             {
                 if (IsExpressionNode)
                 {
-                    if (IsBinaryOperationNode && IsBinaryOperationNode)
+                    if (IsBinaryOperationNode)
                     {
                         Children[0] = value;
                     }

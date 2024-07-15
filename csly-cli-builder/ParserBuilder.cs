@@ -378,9 +378,10 @@ public class ParserBuilder
             foreach (var processor in processors)
             {
                 var untyperType = typeof(TreeUntyper<>).MakeGenericType(buildResult.lexerType);
+                
                 var iSyntaxNodeType = typeof(sly.parser.syntax.tree.ISyntaxNode<>).MakeGenericType(buildResult.lexerType);
                 var untypeMethod = untyperType.GetMethod("Untype", new[] { iSyntaxNodeType });
-                var untyped = untypeMethod.Invoke(parser, new object[] { syntaxTree });
+                var untyped = untypeMethod.Invoke(null, new object[] { syntaxTree });
                 var tree = untyped as ISyntaxNode;
                 
                 var processed = processor.processor(buildResult.lexerType, parser.GetType(), syntaxTree);
@@ -397,6 +398,94 @@ public class ParserBuilder
 
         return null;
     }
+
+    public Result<ISyntaxNode> GetSyntaxTree(string modelSource, string source,
+        string parserName, string rootRule = null,
+        Chrono chrono = null)
+    {
+        var model = CompileModel(modelSource, parserName);
+
+        if (model.IsError)
+        {
+            return model.error;
+        }
+
+
+        var buildResult = BuildParser(model, chrono);
+
+        var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType, typeof(object));
+        var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
+
+
+        //  return a list<string> if buildResult is error
+        var isErrorResult =
+            buildResultType.GetProperty("IsError").GetValue(buildResult.parserBuildResult, null) as bool?;
+        if (isErrorResult.HasValue && isErrorResult.Value)
+        {
+            var errors = buildResultType.GetProperty("Errors").GetValue(buildResult.parserBuildResult, null) as
+                List<InitializationError>;
+            return errors.Select(x => x.Message).ToList();
+        }
+
+        var resultProperty = buildResultType.GetProperty("Result");
+        var parser = resultProperty.GetValue(buildResult.parserBuildResult, null);
+
+        var parseMethod = parserType.GetMethod("Parse", new[] { typeof(string), typeof(string) });
+        var result = parseMethod.Invoke(parser, new object[] { source, null });
+        if (chrono != null)
+        {
+            chrono.Tick("source parsing");
+        }
+
+        var ParseResultType = typeof(ParseResult<,>).MakeGenericType(buildResult.lexerType, typeof(object));
+
+        var x = ParseResultType.GetProperty("IsError").GetValue(result) as bool?;
+        if (x.HasValue && x.Value)
+        {
+            var errors = ParseResultType.GetProperty("Errors").GetValue(result) as List<ParseError>;
+            return errors.Select(x => x.ErrorMessage).ToList();
+        }
+
+
+        var parseResultProp = ParseResultType.GetProperty("SyntaxTree");
+        var syntaxTree = parseResultProp.GetValue(result);
+
+
+        if (chrono != null)
+        {
+            chrono.Tick("get syntax tree");
+        }
+
+        var untyperType = typeof(TreeUntyper<>).MakeGenericType(buildResult.lexerType);
+
+        var iSyntaxNodeType = typeof(sly.parser.syntax.tree.ISyntaxNode<>).MakeGenericType(buildResult.lexerType);
+        var untypeMethod = untyperType.GetMethod("Untype", new[] { iSyntaxNodeType });
+        var untyped = untypeMethod.Invoke(null, new object[] { syntaxTree });
+        var tree = untyped as ISyntaxNode;
+
+        if (tree != null)
+        {
+            return new Result<ISyntaxNode>(tree);
+
+        }
+
+        if (chrono != null)
+        {
+            chrono.Tick("un type syntax tree");
+            chrono.Stop();
+        }
+
+        if (tree != null)
+        {
+            return new Result<ISyntaxNode>(tree);
+        }
+
+
+        return null;
+    }
+
+
+
 
     public static string SyntaxTreeToDotGraph(Type lexerType, Type parserType, object syntaxTree)
     {

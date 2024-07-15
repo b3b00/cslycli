@@ -1,6 +1,7 @@
 ﻿using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using csly.cli.model;
+using csly.cli.model.tree;
 using specificationExtractor;
 
 namespace csly_cli_api;
@@ -289,6 +290,30 @@ namespace {nameSpace} {{
         var extractor = new SpecificationExtractor();
         var grammar  = extractor.ExtractFromSource(lexer, parser);
         return new CliResult<string>(grammar);
+
+    }
+
+    public CliResult<ISyntaxNode> GetSyntaxTree(string grammar, string source)
+    {
+        var chrono = new Chrono();
+        var model = _parserBuilder.CompileModel(grammar, "MinimalParser", chrono);
+        if (model.IsOk)
+        {
+            var r = _parserBuilder.Getz(grammar, source, "TestParser",
+                new List<(string format, SyntaxTreeProcessor processor)>()
+                    { ("JSON", (SyntaxTreeProcessor)ParserBuilder.SyntaxTreeToJson) }, model.Value.ParserModel.Root,
+                chrono);
+            if (r.IsError)
+            {
+                return new CliResult<ISyntaxNode>(r.Error.Select(x => $"parse error : {x}").ToList());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        return new CliResult<ISyntaxNode>(model.Error.Select(x => $"grammar error : {x}").ToList());
 
     }
 }

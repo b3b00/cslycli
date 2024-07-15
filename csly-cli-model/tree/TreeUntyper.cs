@@ -8,7 +8,7 @@ namespace csly.cli.model.tree;
 
 public class TreeUntyper<T> where T :struct
 {
-    public ISyntaxNode? Untype(ISyntaxNode<T> node)
+    public static ISyntaxNode? Untype(ISyntaxNode<T> node)
     {
         return node switch
         {
@@ -23,22 +23,22 @@ public class TreeUntyper<T> where T :struct
         };
     }
 
-    public EmptyNode? Untype(EmptyNode<T> emptyNode)
+    private static EmptyNode? Untype(EmptyNode<T> emptyNode)
     {
         return new EmptyNode();
     }
 
-    public SyntaxLeaf? Untype(SyntaxLeaf<T> leaf)
+    private static SyntaxLeaf? Untype(SyntaxLeaf<T> leaf)
     {
         return new SyntaxLeaf(Untype(leaf.Token), leaf.Discarded);
     }
 
-    public SyntaxEpsilon? Untype(SyntaxEpsilon<T> epsilon)
+    private static SyntaxEpsilon? Untype(SyntaxEpsilon<T> epsilon)
     {
         return new SyntaxEpsilon();
     }
 
-    public OptionSyntaxNode Untype(OptionSyntaxNode<T> option)
+    private static OptionSyntaxNode Untype(OptionSyntaxNode<T> option)
     {
         var n = new OptionSyntaxNode(option.Name, option.Children.Select(x => Untype(x)).ToList());
         n.Operation = Untype(option.Operation);
@@ -47,7 +47,7 @@ public class TreeUntyper<T> where T :struct
         return n;
     }
 
-    public SyntaxNode Untype(SyntaxNode<T> node)
+    private static SyntaxNode Untype(SyntaxNode<T> node)
     {
         var n = new SyntaxNode(node.Name, node.Children.Select(x => Untype(x)).ToList());
         n.Operation = Untype(node.Operation);
@@ -56,7 +56,7 @@ public class TreeUntyper<T> where T :struct
         return n;
     }
     
-    public SyntaxNode Untype(ManySyntaxNode<T> node)
+    private static SyntaxNode Untype(ManySyntaxNode<T> node)
     {
         var n = new ManySyntaxNode(node.Name, node.Children.Select(x => Untype(x)).ToList());
         n.Operation = Untype(node.Operation);
@@ -65,7 +65,7 @@ public class TreeUntyper<T> where T :struct
         return n;
     }
     
-    public SyntaxNode Untype(GroupSyntaxNode<T> group)
+    private static SyntaxNode Untype(GroupSyntaxNode<T> group)
     {
         var n = new GroupSyntaxNode(group.Name, group.Children.Select(x => Untype(x)).ToList());
         n.Operation = Untype(group.Operation);
@@ -75,13 +75,18 @@ public class TreeUntyper<T> where T :struct
     }
 
 
-    public OperationMetaData Untype(OperationMetaData<T> operation)
+    private static OperationMetaData Untype(OperationMetaData<T> operation)
     {
-        return new OperationMetaData(operation.Precedence, operation.Associativity, operation.Affix,
-            operation.OperatorToken.ToString());
+        if (operation != null)
+        {
+            return new OperationMetaData(operation.Precedence, operation.Associativity, operation.Affix,
+                operation.OperatorToken.ToString());
+        }
+
+        return null;
     }
     
-    public Token Untype(Token<T> token)
+    private static Token Untype(Token<T> token)
     {
         return new Token(token.TokenID.ToString(), token.SpanValue, token.Position, token.CommentType, token.Channel, token.IsWhiteSpace, token.DecimalSeparator);
     }

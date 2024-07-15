@@ -2,8 +2,11 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using clsy.cli.builder.checker;
+using clsy.cli.model.tree.visitor;
+using clsy.cli.model.tree.visitor.mermaid;
 using csly.cli.model;
 using csly.cli.model.parser;
+using csly.cli.model.tree;
 using csly.cli.parser;
 using Newtonsoft.Json;
 using sly.buildresult;
@@ -13,13 +16,11 @@ using sly.lexer.fsm;
 using sly.parser;
 using sly.parser.generator;
 using sly.parser.generator.visitor;
-using sly.parser.generator.visitor.dotgraph;
-using sly.parser.generator.visitor.mermaid;
 using sly.parser.parser;
 
 namespace clsy.cli.builder.parser;
 
-public delegate string SyntaxTreeProcessor(Type parserType, Type lexerType, object tree);
+public delegate string SyntaxTreeProcessor(Type parserType, Type lexerType, ISyntaxNode tree);
 
 public class ParserBuilder
 {
@@ -376,7 +377,14 @@ public class ParserBuilder
             List<(string format, string content)> results = new List<(string format, string content)>();
             foreach (var processor in processors)
             {
-                var processed = processor.processor(buildResult.lexerType, parser.GetType(), syntaxTree);
+                var untyperType = typeof(TreeUntyper<>).MakeGenericType(buildResult.lexerType);
+                
+                var iSyntaxNodeType = typeof(sly.parser.syntax.tree.ISyntaxNode<>).MakeGenericType(buildResult.lexerType);
+                var untypeMethod = untyperType.GetMethod("Untype", new[] { iSyntaxNodeType });
+                var untyped = untypeMethod.Invoke(null, new object[] { syntaxTree });
+                var tree = untyped as ISyntaxNode;
+                
+                var processed = processor.processor(buildResult.lexerType, parser.GetType(), tree);
                 results.Add((processor.format,processed));
             }
 
@@ -391,22 +399,100 @@ public class ParserBuilder
         return null;
     }
 
-    public static string SyntaxTreeToDotGraph(Type lexerType, Type parserType, object syntaxTree)
+    public Result<ISyntaxNode> GetSyntaxTree(string modelSource, string source,
+        string parserName, string rootRule = null,
+        Chrono chrono = null)
     {
-        var graphvizType = typeof(GraphVizEBNFSyntaxTreeVisitor<>).MakeGenericType(lexerType);
-        var visitor = graphvizType.GetConstructor(new Type[] { }).Invoke(new object[]{});
-        
-        var visited = graphvizType
-            .GetMethod("VisitTree", new Type[] { syntaxTree.GetType() })
-            .Invoke(visitor, new object[] { syntaxTree });
+        var model = CompileModel(modelSource, parserName);
 
-        var graph = graphvizType?
-            .GetProperty("Graph")
-            ?.GetValue(visitor);
+        if (model.IsError)
+        {
+            return model.error;
+        }
 
-        var dot = (graph as DotGraph);
 
-        return dot.Compile();
+        var buildResult = BuildParser(model, chrono);
+
+        var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType, typeof(object));
+        var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
+
+
+        //  return a list<string> if buildResult is error
+        var isErrorResult =
+            buildResultType.GetProperty("IsError").GetValue(buildResult.parserBuildResult, null) as bool?;
+        if (isErrorResult.HasValue && isErrorResult.Value)
+        {
+            var errors = buildResultType.GetProperty("Errors").GetValue(buildResult.parserBuildResult, null) as
+                List<InitializationError>;
+            return errors.Select(x => x.Message).ToList();
+        }
+
+        var resultProperty = buildResultType.GetProperty("Result");
+        var parser = resultProperty.GetValue(buildResult.parserBuildResult, null);
+
+        var parseMethod = parserType.GetMethod("Parse", new[] { typeof(string), typeof(string) });
+        var result = parseMethod.Invoke(parser, new object[] { source, null });
+        if (chrono != null)
+        {
+            chrono.Tick("source parsing");
+        }
+
+        var ParseResultType = typeof(ParseResult<,>).MakeGenericType(buildResult.lexerType, typeof(object));
+
+        var x = ParseResultType.GetProperty("IsError").GetValue(result) as bool?;
+        if (x.HasValue && x.Value)
+        {
+            var errors = ParseResultType.GetProperty("Errors").GetValue(result) as List<ParseError>;
+            return errors.Select(x => x.ErrorMessage).ToList();
+        }
+
+
+        var parseResultProp = ParseResultType.GetProperty("SyntaxTree");
+        var syntaxTree = parseResultProp.GetValue(result);
+
+
+        if (chrono != null)
+        {
+            chrono.Tick("get syntax tree");
+        }
+
+        var untyperType = typeof(TreeUntyper<>).MakeGenericType(buildResult.lexerType);
+
+        var iSyntaxNodeType = typeof(sly.parser.syntax.tree.ISyntaxNode<>).MakeGenericType(buildResult.lexerType);
+        var untypeMethod = untyperType.GetMethod("Untype", new[] { iSyntaxNodeType });
+        var untyped = untypeMethod.Invoke(null, new object[] { syntaxTree });
+        var tree = untyped as ISyntaxNode;
+
+        if (tree != null)
+        {
+            return new Result<ISyntaxNode>(tree);
+
+        }
+
+        if (chrono != null)
+        {
+            chrono.Tick("un type syntax tree");
+            chrono.Stop();
+        }
+
+        if (tree != null)
+        {
+            return new Result<ISyntaxNode>(tree);
+        }
+
+
+        return null;
+    }
+
+
+
+
+    public static string SyntaxTreeToDotGraph(Type lexerType, Type parserType, ISyntaxNode syntaxTree)
+    {
+        var visitor = new GraphVizEBNFSyntaxTreeVisitor();
+        var root =visitor.VisitTree(syntaxTree);
+        var graph = visitor.Graph;
+        return graph.Compile();
     }
     
     public static string SyntaxTreeToMermaid(Type lexerType, Type parserType, object syntaxTree)

@@ -1,4 +1,6 @@
 using csly.cli.model;
+using csly.cli.model.tree;
+using sly.parser;
 
 namespace csly_cli_api;
 
@@ -60,5 +62,7 @@ public interface ICslyProcessor
     /// <returns></returns>
     CliResult<string> ExtractGrammar(string parser, string lexer);
     
-    
+    CliResult<ISyntaxNode> GetSyntaxTree(string grammar, string source);
+
+
 }

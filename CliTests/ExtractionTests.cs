@@ -78,9 +78,9 @@ public class ExtractionTests
         Check.That(specification).IsNotNull();
         Check.That(specification).IsNotEmpty();
         
-        model = builder.CompileModel(specification, "SimpleExpressionParser");
-        Check.That(model.IsError).IsFalse();
-        Check.That(model.Value).IsNotNull();
+        var extractedModel = builder.CompileModel(specification, "SimpleExpressionParser");
+        Check.That(extractedModel.IsError).IsFalse();
+        Check.That(extractedModel.Value).IsNotNull();
 
     }
 

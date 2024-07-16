@@ -302,18 +302,15 @@ namespace {nameSpace} {{
         var model = _parserBuilder.CompileModel(grammar, "MinimalParser", chrono);
         if (model.IsOk)
         {
-            var r = _parserBuilder.Getz(grammar, source, "TestParser",
-                new List<(string format, SyntaxTreeProcessor processor)>()
-                    { ("JSON", ParserBuilder.SyntaxTreeToJson) }, model.Value.ParserModel.Root,
-                chrono);
+            var r = _parserBuilder.GetSyntaxTree(grammar, source, model.Value.ParserModel.Name,
+                model.Value.ParserModel.Root,
+                chrono: chrono);
             if (r.IsError)
             {
                 return new CliResult<ISyntaxNode>(r.Error.Select(x => $"parse error : {x}").ToList());
             }
-            else
-            {
-                return null;
-            }
+
+            return new CliResult<ISyntaxNode>(r.Value);
         }
 
         return new CliResult<ISyntaxNode>(model.Error.Select(x => $"grammar error : {x}").ToList());

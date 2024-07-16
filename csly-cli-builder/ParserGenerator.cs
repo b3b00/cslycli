@@ -325,14 +325,17 @@ namespace {nameSpace} {{
     
     public  string GetVisitor(PostfixRule postfix, string lexer, string output)
     {
-        string name = postfix.Name;
+        string name = ""; 
         if (postfix.TryGetMethodName(out name))
         {
             if (postfix.IsExplicit)
             {
-                name = $"postfix_{explicitPostfixCounter}";
-                explicitPostfixCounter++;
+                name = $"infix_{explicitInfixCounter}";
+                explicitInfixCounter++;
             }
+        }
+        else {
+            name = postfix.Name;
         }
 
         return $@"

@@ -4,6 +4,7 @@ using System.Reflection;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using csly_cli_api;
+using csly.cli.model.tree;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NFluent;
@@ -428,8 +429,9 @@ genericLexer someLexer;
 [KeyWord] REMOVE:""remove"";
 [Sugar] TIMES : ""*"";
 [KeyWord] MUL:""mul"";
-[Sugar] SLASH : ""/"";  
+[Sugar] SLASH : ""/"";
 [KeyWord] DIV:""div"";
+
 
 
 parser someParser;
@@ -464,6 +466,28 @@ integer : INT;
 
     }
 
+    [Fact]
+    public void ExplicitOperationToken()
+    {
+        var grammar = @"
+genericLexer explicitL;
+[Int] INT;
+
+parser explicitP;
+-> root : explicitP_expressions;
+[Right 10] ""+"";
+[Prefix 100] ""##"";
+[Postfix 110] ""??"";
+[Operand] value : INT;" ;
+        var t = _processor.Compile(grammar);
+        Check.That(t.IsOK).IsTrue();
+        var r = _processor.GetSyntaxTree(grammar, "##2 + 2??");
+        Check.That(r).IsNotNull();
+        Check.That(r.IsOK).IsTrue();
+        Check.That(r.Result).IsNotNull();
+        Check.That(r.Result).IsInstanceOf<SyntaxNode>();
+    }
+    
     [Fact]
     public void ApiParse()
     {

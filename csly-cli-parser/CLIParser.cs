@@ -399,19 +399,17 @@ public class CLIParser
                 var rule = new PrefixRule(ids[0].Value, ids[0].TokenID == CLIToken.STRING,
                     precedence.IntValue);
                 rule.SetAttributes(attributes.Cast<AttributeModel>());
-                rule.Position = precedence.Position; 
+                rule.Position = precedence.Position;
                 return rule;
             }
 
             var r = new ManyPrefixRule(ids.Select(x =>
             {
-                var value = x.TokenID == CLIToken.STRING ? x.StringWithoutQuotes : x.Value;
-                var rule = new PrefixRule(value, x.TokenID == CLIToken.STRING,
+                var rule = new PrefixRule(x.Value, x.TokenID == CLIToken.STRING,
                     precedence.IntValue);
                 rule.Position = precedence.Position;
                 return rule;
             }).ToList());
-            r.Position = precedence.Position;
             r.SetAttributes(attributes.Cast<AttributeModel>());
             return r;
         }

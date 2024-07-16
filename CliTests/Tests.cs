@@ -489,6 +489,35 @@ parser explicitP;
     }
     
     [Fact]
+    public void ExplicitOperationTokenSyntaxNodeNames()
+    {
+        var grammar = @"
+genericLexer explicitL;
+[Int] INT;
+
+parser explicitP;
+-> root : explicitP_expressions;
+[Prefix 100] ""##"";
+[Operand] value : INT;" ;
+        var t = _processor.Compile(grammar);
+        Check.That(t.IsOK).IsTrue();
+        var r = _processor.GetSyntaxTree(grammar, "##2");
+        Check.That(r).IsNotNull();
+        Check.That(r.IsOK).IsTrue();
+        Check.That(r.Result).IsNotNull();
+        Check.That(r.Result).IsInstanceOf<SyntaxNode>();
+        var root = r.Result as SyntaxNode;
+        var c1 = root.Children[0];
+        Check.That(c1).IsNotNull();
+        Check.That(c1).IsInstanceOf<SyntaxNode>();
+        Check.That((c1 as SyntaxNode).IsByPassNode).IsTrue();
+        var c2 = (c1 as SyntaxNode).Children[0];
+        Check.That(c2).IsNotNull();
+        Check.That(c2).IsInstanceOf<SyntaxNode>();
+        Check.That(c2.Name).Not.IsNullOrWhiteSpace();
+    }
+    
+    [Fact]
     public void ApiParse()
     {
         var grammar = @"

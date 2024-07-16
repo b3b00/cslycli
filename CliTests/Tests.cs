@@ -589,5 +589,22 @@ item : OPEN_CODE STRING CLOSE_CODE;
         Check.That(r.IsOK).IsFalse();
         
     }
+
+    [Fact]
+    public void TestMissingOperand()
+    {
+        string grammar = @"
+genericLexer l;
+[Int] INT;
+parser p;
+-> root: p_expressions;
+[Prefix 10] ""++"";
+";
+        var result = _processor.Compile(grammar);
+        Check.That(result.IsError).IsTrue();
+
+    }
+    
+ 
         
 }

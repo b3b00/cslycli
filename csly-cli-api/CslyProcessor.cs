@@ -24,7 +24,7 @@ public class CslyProcessor : ICslyProcessor
     /// </summary>
     /// <param name="grammar">the grammar specification</param>
     /// <returns></returns>
-    public CliResult<Model> Compile(string grammar)
+    public CliResult<Model> CompileModel(string grammar)
     {
         
         Chrono chrono = new Chrono();
@@ -38,6 +38,21 @@ public class CslyProcessor : ICslyProcessor
             return model.Value;
         }
         return model.Error;
+    }
+
+    public CliResult<string> Compile(string grammar)
+    {
+        Chrono chrono = new Chrono();
+        chrono.Start();
+        var buildResult = _parserBuilder.Compile(grammar, "MinimalParser",chrono);
+        chrono.Stop();
+        if (buildResult.IsOk)
+        {
+            var result = new CliResult<string>(buildResult.Value);
+            result.Timings = chrono.LabeledElapsedMilliseconds;
+            return buildResult.Value;
+        }
+        return buildResult.Error;
     }
 
     /// <summary>

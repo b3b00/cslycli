@@ -83,7 +83,7 @@ parser MinimalParser;
     private static void Compile(string path)
     {
         var processor = new CslyProcessor();
-        var r = processor.Compile(File.ReadAllText(path));
+        var r = processor.CompileModel(File.ReadAllText(path));
         if (r.IsOK)
         {
             Console.WriteLine("compilation ok");
@@ -110,7 +110,7 @@ parser MinimalParser;
             }
 
             Console.WriteLine("extraction ok");
-            var r = processor.Compile(e.Result);
+            var r = processor.CompileModel(e.Result);
             if (r.IsOK)
             {
                 Console.WriteLine("compilation ok");
@@ -182,7 +182,7 @@ hexa : HEXA;
 int : INT;
 ";
         var processor = new CslyProcessor();
-        var r = processor.Compile(grammar);
+        var r = processor.CompileModel(grammar);
         if (r.IsOK)
         {
             Console.WriteLine("ok");

@@ -272,9 +272,40 @@ public class ParserBuilder
         
         return model;
     }
+
+
+
+    public Result<string> Compile(string grammar, string parserName = "dynamicParser", Chrono chrono = null)
+    {
+        var model = CompileModel(grammar, parserName,chrono);
+        
+        if (model.IsError)
+        {
+            return model.error;
+        }
+        
+        
+        var buildResult = BuildParser(model, chrono);
+        
+        var parserType = typeof(Parser<,>).MakeGenericType(buildResult.lexerType,typeof(object));
+        var buildResultType = typeof(BuildResult<>).MakeGenericType(parserType);
+           
+        
+        //  return a list<string> if buildResult is error
+        var isErrorResult = buildResultType.GetProperty("IsError").GetValue(buildResult.parserBuildResult, null) as bool?;
+        if (isErrorResult.HasValue && isErrorResult.Value)
+        {
+            var errors = buildResultType.GetProperty("Errors").GetValue(buildResult.parserBuildResult, null) as
+                List<InitializationError>;
+            return errors.Select(x => x.Message).ToList();
+        }
+        
+        var resultProperty = buildResultType.GetProperty("Result");
+        var parser = resultProperty.GetValue(buildResult.parserBuildResult, null);
+
+        return "OK";
+    }
     
-    
-   
        public Result<string> Parse(string modelSource, string source, string parserName, string rootRule = null, Chrono chrono = null)
     {
         var model = CompileModel(modelSource, parserName,chrono);

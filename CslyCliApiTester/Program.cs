@@ -25,7 +25,7 @@ namespace csly_cli_api
             var g = processor.ExtractGrammar(parser, lexer);
             File.WriteAllText($"C:/Users/olduh/dev/csly-cli/Generated/grammar.txt", g.Result);
 
-            var gr = processor.Compile(g);
+            var gr = processor.CompileModel(g);
             if (gr.IsOK)
             {
                 Console.WriteLine("recompiled grammar is ok");

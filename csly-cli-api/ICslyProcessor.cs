@@ -11,8 +11,15 @@ public interface ICslyProcessor
     /// </summary>
     /// <param name="grammar">the grammar specification</param>
     /// <returns></returns>
-    CliResult<Model> Compile(string grammar);
+    CliResult<Model> CompileModel(string grammar);
 
+    /// <summary>
+    /// Compiles and check a grammar specification. Also try to build the parser 
+    /// </summary>
+    /// <param name="grammar">the grammar specification</param>
+    /// <returns>either "OK" or a list of errors</returns>
+    CliResult<string> Compile(string grammar);
+    
     /// <summary>
     /// Parses a source according to a grammar specification
     /// </summary>

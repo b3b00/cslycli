@@ -10,7 +10,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-4.final" />
 <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
-        <PackageReference Include="sly" Version="3.2.5"/>
+        <PackageReference Include="sly" Version="3.2.6"/>
     </ItemGroup>
 
 

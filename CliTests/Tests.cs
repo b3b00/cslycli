@@ -600,8 +600,12 @@ parser p;
 -> root: p_expressions;
 [Prefix 10] ""++"";
 ";
-        var result = _processor.Compile(grammar);
+        _processor.Compile(grammar);
+        var result = _processor.GetSyntaxTree(grammar, "++2");
         Check.That(result.IsError).IsTrue();
+        Check.That(result.Errors).IsSingle();
+        var error = result.Errors[0];
+        Check.That(error).Contains("operand");
 
     }
     

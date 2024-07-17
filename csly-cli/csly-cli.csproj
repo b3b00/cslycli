@@ -9,8 +9,8 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>csly-cli</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-        <version>2.3.5</version>
-        <PackageVersion>2.3.5</PackageVersion>
+        <version>2.3.6</version>
+        <PackageVersion>2.3.6</PackageVersion>
         
     </PropertyGroup>
     <PropertyGroup>
@@ -23,16 +23,18 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommandLineParser" Version="2.9.1" />
-      <PackageReference Include="sly" Version="3.2.6" />
+      <PackageReference Include="CommandLineParser" Version="2.9.1" />      
+    </ItemGroup>
+
+    <ItemGroup>
+        <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
+        <PackageReference Include="sly" Version="3.2.7"/>
     </ItemGroup>
 
     
     
-    <ItemGroup>     
-      
-      <ProjectReference Include="..\csly-cli-api\csly-cli-api.csproj" />     
-      
+    <ItemGroup>      
+      <ProjectReference Include="..\csly-cli-api\csly-cli-api.csproj" />      
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />

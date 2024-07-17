@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NFluent;
 using SharpFileSystem.FileSystems;
+using sly.buildresult;
 using sly.lexer;
 using Xunit;
 
@@ -605,12 +606,12 @@ parser p;
         Check.That(parseResult.IsError).IsTrue();
         Check.That(parseResult.Errors).IsSingle();
         var error = parseResult.Errors[0];
-        Check.That(error).Contains("operand");
+        Check.That(error).Contains(ErrorCodes.PARSER_MISSING_OPERAND.ToString());
         var compilationResult = _processor.Compile(grammar);
         Check.That(compilationResult.IsError).IsTrue();
         Check.That(compilationResult.Errors).IsSingle();
         error = compilationResult.Errors[0];
-        Check.That(error).Contains("operand");
+        Check.That(error).Contains(ErrorCodes.PARSER_MISSING_OPERAND.ToString());
 
     }
     

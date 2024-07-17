@@ -297,7 +297,7 @@ public class ParserBuilder
         {
             var errors = buildResultType.GetProperty("Errors").GetValue(buildResult.parserBuildResult, null) as
                 List<InitializationError>;
-            return errors.Select(x => x.Message).ToList();
+            return errors.Select(x => $"[{x.Code}] {x.Message}").ToList();
         }
         
         var resultProperty = buildResultType.GetProperty("Result");
@@ -328,7 +328,7 @@ public class ParserBuilder
         {
             var errors = buildResultType.GetProperty("Errors").GetValue(buildResult.parserBuildResult, null) as
                 List<InitializationError>;
-            return errors.Select(x => x.Message).ToList();
+            return errors.Select(x => $"[{x.Code}] {x.Message}").ToList();
         }
         
         var resultProperty = buildResultType.GetProperty("Result");
@@ -374,7 +374,7 @@ public class ParserBuilder
         {
             var errors = buildResultType.GetProperty("Errors").GetValue(buildResult.parserBuildResult, null) as
                 List<InitializationError>;
-            return errors.Select(x => x.Message).ToList();
+            return errors.Select(x => $"[{x.Code}] {x.Message}").ToList();
         }
         
         var resultProperty = buildResultType.GetProperty("Result");
@@ -455,7 +455,7 @@ public class ParserBuilder
         {
             var errors = buildResultType.GetProperty("Errors").GetValue(buildResult.parserBuildResult, null) as
                 List<InitializationError>;
-            return errors.Select(x => x.Message).ToList();
+            return errors.Select(x => $"[{x.Code}] {x.Message}").ToList();
         }
 
         var resultProperty = buildResultType.GetProperty("Result");

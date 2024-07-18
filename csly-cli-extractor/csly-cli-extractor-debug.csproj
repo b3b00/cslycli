@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>specificationExtractor</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-4.final" />
+    </ItemGroup>
+    <ItemGroup>
+                <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />
+<!--        <PackageReference Include="sly" Version="3.2.7"/>-->
+    </ItemGroup>
+
+
+</Project>

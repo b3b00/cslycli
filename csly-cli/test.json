@@ -1,0 +1,2002 @@
+{
+  "Children": [
+    {
+      "Token": {
+        "StringDelimiter": "\u0000",
+        "DecimalSeparator": "\u0000",
+        "CharDelimiter": "'",
+        "Notignored": false,
+        "Channel": 0,
+        "SpanValue": {
+          "Length": 1,
+          "IsEmpty": false
+        },
+        "Position": {
+          "IsStartOfLine": true,
+          "Indentations": [],
+          "CurrentIndentation": 0,
+          "Column": 0,
+          "Index": 0,
+          "Line": 0,
+          "Mode": "default"
+        },
+        "PositionInTokenVisibleFlow": 0,
+        "PositionInTokenFlow": 0,
+        "TokenID": 25,
+        "IsComment": false,
+        "Discarded": false,
+        "IsEOS": false,
+        "IsIndent": false,
+        "IsUnIndent": false,
+        "IndentationLevel": 0,
+        "IsWhiteSpace": false,
+        "IsEOL": false,
+        "IsImplicit": false,
+        "CommentType": 0,
+        "IsEmpty": false,
+        "IsMultiLineComment": false,
+        "IsSingleLineComment": true,
+        "Value": "(",
+        "End": true,
+        "IsLineEnding": false
+      },
+      "Discarded": false,
+      "Name": "LPAREN",
+      "HasByPassNodes": false
+    },
+    {
+      "Children": [
+        {
+          "Children": [
+            {
+              "Children": [
+                {
+                  "Token": {
+                    "StringDelimiter": "\u0000",
+                    "DecimalSeparator": "\u0000",
+                    "CharDelimiter": "'",
+                    "Notignored": false,
+                    "Channel": 0,
+                    "SpanValue": {
+                      "Length": 1,
+                      "IsEmpty": false
+                    },
+                    "Position": {
+                      "IsStartOfLine": false,
+                      "Indentations": [],
+                      "CurrentIndentation": 0,
+                      "Column": 1,
+                      "Index": 1,
+                      "Line": 0,
+                      "Mode": "default"
+                    },
+                    "PositionInTokenVisibleFlow": 1,
+                    "PositionInTokenFlow": 1,
+                    "TokenID": 2,
+                    "IsComment": false,
+                    "Discarded": false,
+                    "IsEOS": false,
+                    "IsIndent": false,
+                    "IsUnIndent": false,
+                    "IndentationLevel": 0,
+                    "IsWhiteSpace": false,
+                    "IsEOL": false,
+                    "IsImplicit": false,
+                    "CommentType": 0,
+                    "IsEmpty": false,
+                    "IsMultiLineComment": false,
+                    "IsSingleLineComment": true,
+                    "Value": "a",
+                    "End": true,
+                    "IsLineEnding": false
+                  },
+                  "Discarded": false,
+                  "Name": "ID",
+                  "HasByPassNodes": false
+                },
+                {
+                  "Token": {
+                    "StringDelimiter": "\u0000",
+                    "DecimalSeparator": "\u0000",
+                    "CharDelimiter": "'",
+                    "Notignored": false,
+                    "Channel": 0,
+                    "SpanValue": {
+                      "Length": 2,
+                      "IsEmpty": false
+                    },
+                    "Position": {
+                      "IsStartOfLine": false,
+                      "Indentations": [],
+                      "CurrentIndentation": 0,
+                      "Column": 2,
+                      "Index": 2,
+                      "Line": 0,
+                      "Mode": "default"
+                    },
+                    "PositionInTokenVisibleFlow": 2,
+                    "PositionInTokenFlow": 2,
+                    "TokenID": 20,
+                    "IsComment": false,
+                    "Discarded": false,
+                    "IsEOS": false,
+                    "IsIndent": false,
+                    "IsUnIndent": false,
+                    "IndentationLevel": 0,
+                    "IsWhiteSpace": false,
+                    "IsEOL": false,
+                    "IsImplicit": false,
+                    "CommentType": 0,
+                    "IsEmpty": false,
+                    "IsMultiLineComment": false,
+                    "IsSingleLineComment": true,
+                    "Value": ":=",
+                    "End": true,
+                    "IsLineEnding": false
+                  },
+                  "Discarded": false,
+                  "Name": "ASSIGN",
+                  "HasByPassNodes": false
+                },
+                {
+                  "Children": [
+                    {
+                      "Children": [
+                        {
+                          "Children": [
+                            {
+                              "Children": [
+                                {
+                                  "Token": {
+                                    "StringDelimiter": "\u0000",
+                                    "DecimalSeparator": "\u0000",
+                                    "CharDelimiter": "'",
+                                    "Notignored": false,
+                                    "Channel": 0,
+                                    "SpanValue": {
+                                      "Length": 1,
+                                      "IsEmpty": false
+                                    },
+                                    "Position": {
+                                      "IsStartOfLine": false,
+                                      "Indentations": [],
+                                      "CurrentIndentation": 0,
+                                      "Column": 4,
+                                      "Index": 4,
+                                      "Line": 0,
+                                      "Mode": "default"
+                                    },
+                                    "PositionInTokenVisibleFlow": 3,
+                                    "PositionInTokenFlow": 3,
+                                    "TokenID": 1,
+                                    "IsComment": false,
+                                    "Discarded": false,
+                                    "IsEOS": false,
+                                    "IsIndent": false,
+                                    "IsUnIndent": false,
+                                    "IndentationLevel": 0,
+                                    "IsWhiteSpace": false,
+                                    "IsEOL": false,
+                                    "IsImplicit": false,
+                                    "CommentType": 0,
+                                    "IsEmpty": false,
+                                    "IsMultiLineComment": false,
+                                    "IsSingleLineComment": true,
+                                    "Value": "0",
+                                    "End": true,
+                                    "IsLineEnding": false
+                                  },
+                                  "Discarded": false,
+                                  "Name": "INT",
+                                  "HasByPassNodes": false
+                                }
+                              ],
+                              "IsByPassNode": false,
+                              "IsEmpty": false,
+                              "ExpressionAffix": 0,
+                              "Discarded": false,
+                              "Name": "int",
+                              "HasByPassNodes": false,
+                              "IsExpressionNode": false,
+                              "IsBinaryOperationNode": false,
+                              "IsUnaryOperationNode": false,
+                              "Precedence": -1,
+                              "Associativity": 0,
+                              "IsLeftAssociative": false,
+                              "Left": null,
+                              "Right": null
+                            }
+                          ],
+                          "IsByPassNode": true,
+                          "IsEmpty": false,
+                          "ExpressionAffix": 0,
+                          "Discarded": false,
+                          "Name": "MyParser_operand",
+                          "HasByPassNodes": true,
+                          "IsExpressionNode": false,
+                          "IsBinaryOperationNode": false,
+                          "IsUnaryOperationNode": false,
+                          "Precedence": -1,
+                          "Associativity": 0,
+                          "IsLeftAssociative": false,
+                          "Left": null,
+                          "Right": null
+                        }
+                      ],
+                      "IsByPassNode": true,
+                      "IsEmpty": false,
+                      "ExpressionAffix": 0,
+                      "Discarded": false,
+                      "Name": "expr_100_MINUS_NOT",
+                      "HasByPassNodes": true,
+                      "IsExpressionNode": false,
+                      "IsBinaryOperationNode": false,
+                      "IsUnaryOperationNode": false,
+                      "Precedence": -1,
+                      "Associativity": 0,
+                      "IsLeftAssociative": false,
+                      "Left": null,
+                      "Right": null
+                    }
+                  ],
+                  "IsByPassNode": true,
+                  "IsEmpty": false,
+                  "ExpressionAffix": 0,
+                  "Discarded": false,
+                  "Name": "MyParser_expressions",
+                  "HasByPassNodes": true,
+                  "IsExpressionNode": false,
+                  "IsBinaryOperationNode": false,
+                  "IsUnaryOperationNode": false,
+                  "Precedence": -1,
+                  "Associativity": 0,
+                  "IsLeftAssociative": false,
+                  "Left": null,
+                  "Right": null
+                }
+              ],
+              "IsByPassNode": false,
+              "IsEmpty": false,
+              "ExpressionAffix": 0,
+              "Discarded": false,
+              "Name": "statementPrim",
+              "HasByPassNodes": false,
+              "IsExpressionNode": false,
+              "IsBinaryOperationNode": false,
+              "IsUnaryOperationNode": false,
+              "Precedence": -1,
+              "Associativity": 0,
+              "IsLeftAssociative": false,
+              "Left": null,
+              "Right": null
+            },
+            {
+              "IsManyTokens": false,
+              "IsManyValues": true,
+              "IsManyGroups": false,
+              "Children": [
+                {
+                  "Children": [
+                    {
+                      "Token": {
+                        "StringDelimiter": "\u0000",
+                        "DecimalSeparator": "\u0000",
+                        "CharDelimiter": "'",
+                        "Notignored": false,
+                        "Channel": 0,
+                        "SpanValue": {
+                          "Length": 1,
+                          "IsEmpty": false
+                        },
+                        "Position": {
+                          "IsStartOfLine": false,
+                          "Indentations": [],
+                          "CurrentIndentation": 0,
+                          "Column": 5,
+                          "Index": 5,
+                          "Line": 0,
+                          "Mode": "default"
+                        },
+                        "PositionInTokenVisibleFlow": 4,
+                        "PositionInTokenFlow": 4,
+                        "TokenID": 27,
+                        "IsComment": false,
+                        "Discarded": false,
+                        "IsEOS": false,
+                        "IsIndent": false,
+                        "IsUnIndent": false,
+                        "IndentationLevel": 0,
+                        "IsWhiteSpace": false,
+                        "IsEOL": false,
+                        "IsImplicit": false,
+                        "CommentType": 0,
+                        "IsEmpty": false,
+                        "IsMultiLineComment": false,
+                        "IsSingleLineComment": true,
+                        "Value": ";",
+                        "End": true,
+                        "IsLineEnding": false
+                      },
+                      "Discarded": false,
+                      "Name": "SEMICOLON",
+                      "HasByPassNodes": false
+                    },
+                    {
+                      "Children": [
+                        {
+                          "Token": {
+                            "StringDelimiter": "\u0000",
+                            "DecimalSeparator": "\u0000",
+                            "CharDelimiter": "'",
+                            "Notignored": false,
+                            "Channel": 0,
+                            "SpanValue": {
+                              "Length": 5,
+                              "IsEmpty": false
+                            },
+                            "Position": {
+                              "IsStartOfLine": false,
+                              "Indentations": [],
+                              "CurrentIndentation": 0,
+                              "Column": 7,
+                              "Index": 7,
+                              "Line": 0,
+                              "Mode": "default"
+                            },
+                            "PositionInTokenVisibleFlow": 5,
+                            "PositionInTokenFlow": 6,
+                            "TokenID": 6,
+                            "IsComment": false,
+                            "Discarded": false,
+                            "IsEOS": false,
+                            "IsIndent": false,
+                            "IsUnIndent": false,
+                            "IndentationLevel": 0,
+                            "IsWhiteSpace": false,
+                            "IsEOL": false,
+                            "IsImplicit": false,
+                            "CommentType": 0,
+                            "IsEmpty": false,
+                            "IsMultiLineComment": false,
+                            "IsSingleLineComment": true,
+                            "Value": "while",
+                            "End": true,
+                            "IsLineEnding": false
+                          },
+                          "Discarded": false,
+                          "Name": "WHILE",
+                          "HasByPassNodes": false
+                        },
+                        {
+                          "Children": [
+                            {
+                              "Children": [
+                                {
+                                  "Children": [
+                                    {
+                                      "Children": [
+                                        {
+                                          "Children": [
+                                            {
+                                              "Token": {
+                                                "StringDelimiter": "\u0000",
+                                                "DecimalSeparator": "\u0000",
+                                                "CharDelimiter": "'",
+                                                "Notignored": false,
+                                                "Channel": 0,
+                                                "SpanValue": {
+                                                  "Length": 1,
+                                                  "IsEmpty": false
+                                                },
+                                                "Position": {
+                                                  "IsStartOfLine": false,
+                                                  "Indentations": [],
+                                                  "CurrentIndentation": 0,
+                                                  "Column": 13,
+                                                  "Index": 13,
+                                                  "Line": 0,
+                                                  "Mode": "default"
+                                                },
+                                                "PositionInTokenVisibleFlow": 6,
+                                                "PositionInTokenFlow": 8,
+                                                "TokenID": 2,
+                                                "IsComment": false,
+                                                "Discarded": false,
+                                                "IsEOS": false,
+                                                "IsIndent": false,
+                                                "IsUnIndent": false,
+                                                "IndentationLevel": 0,
+                                                "IsWhiteSpace": false,
+                                                "IsEOL": false,
+                                                "IsImplicit": false,
+                                                "CommentType": 0,
+                                                "IsEmpty": false,
+                                                "IsMultiLineComment": false,
+                                                "IsSingleLineComment": true,
+                                                "Value": "a",
+                                                "End": true,
+                                                "IsLineEnding": false
+                                              },
+                                              "Discarded": false,
+                                              "Name": "ID",
+                                              "HasByPassNodes": false
+                                            }
+                                          ],
+                                          "IsByPassNode": false,
+                                          "IsEmpty": false,
+                                          "ExpressionAffix": 0,
+                                          "Discarded": false,
+                                          "Name": "id",
+                                          "HasByPassNodes": false,
+                                          "IsExpressionNode": false,
+                                          "IsBinaryOperationNode": false,
+                                          "IsUnaryOperationNode": false,
+                                          "Precedence": -1,
+                                          "Associativity": 0,
+                                          "IsLeftAssociative": false,
+                                          "Left": null,
+                                          "Right": null
+                                        }
+                                      ],
+                                      "IsByPassNode": true,
+                                      "IsEmpty": false,
+                                      "ExpressionAffix": 0,
+                                      "Discarded": false,
+                                      "Name": "MyParser_operand",
+                                      "HasByPassNodes": true,
+                                      "IsExpressionNode": false,
+                                      "IsBinaryOperationNode": false,
+                                      "IsUnaryOperationNode": false,
+                                      "Precedence": -1,
+                                      "Associativity": 0,
+                                      "IsLeftAssociative": false,
+                                      "Left": null,
+                                      "Right": null
+                                    }
+                                  ],
+                                  "IsByPassNode": true,
+                                  "IsEmpty": false,
+                                  "ExpressionAffix": 0,
+                                  "Discarded": false,
+                                  "Name": "expr_100_MINUS_NOT",
+                                  "HasByPassNodes": true,
+                                  "IsExpressionNode": false,
+                                  "IsBinaryOperationNode": false,
+                                  "IsUnaryOperationNode": false,
+                                  "Precedence": -1,
+                                  "Associativity": 0,
+                                  "IsLeftAssociative": false,
+                                  "Left": null,
+                                  "Right": null
+                                },
+                                {
+                                  "Token": {
+                                    "StringDelimiter": "\u0000",
+                                    "DecimalSeparator": "\u0000",
+                                    "CharDelimiter": "'",
+                                    "Notignored": false,
+                                    "Channel": 0,
+                                    "SpanValue": {
+                                      "Length": 1,
+                                      "IsEmpty": false
+                                    },
+                                    "Position": {
+                                      "IsStartOfLine": false,
+                                      "Indentations": [],
+                                      "CurrentIndentation": 0,
+                                      "Column": 15,
+                                      "Index": 15,
+                                      "Line": 0,
+                                      "Mode": "default"
+                                    },
+                                    "PositionInTokenVisibleFlow": 7,
+                                    "PositionInTokenFlow": 10,
+                                    "TokenID": 16,
+                                    "IsComment": false,
+                                    "Discarded": false,
+                                    "IsEOS": false,
+                                    "IsIndent": false,
+                                    "IsUnIndent": false,
+                                    "IndentationLevel": 0,
+                                    "IsWhiteSpace": false,
+                                    "IsEOL": false,
+                                    "IsImplicit": false,
+                                    "CommentType": 0,
+                                    "IsEmpty": false,
+                                    "IsMultiLineComment": false,
+                                    "IsSingleLineComment": true,
+                                    "Value": "<",
+                                    "End": true,
+                                    "IsLineEnding": false
+                                  },
+                                  "Discarded": false,
+                                  "Name": "LESSER",
+                                  "HasByPassNodes": false
+                                },
+                                {
+                                  "Children": [
+                                    {
+                                      "Children": [
+                                        {
+                                          "Children": [
+                                            {
+                                              "Token": {
+                                                "StringDelimiter": "\u0000",
+                                                "DecimalSeparator": "\u0000",
+                                                "CharDelimiter": "'",
+                                                "Notignored": false,
+                                                "Channel": 0,
+                                                "SpanValue": {
+                                                  "Length": 2,
+                                                  "IsEmpty": false
+                                                },
+                                                "Position": {
+                                                  "IsStartOfLine": false,
+                                                  "Indentations": [],
+                                                  "CurrentIndentation": 0,
+                                                  "Column": 17,
+                                                  "Index": 17,
+                                                  "Line": 0,
+                                                  "Mode": "default"
+                                                },
+                                                "PositionInTokenVisibleFlow": 8,
+                                                "PositionInTokenFlow": 12,
+                                                "TokenID": 1,
+                                                "IsComment": false,
+                                                "Discarded": false,
+                                                "IsEOS": false,
+                                                "IsIndent": false,
+                                                "IsUnIndent": false,
+                                                "IndentationLevel": 0,
+                                                "IsWhiteSpace": false,
+                                                "IsEOL": false,
+                                                "IsImplicit": false,
+                                                "CommentType": 0,
+                                                "IsEmpty": false,
+                                                "IsMultiLineComment": false,
+                                                "IsSingleLineComment": true,
+                                                "Value": "10",
+                                                "End": true,
+                                                "IsLineEnding": false
+                                              },
+                                              "Discarded": false,
+                                              "Name": "INT",
+                                              "HasByPassNodes": false
+                                            }
+                                          ],
+                                          "IsByPassNode": false,
+                                          "IsEmpty": false,
+                                          "ExpressionAffix": 0,
+                                          "Discarded": false,
+                                          "Name": "int",
+                                          "HasByPassNodes": false,
+                                          "IsExpressionNode": false,
+                                          "IsBinaryOperationNode": false,
+                                          "IsUnaryOperationNode": false,
+                                          "Precedence": -1,
+                                          "Associativity": 0,
+                                          "IsLeftAssociative": false,
+                                          "Left": null,
+                                          "Right": null
+                                        }
+                                      ],
+                                      "IsByPassNode": true,
+                                      "IsEmpty": false,
+                                      "ExpressionAffix": 0,
+                                      "Discarded": false,
+                                      "Name": "MyParser_operand",
+                                      "HasByPassNodes": true,
+                                      "IsExpressionNode": false,
+                                      "IsBinaryOperationNode": false,
+                                      "IsUnaryOperationNode": false,
+                                      "Precedence": -1,
+                                      "Associativity": 0,
+                                      "IsLeftAssociative": false,
+                                      "Left": null,
+                                      "Right": null
+                                    }
+                                  ],
+                                  "IsByPassNode": true,
+                                  "IsEmpty": false,
+                                  "ExpressionAffix": 0,
+                                  "Discarded": false,
+                                  "Name": "expr_100_MINUS_NOT",
+                                  "HasByPassNodes": true,
+                                  "IsExpressionNode": false,
+                                  "IsBinaryOperationNode": false,
+                                  "IsUnaryOperationNode": false,
+                                  "Precedence": -1,
+                                  "Associativity": 0,
+                                  "IsLeftAssociative": false,
+                                  "Left": null,
+                                  "Right": null
+                                }
+                              ],
+                              "IsByPassNode": false,
+                              "IsEmpty": false,
+                              "ExpressionAffix": 2,
+                              "Discarded": false,
+                              "Name": "expr_50_LESSER_GREATER_EQUALS_DIFFERENT_TIMES_DIVIDE_AND",
+                              "HasByPassNodes": false,
+                              "IsExpressionNode": true,
+                              "IsBinaryOperationNode": true,
+                              "IsUnaryOperationNode": false,
+                              "Precedence": 50,
+                              "Associativity": 2,
+                              "IsLeftAssociative": false,
+                              "Left": {
+                                "Children": [
+                                  {
+                                    "Children": [
+                                      {
+                                        "Children": [
+                                          {
+                                            "Token": {
+                                              "StringDelimiter": "\u0000",
+                                              "DecimalSeparator": "\u0000",
+                                              "CharDelimiter": "'",
+                                              "Notignored": false,
+                                              "Channel": 0,
+                                              "SpanValue": {
+                                                "Length": 1,
+                                                "IsEmpty": false
+                                              },
+                                              "Position": {
+                                                "IsStartOfLine": false,
+                                                "Indentations": [],
+                                                "CurrentIndentation": 0,
+                                                "Column": 13,
+                                                "Index": 13,
+                                                "Line": 0,
+                                                "Mode": "default"
+                                              },
+                                              "PositionInTokenVisibleFlow": 6,
+                                              "PositionInTokenFlow": 8,
+                                              "TokenID": 2,
+                                              "IsComment": false,
+                                              "Discarded": false,
+                                              "IsEOS": false,
+                                              "IsIndent": false,
+                                              "IsUnIndent": false,
+                                              "IndentationLevel": 0,
+                                              "IsWhiteSpace": false,
+                                              "IsEOL": false,
+                                              "IsImplicit": false,
+                                              "CommentType": 0,
+                                              "IsEmpty": false,
+                                              "IsMultiLineComment": false,
+                                              "IsSingleLineComment": true,
+                                              "Value": "a",
+                                              "End": true,
+                                              "IsLineEnding": false
+                                            },
+                                            "Discarded": false,
+                                            "Name": "ID",
+                                            "HasByPassNodes": false
+                                          }
+                                        ],
+                                        "IsByPassNode": false,
+                                        "IsEmpty": false,
+                                        "ExpressionAffix": 0,
+                                        "Discarded": false,
+                                        "Name": "id",
+                                        "HasByPassNodes": false,
+                                        "IsExpressionNode": false,
+                                        "IsBinaryOperationNode": false,
+                                        "IsUnaryOperationNode": false,
+                                        "Precedence": -1,
+                                        "Associativity": 0,
+                                        "IsLeftAssociative": false,
+                                        "Left": null,
+                                        "Right": null
+                                      }
+                                    ],
+                                    "IsByPassNode": true,
+                                    "IsEmpty": false,
+                                    "ExpressionAffix": 0,
+                                    "Discarded": false,
+                                    "Name": "MyParser_operand",
+                                    "HasByPassNodes": true,
+                                    "IsExpressionNode": false,
+                                    "IsBinaryOperationNode": false,
+                                    "IsUnaryOperationNode": false,
+                                    "Precedence": -1,
+                                    "Associativity": 0,
+                                    "IsLeftAssociative": false,
+                                    "Left": null,
+                                    "Right": null
+                                  }
+                                ],
+                                "IsByPassNode": true,
+                                "IsEmpty": false,
+                                "ExpressionAffix": 0,
+                                "Discarded": false,
+                                "Name": "expr_100_MINUS_NOT",
+                                "HasByPassNodes": true,
+                                "IsExpressionNode": false,
+                                "IsBinaryOperationNode": false,
+                                "IsUnaryOperationNode": false,
+                                "Precedence": -1,
+                                "Associativity": 0,
+                                "IsLeftAssociative": false,
+                                "Left": null,
+                                "Right": null
+                              },
+                              "Right": {
+                                "Children": [
+                                  {
+                                    "Children": [
+                                      {
+                                        "Children": [
+                                          {
+                                            "Token": {
+                                              "StringDelimiter": "\u0000",
+                                              "DecimalSeparator": "\u0000",
+                                              "CharDelimiter": "'",
+                                              "Notignored": false,
+                                              "Channel": 0,
+                                              "SpanValue": {
+                                                "Length": 2,
+                                                "IsEmpty": false
+                                              },
+                                              "Position": {
+                                                "IsStartOfLine": false,
+                                                "Indentations": [],
+                                                "CurrentIndentation": 0,
+                                                "Column": 17,
+                                                "Index": 17,
+                                                "Line": 0,
+                                                "Mode": "default"
+                                              },
+                                              "PositionInTokenVisibleFlow": 8,
+                                              "PositionInTokenFlow": 12,
+                                              "TokenID": 1,
+                                              "IsComment": false,
+                                              "Discarded": false,
+                                              "IsEOS": false,
+                                              "IsIndent": false,
+                                              "IsUnIndent": false,
+                                              "IndentationLevel": 0,
+                                              "IsWhiteSpace": false,
+                                              "IsEOL": false,
+                                              "IsImplicit": false,
+                                              "CommentType": 0,
+                                              "IsEmpty": false,
+                                              "IsMultiLineComment": false,
+                                              "IsSingleLineComment": true,
+                                              "Value": "10",
+                                              "End": true,
+                                              "IsLineEnding": false
+                                            },
+                                            "Discarded": false,
+                                            "Name": "INT",
+                                            "HasByPassNodes": false
+                                          }
+                                        ],
+                                        "IsByPassNode": false,
+                                        "IsEmpty": false,
+                                        "ExpressionAffix": 0,
+                                        "Discarded": false,
+                                        "Name": "int",
+                                        "HasByPassNodes": false,
+                                        "IsExpressionNode": false,
+                                        "IsBinaryOperationNode": false,
+                                        "IsUnaryOperationNode": false,
+                                        "Precedence": -1,
+                                        "Associativity": 0,
+                                        "IsLeftAssociative": false,
+                                        "Left": null,
+                                        "Right": null
+                                      }
+                                    ],
+                                    "IsByPassNode": true,
+                                    "IsEmpty": false,
+                                    "ExpressionAffix": 0,
+                                    "Discarded": false,
+                                    "Name": "MyParser_operand",
+                                    "HasByPassNodes": true,
+                                    "IsExpressionNode": false,
+                                    "IsBinaryOperationNode": false,
+                                    "IsUnaryOperationNode": false,
+                                    "Precedence": -1,
+                                    "Associativity": 0,
+                                    "IsLeftAssociative": false,
+                                    "Left": null,
+                                    "Right": null
+                                  }
+                                ],
+                                "IsByPassNode": true,
+                                "IsEmpty": false,
+                                "ExpressionAffix": 0,
+                                "Discarded": false,
+                                "Name": "expr_100_MINUS_NOT",
+                                "HasByPassNodes": true,
+                                "IsExpressionNode": false,
+                                "IsBinaryOperationNode": false,
+                                "IsUnaryOperationNode": false,
+                                "Precedence": -1,
+                                "Associativity": 0,
+                                "IsLeftAssociative": false,
+                                "Left": null,
+                                "Right": null
+                              }
+                            }
+                          ],
+                          "IsByPassNode": true,
+                          "IsEmpty": false,
+                          "ExpressionAffix": 0,
+                          "Discarded": false,
+                          "Name": "MyParser_expressions",
+                          "HasByPassNodes": true,
+                          "IsExpressionNode": false,
+                          "IsBinaryOperationNode": false,
+                          "IsUnaryOperationNode": false,
+                          "Precedence": -1,
+                          "Associativity": 0,
+                          "IsLeftAssociative": false,
+                          "Left": null,
+                          "Right": null
+                        },
+                        {
+                          "Token": {
+                            "StringDelimiter": "\u0000",
+                            "DecimalSeparator": "\u0000",
+                            "CharDelimiter": "'",
+                            "Notignored": false,
+                            "Channel": 0,
+                            "SpanValue": {
+                              "Length": 2,
+                              "IsEmpty": false
+                            },
+                            "Position": {
+                              "IsStartOfLine": false,
+                              "Indentations": [],
+                              "CurrentIndentation": 0,
+                              "Column": 20,
+                              "Index": 20,
+                              "Line": 0,
+                              "Mode": "default"
+                            },
+                            "PositionInTokenVisibleFlow": 9,
+                            "PositionInTokenFlow": 14,
+                            "TokenID": 7,
+                            "IsComment": false,
+                            "Discarded": false,
+                            "IsEOS": false,
+                            "IsIndent": false,
+                            "IsUnIndent": false,
+                            "IndentationLevel": 0,
+                            "IsWhiteSpace": false,
+                            "IsEOL": false,
+                            "IsImplicit": false,
+                            "CommentType": 0,
+                            "IsEmpty": false,
+                            "IsMultiLineComment": false,
+                            "IsSingleLineComment": true,
+                            "Value": "do",
+                            "End": true,
+                            "IsLineEnding": false
+                          },
+                          "Discarded": false,
+                          "Name": "DO",
+                          "HasByPassNodes": false
+                        },
+                        {
+                          "Children": [
+                            {
+                              "Token": {
+                                "StringDelimiter": "\u0000",
+                                "DecimalSeparator": "\u0000",
+                                "CharDelimiter": "'",
+                                "Notignored": false,
+                                "Channel": 0,
+                                "SpanValue": {
+                                  "Length": 1,
+                                  "IsEmpty": false
+                                },
+                                "Position": {
+                                  "IsStartOfLine": false,
+                                  "Indentations": [],
+                                  "CurrentIndentation": 0,
+                                  "Column": 23,
+                                  "Index": 23,
+                                  "Line": 0,
+                                  "Mode": "default"
+                                },
+                                "PositionInTokenVisibleFlow": 10,
+                                "PositionInTokenFlow": 16,
+                                "TokenID": 25,
+                                "IsComment": false,
+                                "Discarded": false,
+                                "IsEOS": false,
+                                "IsIndent": false,
+                                "IsUnIndent": false,
+                                "IndentationLevel": 0,
+                                "IsWhiteSpace": false,
+                                "IsEOL": false,
+                                "IsImplicit": false,
+                                "CommentType": 0,
+                                "IsEmpty": false,
+                                "IsMultiLineComment": false,
+                                "IsSingleLineComment": true,
+                                "Value": "(",
+                                "End": true,
+                                "IsLineEnding": false
+                              },
+                              "Discarded": false,
+                              "Name": "LPAREN",
+                              "HasByPassNodes": false
+                            },
+                            {
+                              "Children": [
+                                {
+                                  "Children": [
+                                    {
+                                      "Children": [
+                                        {
+                                          "Token": {
+                                            "StringDelimiter": "\u0000",
+                                            "DecimalSeparator": "\u0000",
+                                            "CharDelimiter": "'",
+                                            "Notignored": false,
+                                            "Channel": 0,
+                                            "SpanValue": {
+                                              "Length": 5,
+                                              "IsEmpty": false
+                                            },
+                                            "Position": {
+                                              "IsStartOfLine": false,
+                                              "Indentations": [],
+                                              "CurrentIndentation": 0,
+                                              "Column": 24,
+                                              "Index": 24,
+                                              "Line": 0,
+                                              "Mode": "default"
+                                            },
+                                            "PositionInTokenVisibleFlow": 11,
+                                            "PositionInTokenFlow": 17,
+                                            "TokenID": 14,
+                                            "IsComment": false,
+                                            "Discarded": false,
+                                            "IsEOS": false,
+                                            "IsIndent": false,
+                                            "IsUnIndent": false,
+                                            "IndentationLevel": 0,
+                                            "IsWhiteSpace": false,
+                                            "IsEOL": false,
+                                            "IsImplicit": false,
+                                            "CommentType": 0,
+                                            "IsEmpty": false,
+                                            "IsMultiLineComment": false,
+                                            "IsSingleLineComment": true,
+                                            "Value": "print",
+                                            "End": true,
+                                            "IsLineEnding": false
+                                          },
+                                          "Discarded": false,
+                                          "Name": "PRINT",
+                                          "HasByPassNodes": false
+                                        },
+                                        {
+                                          "Children": [
+                                            {
+                                              "Children": [
+                                                {
+                                                  "Children": [
+                                                    {
+                                                      "Children": [
+                                                        {
+                                                          "Token": {
+                                                            "StringDelimiter": "\u0000",
+                                                            "DecimalSeparator": "\u0000",
+                                                            "CharDelimiter": "'",
+                                                            "Notignored": false,
+                                                            "Channel": 0,
+                                                            "SpanValue": {
+                                                              "Length": 1,
+                                                              "IsEmpty": false
+                                                            },
+                                                            "Position": {
+                                                              "IsStartOfLine": false,
+                                                              "Indentations": [],
+                                                              "CurrentIndentation": 0,
+                                                              "Column": 30,
+                                                              "Index": 30,
+                                                              "Line": 0,
+                                                              "Mode": "default"
+                                                            },
+                                                            "PositionInTokenVisibleFlow": 12,
+                                                            "PositionInTokenFlow": 19,
+                                                            "TokenID": 2,
+                                                            "IsComment": false,
+                                                            "Discarded": false,
+                                                            "IsEOS": false,
+                                                            "IsIndent": false,
+                                                            "IsUnIndent": false,
+                                                            "IndentationLevel": 0,
+                                                            "IsWhiteSpace": false,
+                                                            "IsEOL": false,
+                                                            "IsImplicit": false,
+                                                            "CommentType": 0,
+                                                            "IsEmpty": false,
+                                                            "IsMultiLineComment": false,
+                                                            "IsSingleLineComment": true,
+                                                            "Value": "a",
+                                                            "End": true,
+                                                            "IsLineEnding": false
+                                                          },
+                                                          "Discarded": false,
+                                                          "Name": "ID",
+                                                          "HasByPassNodes": false
+                                                        }
+                                                      ],
+                                                      "IsByPassNode": false,
+                                                      "IsEmpty": false,
+                                                      "ExpressionAffix": 0,
+                                                      "Discarded": false,
+                                                      "Name": "id",
+                                                      "HasByPassNodes": false,
+                                                      "IsExpressionNode": false,
+                                                      "IsBinaryOperationNode": false,
+                                                      "IsUnaryOperationNode": false,
+                                                      "Precedence": -1,
+                                                      "Associativity": 0,
+                                                      "IsLeftAssociative": false,
+                                                      "Left": null,
+                                                      "Right": null
+                                                    }
+                                                  ],
+                                                  "IsByPassNode": true,
+                                                  "IsEmpty": false,
+                                                  "ExpressionAffix": 0,
+                                                  "Discarded": false,
+                                                  "Name": "MyParser_operand",
+                                                  "HasByPassNodes": true,
+                                                  "IsExpressionNode": false,
+                                                  "IsBinaryOperationNode": false,
+                                                  "IsUnaryOperationNode": false,
+                                                  "Precedence": -1,
+                                                  "Associativity": 0,
+                                                  "IsLeftAssociative": false,
+                                                  "Left": null,
+                                                  "Right": null
+                                                }
+                                              ],
+                                              "IsByPassNode": true,
+                                              "IsEmpty": false,
+                                              "ExpressionAffix": 0,
+                                              "Discarded": false,
+                                              "Name": "expr_100_MINUS_NOT",
+                                              "HasByPassNodes": true,
+                                              "IsExpressionNode": false,
+                                              "IsBinaryOperationNode": false,
+                                              "IsUnaryOperationNode": false,
+                                              "Precedence": -1,
+                                              "Associativity": 0,
+                                              "IsLeftAssociative": false,
+                                              "Left": null,
+                                              "Right": null
+                                            }
+                                          ],
+                                          "IsByPassNode": true,
+                                          "IsEmpty": false,
+                                          "ExpressionAffix": 0,
+                                          "Discarded": false,
+                                          "Name": "MyParser_expressions",
+                                          "HasByPassNodes": true,
+                                          "IsExpressionNode": false,
+                                          "IsBinaryOperationNode": false,
+                                          "IsUnaryOperationNode": false,
+                                          "Precedence": -1,
+                                          "Associativity": 0,
+                                          "IsLeftAssociative": false,
+                                          "Left": null,
+                                          "Right": null
+                                        }
+                                      ],
+                                      "IsByPassNode": false,
+                                      "IsEmpty": false,
+                                      "ExpressionAffix": 0,
+                                      "Discarded": false,
+                                      "Name": "statementPrim",
+                                      "HasByPassNodes": false,
+                                      "IsExpressionNode": false,
+                                      "IsBinaryOperationNode": false,
+                                      "IsUnaryOperationNode": false,
+                                      "Precedence": -1,
+                                      "Associativity": 0,
+                                      "IsLeftAssociative": false,
+                                      "Left": null,
+                                      "Right": null
+                                    },
+                                    {
+                                      "IsManyTokens": false,
+                                      "IsManyValues": true,
+                                      "IsManyGroups": false,
+                                      "Children": [
+                                        {
+                                          "Children": [
+                                            {
+                                              "Token": {
+                                                "StringDelimiter": "\u0000",
+                                                "DecimalSeparator": "\u0000",
+                                                "CharDelimiter": "'",
+                                                "Notignored": false,
+                                                "Channel": 0,
+                                                "SpanValue": {
+                                                  "Length": 1,
+                                                  "IsEmpty": false
+                                                },
+                                                "Position": {
+                                                  "IsStartOfLine": false,
+                                                  "Indentations": [],
+                                                  "CurrentIndentation": 0,
+                                                  "Column": 31,
+                                                  "Index": 31,
+                                                  "Line": 0,
+                                                  "Mode": "default"
+                                                },
+                                                "PositionInTokenVisibleFlow": 13,
+                                                "PositionInTokenFlow": 20,
+                                                "TokenID": 27,
+                                                "IsComment": false,
+                                                "Discarded": false,
+                                                "IsEOS": false,
+                                                "IsIndent": false,
+                                                "IsUnIndent": false,
+                                                "IndentationLevel": 0,
+                                                "IsWhiteSpace": false,
+                                                "IsEOL": false,
+                                                "IsImplicit": false,
+                                                "CommentType": 0,
+                                                "IsEmpty": false,
+                                                "IsMultiLineComment": false,
+                                                "IsSingleLineComment": true,
+                                                "Value": ";",
+                                                "End": true,
+                                                "IsLineEnding": false
+                                              },
+                                              "Discarded": false,
+                                              "Name": "SEMICOLON",
+                                              "HasByPassNodes": false
+                                            },
+                                            {
+                                              "Children": [
+                                                {
+                                                  "Token": {
+                                                    "StringDelimiter": "\u0000",
+                                                    "DecimalSeparator": "\u0000",
+                                                    "CharDelimiter": "'",
+                                                    "Notignored": false,
+                                                    "Channel": 0,
+                                                    "SpanValue": {
+                                                      "Length": 1,
+                                                      "IsEmpty": false
+                                                    },
+                                                    "Position": {
+                                                      "IsStartOfLine": false,
+                                                      "Indentations": [],
+                                                      "CurrentIndentation": 0,
+                                                      "Column": 33,
+                                                      "Index": 33,
+                                                      "Line": 0,
+                                                      "Mode": "default"
+                                                    },
+                                                    "PositionInTokenVisibleFlow": 14,
+                                                    "PositionInTokenFlow": 22,
+                                                    "TokenID": 2,
+                                                    "IsComment": false,
+                                                    "Discarded": false,
+                                                    "IsEOS": false,
+                                                    "IsIndent": false,
+                                                    "IsUnIndent": false,
+                                                    "IndentationLevel": 0,
+                                                    "IsWhiteSpace": false,
+                                                    "IsEOL": false,
+                                                    "IsImplicit": false,
+                                                    "CommentType": 0,
+                                                    "IsEmpty": false,
+                                                    "IsMultiLineComment": false,
+                                                    "IsSingleLineComment": true,
+                                                    "Value": "a",
+                                                    "End": true,
+                                                    "IsLineEnding": false
+                                                  },
+                                                  "Discarded": false,
+                                                  "Name": "ID",
+                                                  "HasByPassNodes": false
+                                                },
+                                                {
+                                                  "Token": {
+                                                    "StringDelimiter": "\u0000",
+                                                    "DecimalSeparator": "\u0000",
+                                                    "CharDelimiter": "'",
+                                                    "Notignored": false,
+                                                    "Channel": 0,
+                                                    "SpanValue": {
+                                                      "Length": 2,
+                                                      "IsEmpty": false
+                                                    },
+                                                    "Position": {
+                                                      "IsStartOfLine": false,
+                                                      "Indentations": [],
+                                                      "CurrentIndentation": 0,
+                                                      "Column": 35,
+                                                      "Index": 35,
+                                                      "Line": 0,
+                                                      "Mode": "default"
+                                                    },
+                                                    "PositionInTokenVisibleFlow": 15,
+                                                    "PositionInTokenFlow": 24,
+                                                    "TokenID": 20,
+                                                    "IsComment": false,
+                                                    "Discarded": false,
+                                                    "IsEOS": false,
+                                                    "IsIndent": false,
+                                                    "IsUnIndent": false,
+                                                    "IndentationLevel": 0,
+                                                    "IsWhiteSpace": false,
+                                                    "IsEOL": false,
+                                                    "IsImplicit": false,
+                                                    "CommentType": 0,
+                                                    "IsEmpty": false,
+                                                    "IsMultiLineComment": false,
+                                                    "IsSingleLineComment": true,
+                                                    "Value": ":=",
+                                                    "End": true,
+                                                    "IsLineEnding": false
+                                                  },
+                                                  "Discarded": false,
+                                                  "Name": "ASSIGN",
+                                                  "HasByPassNodes": false
+                                                },
+                                                {
+                                                  "Children": [
+                                                    {
+                                                      "Children": [
+                                                        {
+                                                          "Children": [
+                                                            {
+                                                              "Children": [
+                                                                {
+                                                                  "Children": [
+                                                                    {
+                                                                      "Token": {
+                                                                        "StringDelimiter": "\u0000",
+                                                                        "DecimalSeparator": "\u0000",
+                                                                        "CharDelimiter": "'",
+                                                                        "Notignored": false,
+                                                                        "Channel": 0,
+                                                                        "SpanValue": {
+                                                                          "Length": 1,
+                                                                          "IsEmpty": false
+                                                                        },
+                                                                        "Position": {
+                                                                          "IsStartOfLine": false,
+                                                                          "Indentations": [],
+                                                                          "CurrentIndentation": 0,
+                                                                          "Column": 38,
+                                                                          "Index": 38,
+                                                                          "Line": 0,
+                                                                          "Mode": "default"
+                                                                        },
+                                                                        "PositionInTokenVisibleFlow": 16,
+                                                                        "PositionInTokenFlow": 26,
+                                                                        "TokenID": 2,
+                                                                        "IsComment": false,
+                                                                        "Discarded": false,
+                                                                        "IsEOS": false,
+                                                                        "IsIndent": false,
+                                                                        "IsUnIndent": false,
+                                                                        "IndentationLevel": 0,
+                                                                        "IsWhiteSpace": false,
+                                                                        "IsEOL": false,
+                                                                        "IsImplicit": false,
+                                                                        "CommentType": 0,
+                                                                        "IsEmpty": false,
+                                                                        "IsMultiLineComment": false,
+                                                                        "IsSingleLineComment": true,
+                                                                        "Value": "a",
+                                                                        "End": true,
+                                                                        "IsLineEnding": false
+                                                                      },
+                                                                      "Discarded": false,
+                                                                      "Name": "ID",
+                                                                      "HasByPassNodes": false
+                                                                    }
+                                                                  ],
+                                                                  "IsByPassNode": false,
+                                                                  "IsEmpty": false,
+                                                                  "ExpressionAffix": 0,
+                                                                  "Discarded": false,
+                                                                  "Name": "id",
+                                                                  "HasByPassNodes": false,
+                                                                  "IsExpressionNode": false,
+                                                                  "IsBinaryOperationNode": false,
+                                                                  "IsUnaryOperationNode": false,
+                                                                  "Precedence": -1,
+                                                                  "Associativity": 0,
+                                                                  "IsLeftAssociative": false,
+                                                                  "Left": null,
+                                                                  "Right": null
+                                                                }
+                                                              ],
+                                                              "IsByPassNode": true,
+                                                              "IsEmpty": false,
+                                                              "ExpressionAffix": 0,
+                                                              "Discarded": false,
+                                                              "Name": "MyParser_operand",
+                                                              "HasByPassNodes": true,
+                                                              "IsExpressionNode": false,
+                                                              "IsBinaryOperationNode": false,
+                                                              "IsUnaryOperationNode": false,
+                                                              "Precedence": -1,
+                                                              "Associativity": 0,
+                                                              "IsLeftAssociative": false,
+                                                              "Left": null,
+                                                              "Right": null
+                                                            }
+                                                          ],
+                                                          "IsByPassNode": true,
+                                                          "IsEmpty": false,
+                                                          "ExpressionAffix": 0,
+                                                          "Discarded": false,
+                                                          "Name": "expr_100_MINUS_NOT",
+                                                          "HasByPassNodes": true,
+                                                          "IsExpressionNode": false,
+                                                          "IsBinaryOperationNode": false,
+                                                          "IsUnaryOperationNode": false,
+                                                          "Precedence": -1,
+                                                          "Associativity": 0,
+                                                          "IsLeftAssociative": false,
+                                                          "Left": null,
+                                                          "Right": null
+                                                        },
+                                                        {
+                                                          "Token": {
+                                                            "StringDelimiter": "\u0000",
+                                                            "DecimalSeparator": "\u0000",
+                                                            "CharDelimiter": "'",
+                                                            "Notignored": false,
+                                                            "Channel": 0,
+                                                            "SpanValue": {
+                                                              "Length": 1,
+                                                              "IsEmpty": false
+                                                            },
+                                                            "Position": {
+                                                              "IsStartOfLine": false,
+                                                              "Indentations": [],
+                                                              "CurrentIndentation": 0,
+                                                              "Column": 40,
+                                                              "Index": 40,
+                                                              "Line": 0,
+                                                              "Mode": "default"
+                                                            },
+                                                            "PositionInTokenVisibleFlow": 17,
+                                                            "PositionInTokenFlow": 28,
+                                                            "TokenID": 21,
+                                                            "IsComment": false,
+                                                            "Discarded": false,
+                                                            "IsEOS": false,
+                                                            "IsIndent": false,
+                                                            "IsUnIndent": false,
+                                                            "IndentationLevel": 0,
+                                                            "IsWhiteSpace": false,
+                                                            "IsEOL": false,
+                                                            "IsImplicit": false,
+                                                            "CommentType": 0,
+                                                            "IsEmpty": false,
+                                                            "IsMultiLineComment": false,
+                                                            "IsSingleLineComment": true,
+                                                            "Value": "+",
+                                                            "End": true,
+                                                            "IsLineEnding": false
+                                                          },
+                                                          "Discarded": false,
+                                                          "Name": "PLUS",
+                                                          "HasByPassNodes": false
+                                                        },
+                                                        {
+                                                          "Children": [
+                                                            {
+                                                              "Children": [
+                                                                {
+                                                                  "Children": [
+                                                                    {
+                                                                      "Token": {
+                                                                        "StringDelimiter": "\u0000",
+                                                                        "DecimalSeparator": "\u0000",
+                                                                        "CharDelimiter": "'",
+                                                                        "Notignored": false,
+                                                                        "Channel": 0,
+                                                                        "SpanValue": {
+                                                                          "Length": 1,
+                                                                          "IsEmpty": false
+                                                                        },
+                                                                        "Position": {
+                                                                          "IsStartOfLine": false,
+                                                                          "Indentations": [],
+                                                                          "CurrentIndentation": 0,
+                                                                          "Column": 41,
+                                                                          "Index": 41,
+                                                                          "Line": 0,
+                                                                          "Mode": "default"
+                                                                        },
+                                                                        "PositionInTokenVisibleFlow": 18,
+                                                                        "PositionInTokenFlow": 29,
+                                                                        "TokenID": 1,
+                                                                        "IsComment": false,
+                                                                        "Discarded": false,
+                                                                        "IsEOS": false,
+                                                                        "IsIndent": false,
+                                                                        "IsUnIndent": false,
+                                                                        "IndentationLevel": 0,
+                                                                        "IsWhiteSpace": false,
+                                                                        "IsEOL": false,
+                                                                        "IsImplicit": false,
+                                                                        "CommentType": 0,
+                                                                        "IsEmpty": false,
+                                                                        "IsMultiLineComment": false,
+                                                                        "IsSingleLineComment": true,
+                                                                        "Value": "1",
+                                                                        "End": true,
+                                                                        "IsLineEnding": false
+                                                                      },
+                                                                      "Discarded": false,
+                                                                      "Name": "INT",
+                                                                      "HasByPassNodes": false
+                                                                    }
+                                                                  ],
+                                                                  "IsByPassNode": false,
+                                                                  "IsEmpty": false,
+                                                                  "ExpressionAffix": 0,
+                                                                  "Discarded": false,
+                                                                  "Name": "int",
+                                                                  "HasByPassNodes": false,
+                                                                  "IsExpressionNode": false,
+                                                                  "IsBinaryOperationNode": false,
+                                                                  "IsUnaryOperationNode": false,
+                                                                  "Precedence": -1,
+                                                                  "Associativity": 0,
+                                                                  "IsLeftAssociative": false,
+                                                                  "Left": null,
+                                                                  "Right": null
+                                                                }
+                                                              ],
+                                                              "IsByPassNode": true,
+                                                              "IsEmpty": false,
+                                                              "ExpressionAffix": 0,
+                                                              "Discarded": false,
+                                                              "Name": "MyParser_operand",
+                                                              "HasByPassNodes": true,
+                                                              "IsExpressionNode": false,
+                                                              "IsBinaryOperationNode": false,
+                                                              "IsUnaryOperationNode": false,
+                                                              "Precedence": -1,
+                                                              "Associativity": 0,
+                                                              "IsLeftAssociative": false,
+                                                              "Left": null,
+                                                              "Right": null
+                                                            }
+                                                          ],
+                                                          "IsByPassNode": true,
+                                                          "IsEmpty": false,
+                                                          "ExpressionAffix": 0,
+                                                          "Discarded": false,
+                                                          "Name": "expr_100_MINUS_NOT",
+                                                          "HasByPassNodes": true,
+                                                          "IsExpressionNode": false,
+                                                          "IsBinaryOperationNode": false,
+                                                          "IsUnaryOperationNode": false,
+                                                          "Precedence": -1,
+                                                          "Associativity": 0,
+                                                          "IsLeftAssociative": false,
+                                                          "Left": null,
+                                                          "Right": null
+                                                        }
+                                                      ],
+                                                      "IsByPassNode": false,
+                                                      "IsEmpty": false,
+                                                      "ExpressionAffix": 2,
+                                                      "Discarded": false,
+                                                      "Name": "expr_10_CONCAT_PLUS_MINUS_OR",
+                                                      "HasByPassNodes": false,
+                                                      "IsExpressionNode": true,
+                                                      "IsBinaryOperationNode": true,
+                                                      "IsUnaryOperationNode": false,
+                                                      "Precedence": 10,
+                                                      "Associativity": 2,
+                                                      "IsLeftAssociative": false,
+                                                      "Left": {
+                                                        "Children": [
+                                                          {
+                                                            "Children": [
+                                                              {
+                                                                "Children": [
+                                                                  {
+                                                                    "Token": {
+                                                                      "StringDelimiter": "\u0000",
+                                                                      "DecimalSeparator": "\u0000",
+                                                                      "CharDelimiter": "'",
+                                                                      "Notignored": false,
+                                                                      "Channel": 0,
+                                                                      "SpanValue": {
+                                                                        "Length": 1,
+                                                                        "IsEmpty": false
+                                                                      },
+                                                                      "Position": {
+                                                                        "IsStartOfLine": false,
+                                                                        "Indentations": [],
+                                                                        "CurrentIndentation": 0,
+                                                                        "Column": 38,
+                                                                        "Index": 38,
+                                                                        "Line": 0,
+                                                                        "Mode": "default"
+                                                                      },
+                                                                      "PositionInTokenVisibleFlow": 16,
+                                                                      "PositionInTokenFlow": 26,
+                                                                      "TokenID": 2,
+                                                                      "IsComment": false,
+                                                                      "Discarded": false,
+                                                                      "IsEOS": false,
+                                                                      "IsIndent": false,
+                                                                      "IsUnIndent": false,
+                                                                      "IndentationLevel": 0,
+                                                                      "IsWhiteSpace": false,
+                                                                      "IsEOL": false,
+                                                                      "IsImplicit": false,
+                                                                      "CommentType": 0,
+                                                                      "IsEmpty": false,
+                                                                      "IsMultiLineComment": false,
+                                                                      "IsSingleLineComment": true,
+                                                                      "Value": "a",
+                                                                      "End": true,
+                                                                      "IsLineEnding": false
+                                                                    },
+                                                                    "Discarded": false,
+                                                                    "Name": "ID",
+                                                                    "HasByPassNodes": false
+                                                                  }
+                                                                ],
+                                                                "IsByPassNode": false,
+                                                                "IsEmpty": false,
+                                                                "ExpressionAffix": 0,
+                                                                "Discarded": false,
+                                                                "Name": "id",
+                                                                "HasByPassNodes": false,
+                                                                "IsExpressionNode": false,
+                                                                "IsBinaryOperationNode": false,
+                                                                "IsUnaryOperationNode": false,
+                                                                "Precedence": -1,
+                                                                "Associativity": 0,
+                                                                "IsLeftAssociative": false,
+                                                                "Left": null,
+                                                                "Right": null
+                                                              }
+                                                            ],
+                                                            "IsByPassNode": true,
+                                                            "IsEmpty": false,
+                                                            "ExpressionAffix": 0,
+                                                            "Discarded": false,
+                                                            "Name": "MyParser_operand",
+                                                            "HasByPassNodes": true,
+                                                            "IsExpressionNode": false,
+                                                            "IsBinaryOperationNode": false,
+                                                            "IsUnaryOperationNode": false,
+                                                            "Precedence": -1,
+                                                            "Associativity": 0,
+                                                            "IsLeftAssociative": false,
+                                                            "Left": null,
+                                                            "Right": null
+                                                          }
+                                                        ],
+                                                        "IsByPassNode": true,
+                                                        "IsEmpty": false,
+                                                        "ExpressionAffix": 0,
+                                                        "Discarded": false,
+                                                        "Name": "expr_100_MINUS_NOT",
+                                                        "HasByPassNodes": true,
+                                                        "IsExpressionNode": false,
+                                                        "IsBinaryOperationNode": false,
+                                                        "IsUnaryOperationNode": false,
+                                                        "Precedence": -1,
+                                                        "Associativity": 0,
+                                                        "IsLeftAssociative": false,
+                                                        "Left": null,
+                                                        "Right": null
+                                                      },
+                                                      "Right": {
+                                                        "Children": [
+                                                          {
+                                                            "Children": [
+                                                              {
+                                                                "Children": [
+                                                                  {
+                                                                    "Token": {
+                                                                      "StringDelimiter": "\u0000",
+                                                                      "DecimalSeparator": "\u0000",
+                                                                      "CharDelimiter": "'",
+                                                                      "Notignored": false,
+                                                                      "Channel": 0,
+                                                                      "SpanValue": {
+                                                                        "Length": 1,
+                                                                        "IsEmpty": false
+                                                                      },
+                                                                      "Position": {
+                                                                        "IsStartOfLine": false,
+                                                                        "Indentations": [],
+                                                                        "CurrentIndentation": 0,
+                                                                        "Column": 41,
+                                                                        "Index": 41,
+                                                                        "Line": 0,
+                                                                        "Mode": "default"
+                                                                      },
+                                                                      "PositionInTokenVisibleFlow": 18,
+                                                                      "PositionInTokenFlow": 29,
+                                                                      "TokenID": 1,
+                                                                      "IsComment": false,
+                                                                      "Discarded": false,
+                                                                      "IsEOS": false,
+                                                                      "IsIndent": false,
+                                                                      "IsUnIndent": false,
+                                                                      "IndentationLevel": 0,
+                                                                      "IsWhiteSpace": false,
+                                                                      "IsEOL": false,
+                                                                      "IsImplicit": false,
+                                                                      "CommentType": 0,
+                                                                      "IsEmpty": false,
+                                                                      "IsMultiLineComment": false,
+                                                                      "IsSingleLineComment": true,
+                                                                      "Value": "1",
+                                                                      "End": true,
+                                                                      "IsLineEnding": false
+                                                                    },
+                                                                    "Discarded": false,
+                                                                    "Name": "INT",
+                                                                    "HasByPassNodes": false
+                                                                  }
+                                                                ],
+                                                                "IsByPassNode": false,
+                                                                "IsEmpty": false,
+                                                                "ExpressionAffix": 0,
+                                                                "Discarded": false,
+                                                                "Name": "int",
+                                                                "HasByPassNodes": false,
+                                                                "IsExpressionNode": false,
+                                                                "IsBinaryOperationNode": false,
+                                                                "IsUnaryOperationNode": false,
+                                                                "Precedence": -1,
+                                                                "Associativity": 0,
+                                                                "IsLeftAssociative": false,
+                                                                "Left": null,
+                                                                "Right": null
+                                                              }
+                                                            ],
+                                                            "IsByPassNode": true,
+                                                            "IsEmpty": false,
+                                                            "ExpressionAffix": 0,
+                                                            "Discarded": false,
+                                                            "Name": "MyParser_operand",
+                                                            "HasByPassNodes": true,
+                                                            "IsExpressionNode": false,
+                                                            "IsBinaryOperationNode": false,
+                                                            "IsUnaryOperationNode": false,
+                                                            "Precedence": -1,
+                                                            "Associativity": 0,
+                                                            "IsLeftAssociative": false,
+                                                            "Left": null,
+                                                            "Right": null
+                                                          }
+                                                        ],
+                                                        "IsByPassNode": true,
+                                                        "IsEmpty": false,
+                                                        "ExpressionAffix": 0,
+                                                        "Discarded": false,
+                                                        "Name": "expr_100_MINUS_NOT",
+                                                        "HasByPassNodes": true,
+                                                        "IsExpressionNode": false,
+                                                        "IsBinaryOperationNode": false,
+                                                        "IsUnaryOperationNode": false,
+                                                        "Precedence": -1,
+                                                        "Associativity": 0,
+                                                        "IsLeftAssociative": false,
+                                                        "Left": null,
+                                                        "Right": null
+                                                      }
+                                                    }
+                                                  ],
+                                                  "IsByPassNode": true,
+                                                  "IsEmpty": false,
+                                                  "ExpressionAffix": 0,
+                                                  "Discarded": false,
+                                                  "Name": "MyParser_expressions",
+                                                  "HasByPassNodes": true,
+                                                  "IsExpressionNode": false,
+                                                  "IsBinaryOperationNode": false,
+                                                  "IsUnaryOperationNode": false,
+                                                  "Precedence": -1,
+                                                  "Associativity": 0,
+                                                  "IsLeftAssociative": false,
+                                                  "Left": null,
+                                                  "Right": null
+                                                }
+                                              ],
+                                              "IsByPassNode": false,
+                                              "IsEmpty": false,
+                                              "ExpressionAffix": 0,
+                                              "Discarded": false,
+                                              "Name": "statementPrim",
+                                              "HasByPassNodes": false,
+                                              "IsExpressionNode": false,
+                                              "IsBinaryOperationNode": false,
+                                              "IsUnaryOperationNode": false,
+                                              "Precedence": -1,
+                                              "Associativity": 0,
+                                              "IsLeftAssociative": false,
+                                              "Left": null,
+                                              "Right": null
+                                            }
+                                          ],
+                                          "IsByPassNode": false,
+                                          "IsEmpty": false,
+                                          "ExpressionAffix": 0,
+                                          "Discarded": false,
+                                          "Name": "additionalStatements",
+                                          "HasByPassNodes": false,
+                                          "IsExpressionNode": false,
+                                          "IsBinaryOperationNode": false,
+                                          "IsUnaryOperationNode": false,
+                                          "Precedence": -1,
+                                          "Associativity": 0,
+                                          "IsLeftAssociative": false,
+                                          "Left": null,
+                                          "Right": null
+                                        }
+                                      ],
+                                      "IsByPassNode": false,
+                                      "IsEmpty": false,
+                                      "ExpressionAffix": 0,
+                                      "Discarded": false,
+                                      "Name": "",
+                                      "HasByPassNodes": false,
+                                      "IsExpressionNode": false,
+                                      "IsBinaryOperationNode": false,
+                                      "IsUnaryOperationNode": false,
+                                      "Precedence": -1,
+                                      "Associativity": 0,
+                                      "IsLeftAssociative": false,
+                                      "Left": null,
+                                      "Right": null
+                                    }
+                                  ],
+                                  "IsByPassNode": false,
+                                  "IsEmpty": false,
+                                  "ExpressionAffix": 0,
+                                  "Discarded": false,
+                                  "Name": "sequence",
+                                  "HasByPassNodes": false,
+                                  "IsExpressionNode": false,
+                                  "IsBinaryOperationNode": false,
+                                  "IsUnaryOperationNode": false,
+                                  "Precedence": -1,
+                                  "Associativity": 0,
+                                  "IsLeftAssociative": false,
+                                  "Left": null,
+                                  "Right": null
+                                }
+                              ],
+                              "IsByPassNode": false,
+                              "IsEmpty": false,
+                              "ExpressionAffix": 0,
+                              "Discarded": false,
+                              "Name": "statement",
+                              "HasByPassNodes": false,
+                              "IsExpressionNode": false,
+                              "IsBinaryOperationNode": false,
+                              "IsUnaryOperationNode": false,
+                              "Precedence": -1,
+                              "Associativity": 0,
+                              "IsLeftAssociative": false,
+                              "Left": null,
+                              "Right": null
+                            },
+                            {
+                              "Token": {
+                                "StringDelimiter": "\u0000",
+                                "DecimalSeparator": "\u0000",
+                                "CharDelimiter": "'",
+                                "Notignored": false,
+                                "Channel": 0,
+                                "SpanValue": {
+                                  "Length": 1,
+                                  "IsEmpty": false
+                                },
+                                "Position": {
+                                  "IsStartOfLine": false,
+                                  "Indentations": [],
+                                  "CurrentIndentation": 0,
+                                  "Column": 43,
+                                  "Index": 43,
+                                  "Line": 0,
+                                  "Mode": "default"
+                                },
+                                "PositionInTokenVisibleFlow": 19,
+                                "PositionInTokenFlow": 31,
+                                "TokenID": 26,
+                                "IsComment": false,
+                                "Discarded": false,
+                                "IsEOS": false,
+                                "IsIndent": false,
+                                "IsUnIndent": false,
+                                "IndentationLevel": 0,
+                                "IsWhiteSpace": false,
+                                "IsEOL": false,
+                                "IsImplicit": false,
+                                "CommentType": 0,
+                                "IsEmpty": false,
+                                "IsMultiLineComment": false,
+                                "IsSingleLineComment": true,
+                                "Value": ")",
+                                "End": true,
+                                "IsLineEnding": false
+                              },
+                              "Discarded": false,
+                              "Name": "RPAREN",
+                              "HasByPassNodes": false
+                            }
+                          ],
+                          "IsByPassNode": false,
+                          "IsEmpty": false,
+                          "ExpressionAffix": 0,
+                          "Discarded": false,
+                          "Name": "statement",
+                          "HasByPassNodes": false,
+                          "IsExpressionNode": false,
+                          "IsBinaryOperationNode": false,
+                          "IsUnaryOperationNode": false,
+                          "Precedence": -1,
+                          "Associativity": 0,
+                          "IsLeftAssociative": false,
+                          "Left": null,
+                          "Right": null
+                        }
+                      ],
+                      "IsByPassNode": false,
+                      "IsEmpty": false,
+                      "ExpressionAffix": 0,
+                      "Discarded": false,
+                      "Name": "statementPrim",
+                      "HasByPassNodes": false,
+                      "IsExpressionNode": false,
+                      "IsBinaryOperationNode": false,
+                      "IsUnaryOperationNode": false,
+                      "Precedence": -1,
+                      "Associativity": 0,
+                      "IsLeftAssociative": false,
+                      "Left": null,
+                      "Right": null
+                    }
+                  ],
+                  "IsByPassNode": false,
+                  "IsEmpty": false,
+                  "ExpressionAffix": 0,
+                  "Discarded": false,
+                  "Name": "additionalStatements",
+                  "HasByPassNodes": false,
+                  "IsExpressionNode": false,
+                  "IsBinaryOperationNode": false,
+                  "IsUnaryOperationNode": false,
+                  "Precedence": -1,
+                  "Associativity": 0,
+                  "IsLeftAssociative": false,
+                  "Left": null,
+                  "Right": null
+                }
+              ],
+              "IsByPassNode": false,
+              "IsEmpty": false,
+              "ExpressionAffix": 0,
+              "Discarded": false,
+              "Name": "",
+              "HasByPassNodes": false,
+              "IsExpressionNode": false,
+              "IsBinaryOperationNode": false,
+              "IsUnaryOperationNode": false,
+              "Precedence": -1,
+              "Associativity": 0,
+              "IsLeftAssociative": false,
+              "Left": null,
+              "Right": null
+            }
+          ],
+          "IsByPassNode": false,
+          "IsEmpty": false,
+          "ExpressionAffix": 0,
+          "Discarded": false,
+          "Name": "sequence",
+          "HasByPassNodes": false,
+          "IsExpressionNode": false,
+          "IsBinaryOperationNode": false,
+          "IsUnaryOperationNode": false,
+          "Precedence": -1,
+          "Associativity": 0,
+          "IsLeftAssociative": false,
+          "Left": null,
+          "Right": null
+        }
+      ],
+      "IsByPassNode": false,
+      "IsEmpty": false,
+      "ExpressionAffix": 0,
+      "Discarded": false,
+      "Name": "statement",
+      "HasByPassNodes": false,
+      "IsExpressionNode": false,
+      "IsBinaryOperationNode": false,
+      "IsUnaryOperationNode": false,
+      "Precedence": -1,
+      "Associativity": 0,
+      "IsLeftAssociative": false,
+      "Left": null,
+      "Right": null
+    },
+    {
+      "Token": {
+        "StringDelimiter": "\u0000",
+        "DecimalSeparator": "\u0000",
+        "CharDelimiter": "'",
+        "Notignored": false,
+        "Channel": 0,
+        "SpanValue": {
+          "Length": 1,
+          "IsEmpty": false
+        },
+        "Position": {
+          "IsStartOfLine": false,
+          "Indentations": [],
+          "CurrentIndentation": 0,
+          "Column": 44,
+          "Index": 44,
+          "Line": 0,
+          "Mode": "default"
+        },
+        "PositionInTokenVisibleFlow": 20,
+        "PositionInTokenFlow": 32,
+        "TokenID": 26,
+        "IsComment": false,
+        "Discarded": false,
+        "IsEOS": false,
+        "IsIndent": false,
+        "IsUnIndent": false,
+        "IndentationLevel": 0,
+        "IsWhiteSpace": false,
+        "IsEOL": false,
+        "IsImplicit": false,
+        "CommentType": 0,
+        "IsEmpty": false,
+        "IsMultiLineComment": false,
+        "IsSingleLineComment": true,
+        "Value": ")",
+        "End": true,
+        "IsLineEnding": false
+      },
+      "Discarded": false,
+      "Name": "RPAREN",
+      "HasByPassNodes": false
+    }
+  ],
+  "IsByPassNode": false,
+  "IsEmpty": false,
+  "ExpressionAffix": 0,
+  "Discarded": false,
+  "Name": "statement",
+  "HasByPassNodes": false,
+  "IsExpressionNode": false,
+  "IsBinaryOperationNode": false,
+  "IsUnaryOperationNode": false,
+  "Precedence": -1,
+  "Associativity": 0,
+  "IsLeftAssociative": false,
+  "Left": null,
+  "Right": null
+}

@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>sly.cli</RootNamespace>        
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>botsay</ToolCommandName>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>csly-cli</ToolCommandName>
+        <PackageOutputPath>./nupkg</PackageOutputPath>
+        <version>2.3.7</version>
+        <PackageVersion>2.3.7</PackageVersion>
+        
+    </PropertyGroup>
+    <PropertyGroup>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="../LICENSE.md" Pack="true" PackagePath=""/>
+        <None Include="../README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommandLineParser" Version="2.9.1" />      
+    </ItemGroup>
+
+    <ItemGroup>
+                <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />
+<!--        <PackageReference Include="sly" Version="3.2.7"/>-->
+    </ItemGroup>
+
+    
+    
+    <ItemGroup>      
+      <ProjectReference Include="..\csly-cli-api\csly-cli-api-debug.csproj" />      
+      <ProjectReference Include="..\csly-cli-builder\csly-cli-builder-debug.csproj" />
+      <ProjectReference Include="..\csly-cli-model\csly-cli-model-debug.csproj" />
+      <ProjectReference Include="..\csly-cli-parser\csly-cli-parser-debug.csproj" />
+      <ProjectReference Include="..\csly-cli-decompiler\csly-cli-decompiler-debug.csproj" />
+      <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor-debug.csproj" />
+    </ItemGroup>
+
+</Project>

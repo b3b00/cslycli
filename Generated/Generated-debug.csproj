@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ClassLibrary1</RootNamespace>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        
+    </PropertyGroup>
+    
+    <ItemGroup>
+<!--        <PackageReference Include="sly" Version="3.2.7"/>-->
+      <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />
+    </ItemGroup>
+
+
+</Project>

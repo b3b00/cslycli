@@ -404,16 +404,25 @@ public class CLIParser
         return rule;
     }
     
-    [Production("rule  :  attribute* operand? ID SEMICOLON[d]")]
-    public GrammarNode ShortOPerand(List<ICLIModel> attributes, ValueOption<ICLIModel> operand, Token<CLIToken> id,  ParserContext context)
+    [Production("rule  :  attribute* operand? ID+ SEMICOLON[d]")]
+    public GrammarNode ShortOPerand(List<ICLIModel> attributes, ValueOption<ICLIModel> operand, List<Token<CLIToken>> ids,  ParserContext context)
     {
         var rule = new Rule(operand.IsSome);
         rule.SetAttributes(attributes.Cast<AttributeModel>().ToList());
 
         rule.NonTerminalName = "operand";
-        rule.Clauses = new List<IClause>() {BuildTerminalOrNonTerminal(id , context)};
+        if (ids.Count == 1)
+        {
+            rule.Clauses = new List<IClause>() { BuildTerminalOrNonTerminal(ids[0], context) };
+        }
+        else
+        {
+            var choice = new ChoiceClause(ids.Select(x => BuildTerminalOrNonTerminal(x, context)).ToList());
+            rule.Clauses = new List<IClause>() { choice };
+        }
+
         rule.IsRoot = false;
-        rule.Position = id.Position;
+        rule.Position = ids[0].Position;
         return rule;
     }
 

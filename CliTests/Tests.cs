@@ -706,5 +706,32 @@ group : ""("" p_expressions "")"";
         var parseResult = _processor.GetSyntaxTree(grammar, "1 + 2.3");
         Check.That(parseResult.IsOK).IsTrue();
     }
+
+    [Fact]
+    public void TestOperationNames()
+    {
+        string grammar = @"
+genericLexer l;
+[Int] INT;
+parser p;
+-> root: p_expressions;
+@name(pupuce);
+@node(pupuce);
+[Right 10] ""+"";
+@name(mimi);
+@node(mimi);
+[Right 10] ""-""; 
+[Operand] INT;
+";
+        var model = _processor.CompileModel(grammar);
+        Check.That(model.IsOK).IsTrue();
+        var x = _processor.Compile(grammar);
+        Check.That(model.IsOK).IsTrue();
+        var tree = _processor.GetSyntaxTree(grammar, "1+1");
+        Check.That(tree.IsOK).IsTrue();
+        Check.That(tree.Result).IsNotNull();
+        var source = _processor.GenerateParser(grammar,"ns","int");
+        Check.That(source.IsOK).IsTrue();
+    }
         
 }

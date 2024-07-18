@@ -31,7 +31,7 @@ jobs:
     - name: Clean artifacts and nugets 
       run: dotnet clean  --configuration Release csly-cli.sln && dotnet nuget locals all --clear 
     - name: Build with dotnet 
-      run: dotnet build --configuration Release        
+      run: dotnet build --configuration Release   csly-cli.sln     
     - name: Test with dotnet
       uses: b3b00/coverlet-action@1.3.0
       id: 'coverlet'

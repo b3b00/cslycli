@@ -4,6 +4,7 @@ using System.Reflection;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using csly_cli_api;
+using csly.cli.model.parser;
 using csly.cli.model.tree;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -614,7 +615,96 @@ parser p;
         Check.That(error).Contains(ErrorCodes.PARSER_MISSING_OPERAND.ToString());
 
     }
+
+    [Fact]
+    public void TestShortOperandSingle()
+    {
+        string grammar = @"
+genericLexer l;
+[Int] INT;
+parser p;
+-> root: p_expressions;
+[Prefix 10] ""++"";
+[Operand] INT;
+";
+        var model = _processor.CompileModel(grammar);
+        Check.That(model.IsOK).IsTrue();
+        var operand = model.Result.ParserModel.Rules.FirstOrDefault(x => x.IsOperand);
+        Check.That(operand).IsNotNull();
+        Check.That(operand.Clauses).IsSingle();
+        Check.That(operand.Clauses[0]).IsInstanceOf<TerminalClause>();
+        Check.That((operand.Clauses[0] as TerminalClause).TokenName).IsEqualTo("INT");
+        var parseResult = _processor.GetSyntaxTree(grammar, "++2");
+        Check.That(parseResult.IsOK).IsTrue();
+
+    }
     
+    [Fact]
+    public void TestShortOperandMany()
+    {
+        string grammar = @"
+genericLexer l;
+[Int] INT;
+[Double] DOUBLE;
+parser p;
+-> root: p_expressions;
+[Right 10] ""+"";
+[Operand] INT DOUBLE;
+";
+        var model = _processor.CompileModel(grammar);
+        Check.That(model.IsOK).IsTrue();
+        var operand = model.Result.ParserModel.Rules.FirstOrDefault(x => x.IsOperand);
+        Check.That(operand).IsNotNull();
+        Check.That(operand.Clauses).IsSingle();
+        Check.That(operand.Clauses[0]).IsInstanceOf<ChoiceClause>();
+        Check.That((operand.Clauses[0] as ChoiceClause).Choices).CountIs(2);
+        var parseResult = _processor.GetSyntaxTree(grammar, "1 + 2.3");
+        Check.That(parseResult.IsOK).IsTrue();
+
+    }
  
+    [Fact]
+    public void TestShortOperandManyWithMixedChoicesError()
+    {
+        string grammar = @"
+genericLexer l;
+[Int] INT;
+[Double] DOUBLE;
+parser p;
+-> root: p_expressions;
+[Right 10] ""+"";
+group : ""("" p_expressions "")""; 
+[Operand] INT DOUBLE group;
+";
+        var model = _processor.Compile(grammar);
+        Check.That(model.IsOK).IsFalse();
+        Check.That(model.Errors).IsSingle();
+        Check.That(model.Errors[0]).Contains("[PARSER_MIXED_CHOICES]");
+    }
+    
+    [Fact]
+    public void TestShortOperandManyWithMixedChoicesOk()
+    {
+        string grammar = @"
+genericLexer l;
+[Int] INT;
+[Double] DOUBLE;
+parser p;
+-> root: p_expressions;
+[Right 10] ""+"";
+group : ""("" p_expressions "")""; 
+[Operand] INT DOUBLE;
+[Operand] group;
+";
+        var model = _processor.CompileModel(grammar);
+        Check.That(model.IsOK).IsTrue();
+        var operand = model.Result.ParserModel.Rules.FirstOrDefault(x => x.IsOperand);
+        Check.That(operand).IsNotNull();
+        Check.That(operand.Clauses).IsSingle();
+        Check.That(operand.Clauses[0]).IsInstanceOf<ChoiceClause>();
+        Check.That((operand.Clauses[0] as ChoiceClause).Choices).CountIs(2);
+        var parseResult = _processor.GetSyntaxTree(grammar, "1 + 2.3");
+        Check.That(parseResult.IsOK).IsTrue();
+    }
         
 }

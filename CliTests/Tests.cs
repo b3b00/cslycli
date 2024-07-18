@@ -4,6 +4,7 @@ using System.Reflection;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using csly_cli_api;
+using csly.cli.model.parser;
 using csly.cli.model.tree;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -614,7 +615,29 @@ parser p;
         Check.That(error).Contains(ErrorCodes.PARSER_MISSING_OPERAND.ToString());
 
     }
-    
+
+    [Fact]
+    public void TestShortOperand()
+    {
+        string grammar = @"
+genericLexer l;
+[Int] INT;
+parser p;
+-> root: p_expressions;
+[Prefix 10] ""++"";
+[Operand] INT;
+";
+        var model = _processor.CompileModel(grammar);
+        Check.That(model.IsOK).IsTrue();
+        var operand = model.Result.ParserModel.Rules.FirstOrDefault(x => x.IsOperand);
+        Check.That(operand).IsNotNull();
+        Check.That(operand.Clauses).IsSingle();
+        Check.That(operand.Clauses[0]).IsInstanceOf<TerminalClause>();
+        Check.That((operand.Clauses[0] as TerminalClause).TokenName).IsEqualTo("INT");
+        var parseResult = _processor.GetSyntaxTree(grammar, "++2");
+        Check.That(parseResult.IsOK).IsTrue();
+
+    }
  
         
 }

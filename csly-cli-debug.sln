@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CliTests", "CliTests\CliTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sly", "..\csly\src\sly\sly.csproj", "{0AAFD319-00E5-47EA-BDB7-D14A7D956D3D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpCoreFileSystem", "..\sharpfilesystem\SharpCoreFileSystem\SharpCoreFileSystem.csproj", "{18077A27-A7FF-4674-8D2F-5F4614C4DE0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,5 +84,9 @@ Global
 		{0AAFD319-00E5-47EA-BDB7-D14A7D956D3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AAFD319-00E5-47EA-BDB7-D14A7D956D3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AAFD319-00E5-47EA-BDB7-D14A7D956D3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18077A27-A7FF-4674-8D2F-5F4614C4DE0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18077A27-A7FF-4674-8D2F-5F4614C4DE0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18077A27-A7FF-4674-8D2F-5F4614C4DE0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18077A27-A7FF-4674-8D2F-5F4614C4DE0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

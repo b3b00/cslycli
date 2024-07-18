@@ -732,7 +732,7 @@ public class ParserBuilder
     {
         string name = postfixes.GetName(ref explicitPostfixCounter);
         
-        var methodBuilder = AddMethod(builder, $"postfix_{name}", TokenType, ObjectType);
+        var methodBuilder = AddMethod(builder, name, ObjectType, TokenType);
         
         Type attributeType = typeof(PostfixAttribute);
 

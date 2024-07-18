@@ -283,10 +283,7 @@ namespace {nameSpace} {{
     public  string GetVisitor(PrefixRule prefix, string lexer, string output)
     {
         string name = "";
-        if (prefix.TryGetMethodName(out name))
-        {
-        }
-        else {
+        if (!prefix.TryGetMethodName(out name)) {
             name = prefix.Name;
             if (prefix.IsExplicit)
             {
@@ -318,7 +315,7 @@ namespace {nameSpace} {{
         string name = postfixes.GetName(ref explicitPostfixCounter); 
         
         return $@"
-        public {output} {name}(Token<{lexer}> oper, {output} value) {{
+        public {output} {name}({output} value, Token<{lexer}> oper) {{
             return value;
         }}";
     }
@@ -326,18 +323,16 @@ namespace {nameSpace} {{
     public  string GetVisitor(PostfixRule postfix, string lexer, string output)
     {
         string name = ""; 
-        if (postfix.TryGetMethodName(out name))
+        if (!postfix.TryGetMethodName(out name))
         {
+            name = postfix.Name;
             if (postfix.IsExplicit)
             {
-                name = $"infix_{explicitInfixCounter}";
-                explicitInfixCounter++;
+                name = $"postfix_{explicitPostfixCounter}";
+                explicitPostfixCounter++;
             }
         }
-        else {
-            name = postfix.Name;
-        }
-
+        
         return $@"
         public {output} {name}({output} value, Token<{lexer}> oper) {{
             return value;
@@ -358,16 +353,13 @@ namespace {nameSpace} {{
     public  string GetVisitor(InfixRule infix, string lexer, string output)
     {
         string name = ""; 
-        if (infix.TryGetMethodName(out name))
-        {
+        if (!infix.TryGetMethodName(out name)) {
+            name = infix.Name;
             if (infix.IsExplicit)
             {
                 name = $"infix_{explicitInfixCounter}";
                 explicitInfixCounter++;
             }
-        }
-        else {
-            name = infix.Name;
         }
 
         return $@"

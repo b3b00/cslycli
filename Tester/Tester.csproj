@@ -23,7 +23,7 @@
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
       <PackageReference Include="NFluent" Version="3.0.4" />
-      <PackageReference Include="sly" Version="3.2.7" />
+      <PackageReference Include="sly" Version="3.2.8" />
         <PackageReference Include="System.Text.Json" Version="8.0.3" />
         <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
         <PackageReference Include="System.Collections.Immutable" Version="8.0.0"/>

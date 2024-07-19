@@ -706,5 +706,57 @@ group : ""("" p_expressions "")"";
         var parseResult = _processor.GetSyntaxTree(grammar, "1 + 2.3");
         Check.That(parseResult.IsOK).IsTrue();
     }
+
+    [Fact]
+    public void TestOperationNames()
+    {
+        string grammar = @"
+genericLexer l;
+[Int] INT;
+parser p;
+@name(racine);
+-> root: p_expressions;
+@name(pupuce);
+@node(pupuce);
+[Right 10] ""+"";
+@name(mimi);
+@node(mimi);
+[Right 10] ""-"";
+@node(post_pupumimi);
+@name(post_pupumimi);
+[Postfix 100] ""++"" ""--"";
+@node(pre_pupumimi);
+@name(pre_pupumimi); 
+[Prefix 100] ""++"" ""--"";
+@node(factorial);
+@name(factorial);
+[Postfix 100] ""!"";
+@node(dollar);
+@name(dollar);
+[Prefix 100] ""$"";
+@node(entier);
+@name(entier); 
+[Operand] INT;
+";
+        var model = _processor.CompileModel(grammar);
+        Check.That(model.IsOK).IsTrue();
+        var x = _processor.Compile(grammar);
+        Check.That(model.IsOK).IsTrue();
+        var generatedParser = _processor.GenerateParser(grammar, "ns", "object");
+        Check.That(generatedParser.IsOK).IsTrue();
+        Check.That(generatedParser.Result).IsNotNull();
+        Check.That(generatedParser.Result.Parser).Contains("object factorial(object value");
+        Check.That(generatedParser.Result.Parser).Contains("object entier(Token<l> p0)");
+        Check.That(generatedParser.Result.Parser).Contains("public object mimi(object left, Token<l> oper, object right)");
+        var tree = _processor.GetSyntaxTree(grammar, "1+1");
+        Check.That(tree.IsOK).IsTrue();
+        Check.That(tree.Result).IsNotNull();
+        var dump = tree.Result.Dump("", "    ");
+        var lines = dump.GetLines();
+        Check.That(lines).Contains("        + entier ");
+        Check.That(lines).Contains("    + pupuce_mimi ");
+        var json = tree.Result.ToJson();
+    
+    }
         
 }

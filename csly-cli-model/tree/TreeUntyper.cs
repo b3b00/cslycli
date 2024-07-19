@@ -99,7 +99,9 @@ public class TreeUntyper<T> where T :struct
             IsWhiteSpace = token.IsWhiteSpace,
             IsEOL = token.IsEOL,
             IsEOS = token.IsEOS,
-            Label = token.Label
+            Label = token.Label,
+            PositionInTokenVisibleFlow = token.PositionInTokenVisibleFlow,
+            PositionInTokenFlow = token.PositionInTokenFlow
         };
     }
     

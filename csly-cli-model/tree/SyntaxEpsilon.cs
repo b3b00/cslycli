@@ -12,7 +12,7 @@ namespace csly.cli.model.tree
         public bool HasByPassNodes { get; set; } = false;
 
         [ExcludeFromCodeCoverage]
-        public string Dump(string tab)
+        public string Dump(string currentTab, string singleTab)
         {
             return $"Epsilon";
         }

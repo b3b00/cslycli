@@ -10,7 +10,7 @@
 
         bool HasByPassNodes { get; set; }
 
-        string Dump(string tab);
+        string Dump(string currentTab, string singleTab );
 
         string ToJson(int index = 0);
 

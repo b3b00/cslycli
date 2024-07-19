@@ -18,14 +18,19 @@ namespace csly.cli.model.tree
 
         public bool HasByPassNodes { get; set; } = false;
 
-        public string Dump(string tab)
+        public string Dump(string currentTab, string singleTab)
         {
-            return $"{tab}+ {Token.TokenID.ToString()} : {Token.Value} @{Token.PositionInTokenFlow}";
+            if (Token.IsExplicit)
+            {
+                return $"{currentTab}+ '{Token.Value}' @{Token.PositionInTokenFlow}";    
+            }
+            
+            return $"{currentTab}+ {Token.TokenID.ToString()} : '{Token.Value}' @{Token.PositionInTokenFlow}";
         }
 
         public string ToJson(int index = 0)
         {
-            return $@"""{index}.{Token.TokenID.ToString()}"" : ""{Token.Value}""";
+            return $@"""{index}.{(Token.IsExplicit ? "explicit" :Token.TokenID.ToString())}"" : ""{Token.Value}""";
         }
 
 

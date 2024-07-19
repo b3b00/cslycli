@@ -3,6 +3,7 @@
 using System.Text.Json;
 using clsy.cli.builder.parser;
 using csly_cli_api;
+using NFluent;
 
 namespace cslyCliTester {
 
@@ -30,10 +31,56 @@ public static class Program
         //Compile("C:\\Users\\olduh\\dev\\BlazorCslyViz\\BlazorVizView\\samples\\grammar\\indented-while.txt");
         // Extract(@"C:\Users\olduh\dev\csly\src\samples\IndentedWhile\parser\IndentedWhileParserGeneric.cs","C:\\Users\\olduh\\dev\\csly\\src\\samples\\IndentedWhile\\parser\\IndentedWhileTokenGeneric.cs", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\indented-while.txt");
         // Parse(@"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\indented-while.txt", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\source\indented-while.txt");
-        TestErrorMessages();
+        // TestErrorMessages();
+        TestExpressionNodeNames();
     }
 
-   
+
+    private static void TestExpressionNodeNames()
+    {
+        CslyProcessor processor = new CslyProcessor();
+        string grammar = @"
+genericLexer l;
+[Int] INT;
+parser p;
+@name(racine);
+-> root: p_expressions;
+@name(pupuce);
+@node(pupuce);
+[Right 10] ""+"";
+@name(mimi);
+@node(mimi);
+[Right 10] ""-"";
+@node(post_pupumimi);
+@name(post_pupumimi);
+[Postfix 100] ""++"" ""--"";
+@node(pre_pupumimi);
+@name(pre_pupumimi); 
+[Prefix 100] ""++"" ""--"";
+@node(factorial);
+@name(factorial);
+[Postfix 100] ""!"";
+@node(dollar);
+@name(dollar);
+[Prefix 100] ""$"";
+@node(entier);
+@name(entier); 
+[Operand] INT;
+";
+        var model = processor.CompileModel(grammar);
+        Check.That(model.IsOK).IsTrue();
+        var x = processor.Compile(grammar);
+        Check.That(model.IsOK).IsTrue();
+        var tree = processor.GetSyntaxTree(grammar, "1+1");
+        Check.That(tree.IsOK).IsTrue();
+        Check.That(tree.Result).IsNotNull();
+        var dump = tree.Result.Dump("", "    ");
+        var lines = dump.GetLines();
+        Console.WriteLine(dump);
+        var json = tree.Result.ToJson();
+        Console.WriteLine(json);
+        ;
+    }
 
     private static void TestDate()
     {

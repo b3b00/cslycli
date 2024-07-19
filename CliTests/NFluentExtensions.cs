@@ -10,7 +10,21 @@ namespace CliTests;
 
 public static class NFluentParseExtensions
     {
-        
+        public static List<string> GetLines(this string content)
+        {
+            List<string> lines = new List<string>();
+            using (StringReader reader = new StringReader(content))
+            {
+                string line = reader.ReadLine();
+                while (line != null)
+                {
+                    lines.Add(line);
+                    line = reader.ReadLine();
+                }
+            }
+
+            return lines;
+        }
         
         public static ICheckLink<ICheck<Result<Model,List<string>>>> IsOkModel(this ICheck<Result<Model,List<string>>> context) 
         {

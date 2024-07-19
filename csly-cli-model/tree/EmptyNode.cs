@@ -12,7 +12,7 @@ public class EmptyNode : ISyntaxNode
         set { }
     }
 
-    public string Dump(string tab)
+    public string Dump(string currentTab, string singleTab)
     {
         return "epsilon";
     }

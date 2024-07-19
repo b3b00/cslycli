@@ -6,38 +6,6 @@ using sly.parser.generator;
 
 namespace csly.cli.model.tree
 {
-    
-    public class OperationMetaData
-    {
-        
-        public OperationMetaData(int precedence, sly.parser.generator.Associativity assoc,sly.parser.generator.Affix affix, string oper)
-        {
-            Precedence = precedence;
-            Associativity = assoc;
-            OperatorToken = oper;
-            Affix = affix;
-        }
-
-        public int Precedence { get; set; }
-
-        public sly.parser.generator.Associativity Associativity { get; set; }
-
-        public sly.parser.generator.Affix Affix { get; set; }
-
-        public bool IsBinary => Affix == Affix.InFix;
-
-        public bool IsUnary => Affix != Affix.InFix;
-
-        public bool IsExplicitOperatorToken => !string.IsNullOrEmpty(OperatorToken);
-
-        public string OperatorToken { get; set; }
-
-        public override string ToString()
-        {
-            return $"{OperatorToken} / {Affix} : {Precedence} / {Associativity}";
-        }
-    }
-    
     public class SyntaxNode : ISyntaxNode 
     {
 
@@ -145,7 +113,7 @@ namespace csly.cli.model.tree
             }
         }
 
-        public string Dump(string tab)
+        public string Dump(string initialTab, string singleTab)
         {
             StringBuilder builder = new StringBuilder();
             string expressionSuffix = "";
@@ -163,11 +131,15 @@ namespace csly.cli.model.tree
                 expressionSuffix = $">{expressionSuffix}<";
             }
 
-            builder.AppendLine($"{tab}+ {Name} {(IsByPassNode ? "===":"")}");
+            if (!IsByPassNode)
+            {
+                builder.AppendLine($"{initialTab}+ {Name} {(IsByPassNode ? "===" : "")}");
+            }
 
+            var childTab = initialTab + (IsByPassNode ? "": singleTab);
             foreach (var child in Children)
             {
-                builder.AppendLine($"{child.Dump(tab + "\t")}");
+                builder.AppendLine($"{child.Dump(childTab,singleTab)}");
             }
 
             return builder.ToString();
@@ -178,18 +150,16 @@ namespace csly.cli.model.tree
             StringBuilder builder = new StringBuilder();
 
 
-            builder.Append($@"""{index}.{Name}");
-            if (IsByPassNode)
+            if (!IsByPassNode)
             {
-                builder.Append("--");
+                builder.Append($@"""{index}.{Name}");
+                builder.AppendLine(@""" : {");
             }
-
-            builder.AppendLine(@""" : {");
 
             for (int i = 0; i < Children.Count; i++)
             {
                 var child = Children[i];
-                builder.Append(child.ToJson(i));
+                builder.Append(child.ToJson(index+i));
                 if (i < Children.Count - 1)
                 {
                     builder.Append(",");
@@ -198,7 +168,10 @@ namespace csly.cli.model.tree
                 builder.AppendLine();
             }
 
-            builder.Append("}");
+            if (!IsByPassNode)
+            {
+                builder.Append("}");
+            }
 
             return builder.ToString();
         }

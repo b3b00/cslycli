@@ -131,10 +131,7 @@ namespace csly.cli.model.tree
                 expressionSuffix = $">{expressionSuffix}<";
             }
 
-            if (!IsByPassNode)
-            {
-                builder.AppendLine($"{initialTab}+ {Name} {(IsByPassNode ? "===" : "")}");
-            }
+            builder.AppendLine($"{initialTab}+ {Name} {(IsByPassNode ? "===" : "")}");
 
             var childTab = initialTab + (IsByPassNode ? "": singleTab);
             foreach (var child in Children)

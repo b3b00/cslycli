@@ -494,11 +494,6 @@ public class ParserBuilder
         var untyped = untypeMethod.Invoke(null, new object[] { syntaxTree });
         var tree = untyped as ISyntaxNode;
 
-        if (tree != null)
-        {
-            return new Result<ISyntaxNode>(tree);
-
-        }
 
         if (chrono != null)
         {
@@ -506,13 +501,7 @@ public class ParserBuilder
             chrono.Stop();
         }
 
-        if (tree != null)
-        {
-            return new Result<ISyntaxNode>(tree);
-        }
-
-
-        return null;
+        return tree != null ? new Result<ISyntaxNode>(tree) : null;
     }
 
 

@@ -26,7 +26,7 @@ public class ExtensionTests
         var graph = (lexer as GenericLexer<CLIToken>).ToGraphViz();
         var lexed = lexer.Tokenize(grammar);
         Check.That(lexed.IsError).IsFalse();
-        var tokens = lexed.Tokens.Tokens;
+        var tokens = lexed.Tokens.MainTokens();
         Check.That(tokens).Not.IsNullOrEmpty();
         Check.That(tokens).CountIs(24);
 
@@ -45,7 +45,7 @@ public class ExtensionTests
         var graph = (lexer as GenericLexer<CLIToken>).ToGraphViz();
         var lexed = lexer.Tokenize(grammar);
         Check.That(lexed.IsError).IsFalse();
-        var tokens = lexed.Tokens.Tokens;
+        var tokens = lexed.Tokens.MainTokens();
         Check.That(tokens).Not.IsNullOrEmpty();
         Check.That(tokens).CountIs(23);
 

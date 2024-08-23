@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <version>1.5.3</version>
-        <PackageVersion>1.5.3</PackageVersion>
+        <PackageVersion>1.5.4</PackageVersion>
     </PropertyGroup>
     <PropertyGroup>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
@@ -19,7 +19,7 @@
 
     <ItemGroup>
         <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
-        <PackageReference Include="sly" Version="3.2.8" />
+        <PackageReference Include="sly" Version="3.2.9" />
     </ItemGroup>
 
     <ItemGroup>

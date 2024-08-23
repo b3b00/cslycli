@@ -5,7 +5,7 @@
         <RootNamespace>csly_cli_api</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <version>1.5.3</version>
+        <version>1.5.4</version>
         <PackageVersion>1.5.4</PackageVersion>
     </PropertyGroup>
     <PropertyGroup>

@@ -890,7 +890,7 @@ public class ParserBuilder
                         }
                         else
                         {
-                            return ObjectType;
+                            return OptionType;
                         }
                     }
                     default:

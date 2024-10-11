@@ -65,6 +65,7 @@
       <EmbeddedResource Include="data\minimalJSON.json" />
       <EmbeddedResource Include="data\missingReference.txt" />
       <EmbeddedResource Include="data\noRoot.txt" />
+      <EmbeddedResource Include="data\optionGrammar.txt" />
       <EmbeddedResource Include="data\parser.csharp" />
       <EmbeddedResource Include="data\simpleExpression.txt" />
       <EmbeddedResource Include="data\simpleexpr\simpleexpressionparser.csharp" />

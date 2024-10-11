@@ -50,7 +50,7 @@ namespace clsy.cli.model.tree.visitor
         {
             if (!exists)
             {
-                return VisitLeaf(new Token() { TokenID = "", SpanValue = "<NONE>".ToCharArray() });
+                return VisitLeaf(new Token() { TokenID = "ε" });
             }
             return child;
         }
@@ -135,7 +135,10 @@ namespace clsy.cli.model.tree.visitor
                 label += "\n";
             }
             var esc = value.Replace("\"", "\\\"");
-            label += "\\\"" + esc + "\\\"";
+            if (!string.IsNullOrEmpty(esc))
+            {
+                label += "\\\"" + esc + "\\\"";
+            }
             var node = new DotNode(NodeCounter.ToString())
             {
                 // Set all available properties

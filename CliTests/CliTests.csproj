@@ -32,7 +32,7 @@
 
     <ItemGroup>
         <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
-        <PackageReference Include="sly" Version="3.3.0" />
+        <PackageReference Include="sly" Version="3.3.1" />
     </ItemGroup>
     
     <ItemGroup>
@@ -71,6 +71,8 @@
       <EmbeddedResource Include="data\simpleexpr\simpleexpressionparser.csharp" />
       <EmbeddedResource Include="data\simpleexpr\simpleexpressiontoken.csharp" />
       <EmbeddedResource Include="data\whileGrammar.txt" />
+      <None Remove="data\optionGrammar.txt" />
+      <EmbeddedResource Include="data\optionGrammar.txt" />
     </ItemGroup>
 
 </Project>

@@ -170,6 +170,41 @@ public class Tests
     }
 
     [Fact]
+    public void TestOption()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/optionGrammar.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "P");
+        if (model.IsError)
+        {
+            model.Error.ForEach(Console.WriteLine);
+        }
+
+        Check.That(model).IsOkModel();
+        var dot = builder.Getz(grammar, "a b", "grammarX", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
+        if (dot.IsError)
+        {
+            dot.Error.ForEach(x => Debug.WriteLine(x));
+        }
+        Check.That(dot.IsError).IsFalse();
+        var content = dot.Value.First().content;
+        Assert.NotNull(content);
+        Assert.NotEmpty(content);
+        
+        dot = builder.Getz(grammar, "a ", "grammarX", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
+        if (dot.IsError)
+        {
+            dot.Error.ForEach(x => Debug.WriteLine(x));
+        }
+        Check.That(dot.IsError).IsFalse();
+        content = dot.Value.First().content;
+        Assert.NotNull(content);
+        Assert.NotEmpty(content);
+        Assert.Contains("ε", content);
+    }
+    
+    [Fact]
     public void TestChoices()
     {
         EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));

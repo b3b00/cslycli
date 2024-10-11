@@ -17,7 +17,6 @@ public class TreeUntyper<T> where T :struct
             GroupSyntaxNode<T> group => Untype(group),
             ManySyntaxNode<T> many => Untype(many),
             EmptyNode<T> empty => Untype(empty),
-            SyntaxEpsilon<T> epsilon => Untype(epsilon),
             SyntaxLeaf<T> leaf => Untype(leaf),
             OptionSyntaxNode<T> option => Untype(option),
             SyntaxNode<T> n => Untype(n),
@@ -33,11 +32,6 @@ public class TreeUntyper<T> where T :struct
     private static SyntaxLeaf? Untype(SyntaxLeaf<T> leaf)
     {
         return new SyntaxLeaf(Untype(leaf.Token), leaf.Discarded);
-    }
-
-    private static SyntaxEpsilon? Untype(SyntaxEpsilon<T> epsilon)
-    {
-        return new SyntaxEpsilon();
     }
 
     private static OptionSyntaxNode Untype(OptionSyntaxNode<T> option)

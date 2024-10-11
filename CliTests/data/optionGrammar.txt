@@ -1,0 +1,13 @@
+genericLexer L ;
+
+[KeyWord] a : "a";
+[KeyWord] b : "b";
+[KeyWord] c : "c";
+
+parser P;
+
+-> choice : [A|B|C] [A|B]?;
+A : a;
+B : b;
+C : c;
+ 

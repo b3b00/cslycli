@@ -63,12 +63,17 @@ namespace clsy.cli.model.tree.visitor
         private OUT Visit(OptionSyntaxNode node)
         {
             var child = node.Children != null && node.Children.Any<ISyntaxNode>() ? node.Children[0] : null;
+            OUT optionChild = default;
             if (child == null || node.IsEmpty)
             {
-                Visitor.VisitOptionNode(false, default(OUT));
+                optionChild = Visitor.VisitOptionNode(false, default(OUT));
             }
-            var r = Visit(child);
-            return r;
+            else
+            {
+                optionChild = Visit(child);
+            }
+
+            return optionChild;
         }
 
 

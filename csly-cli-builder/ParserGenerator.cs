@@ -495,7 +495,7 @@ namespace {nameSpace} {{
                     }
                     else
                     {
-                        return output;
+                        return $"ValueOption<{output}>";
                     }
                 }
 

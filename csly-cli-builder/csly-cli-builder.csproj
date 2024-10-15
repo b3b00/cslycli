@@ -14,7 +14,7 @@
 
     <ItemGroup>
         <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
-        <PackageReference Include="sly" Version="3.3.1" />
+        <PackageReference Include="sly" Version="3.3.5" />
     </ItemGroup>
     
     <ItemGroup>

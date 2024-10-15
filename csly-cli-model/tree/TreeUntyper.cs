@@ -16,7 +16,6 @@ public class TreeUntyper<T> where T :struct
         {
             GroupSyntaxNode<T> group => Untype(group),
             ManySyntaxNode<T> many => Untype(many),
-            EmptyNode<T> empty => Untype(empty),
             SyntaxLeaf<T> leaf => Untype(leaf),
             OptionSyntaxNode<T> option => Untype(option),
             SyntaxNode<T> n => Untype(n),
@@ -24,10 +23,7 @@ public class TreeUntyper<T> where T :struct
         };
     }
 
-    private static EmptyNode? Untype(EmptyNode<T> emptyNode)
-    {
-        return new EmptyNode();
-    }
+
 
     private static SyntaxLeaf? Untype(SyntaxLeaf<T> leaf)
     {

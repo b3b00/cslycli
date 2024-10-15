@@ -11,7 +11,9 @@
           "Column": 0,
           "Index": 0,
           "Line": 0,
-          "Mode": "default"
+          "Mode": "default",
+          "IsPop": false,
+          "IsPush": false
         },
         "PositionInTokenVisibleFlow": 0,
         "PositionInTokenFlow": 0,

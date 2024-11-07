@@ -10,7 +10,7 @@
 
     <ItemGroup>
 <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
-        <PackageReference Include="sly" Version="3.4.1-alpha1" />
+        <PackageReference Include="sly" Version="3.4.5" />
     </ItemGroup>
 
 </Project>

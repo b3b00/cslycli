@@ -5,8 +5,8 @@
         <RootNamespace>csly_cli_api</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <version>1.5.9</version>
-        <PackageVersion>1.5.9</PackageVersion>
+        <version>1.6.0</version>
+        <PackageVersion>1.6.0</PackageVersion>
     </PropertyGroup>
     <PropertyGroup>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
@@ -19,7 +19,7 @@
 
     <ItemGroup>
         <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
-        <PackageReference Include="sly" Version="3.4.1-alpha1" />
+        <PackageReference Include="sly" Version="3.4.5" />
     </ItemGroup>
 
     <ItemGroup>

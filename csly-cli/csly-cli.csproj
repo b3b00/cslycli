@@ -9,8 +9,8 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>csly-cli</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-        <version>2.4.6</version>
-        <PackageVersion>2.4.6</PackageVersion>
+        <version>2.4.7</version>
+        <PackageVersion>2.4.7</PackageVersion>
         
     </PropertyGroup>
     <PropertyGroup>
@@ -28,7 +28,7 @@
 
     <ItemGroup>
         <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
-        <PackageReference Include="sly" Version="3.4.1-alpha1" />
+        <PackageReference Include="sly" Version="3.4.5" />
     </ItemGroup>
 
     

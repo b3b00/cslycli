@@ -41,38 +41,38 @@ genericLexer IndentedWhileTokenGeneric;
 [KeyWord] RETURN : "RETURN";
 [KeyWord] RETURN : "return";
 
-[Mode("DefaultLexerMode", "fstringExpression")]
+[Mode("default", "fstringExpression")]
 [AlphaNumDashId] IDENTIFIER;
 
 [Int] INT;
 
-[Mode("DefaultLexerMode", "fstringExpression")]
+[Mode("default", "fstringExpression")]
 [Sugar] GREATER : ">";
 
-[Mode("DefaultLexerMode", "fstringExpression")]
+[Mode("default", "fstringExpression")]
 [Sugar] LESSER : "<";
 
-[Mode("DefaultLexerMode", "fstringExpression")]
+[Mode("default", "fstringExpression")]
 [Sugar] EQUALS : "==";
 
-[Mode("DefaultLexerMode", "fstringExpression")]
+[Mode("default", "fstringExpression")]
 [Sugar] DIFFERENT : "!=";
 
-[Mode("DefaultLexerMode", "fstringExpression")]
+[Mode("default", "fstringExpression")]
 [Sugar] CONCAT : ".";
 
 [Sugar] ASSIGN : ":=";
 
-[Mode("DefaultLexerMode", "fstringExpression")]
+[Mode("default", "fstringExpression")]
 [Sugar] PLUS : "+";
 
-[Mode("DefaultLexerMode", "fstringExpression")]
+[Mode("default", "fstringExpression")]
 [Sugar] MINUS : "-";
 
-[Mode("DefaultLexerMode", "fstringExpression")]
+[Mode("default", "fstringExpression")]
 [Sugar] TIMES : "*";
 
-[Mode("DefaultLexerMode", "fstringExpression")]
+[Mode("default", "fstringExpression")]
 [Sugar] DIVIDE : "/";
 
 [Mode("default", "fstringExpression")]
@@ -102,7 +102,7 @@ genericLexer IndentedWhileTokenGeneric;
 [Mode("fstringExpression")]
 [Sugar] CLOSE_FSTRING_EXPPRESSION : "}";
 
-[Mode("DefaultLexerMode", "fstringExpression")]
+[Mode("default", "fstringExpression")]
 [Push("fstring")]
 [Sugar] OPEN_FSTRING : "$\"";
 

@@ -806,6 +806,26 @@ parser p;
         var model = builder.CompileModel(grammar, "IndentedWhileGrammar");
         Check.That(model.IsError).IsFalse();
         Check.That(model.Value).IsNotNull();
+
+        string program = @"
+# factorial 
+r:=1
+i:=1
+while i == 11 do 
+    r := r * i
+    print r
+    print i
+    i := i + 1
+    
+v1 := 48
+v2 := 152
+fstring := $""v1 :> {v1} < v2 :> {v2} < v3 :> {v1+v2} <  v4 :>{$""hello,"".$"" world""}< v5 :>{(? b -> $""true"" | $""false"")}< - end""
+print fstring
+
+return 100     
+";
+        var t = builder.Getz(grammar,program,"indentedWhileGrammar",new List<(string format, SyntaxTreeProcessor processor)>() {{("DOT",ParserBuilder.SyntaxTreeToDotGraph)}});
+        Check.That(t.IsError).IsFalse();
     }
         
 }

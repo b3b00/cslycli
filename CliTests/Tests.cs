@@ -793,5 +793,19 @@ parser p;
         var json = tree.Result.ToJson();
     
     }
+
+    [Fact]
+    public void TestIndentedWhile()
+    {
+        //
+        // 1. compile model form meta.txt
+        //
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/indentedWhile.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "IndentedWhileGrammar");
+        Check.That(model.IsError).IsFalse();
+        Check.That(model.Value).IsNotNull();
+    }
         
 }

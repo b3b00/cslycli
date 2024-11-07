@@ -1,0 +1,154 @@
+
+genericLexer IndentedWhileTokenGeneric;
+
+[IndentationAware(true)]
+[KeyWord] IF : "IF";
+[KeyWord] IF : "if";
+
+[KeyWord] THEN : "THEN";
+[KeyWord] THEN : "then";
+
+[KeyWord] ELSE : "ELSE";
+[KeyWord] ELSE : "else";
+
+[KeyWord] WHILE : "WHILE";
+[KeyWord] WHILE : "while";
+
+[KeyWord] DO : "DO";
+[KeyWord] DO : "do";
+
+[KeyWord] SKIP : "SKIP";
+[KeyWord] SKIP : "skip";
+
+[KeyWord] TRUE : "TRUE";
+[KeyWord] TRUE : "true";
+
+[KeyWord] FALSE : "FALSE";
+[KeyWord] FALSE : "false";
+
+[KeyWord] NOT : "NOT";
+[KeyWord] NOT : "not";
+
+[KeyWord] AND : "AND";
+[KeyWord] AND : "and";
+
+[KeyWord] OR : "OR";
+[KeyWord] OR : "or";
+
+[KeyWord] PRINT : "PRINT";
+[KeyWord] PRINT : "print";
+
+[KeyWord] RETURN : "RETURN";
+[KeyWord] RETURN : "return";
+
+[Mode("DefaultLexerMode", "fstringExpression")]
+[AlphaNumDashId] IDENTIFIER;
+
+[Int] INT;
+
+[Mode("DefaultLexerMode", "fstringExpression")]
+[Sugar] GREATER : ">";
+
+[Mode("DefaultLexerMode", "fstringExpression")]
+[Sugar] LESSER : "<";
+
+[Mode("DefaultLexerMode", "fstringExpression")]
+[Sugar] EQUALS : "==";
+
+[Mode("DefaultLexerMode", "fstringExpression")]
+[Sugar] DIFFERENT : "!=";
+
+[Mode("DefaultLexerMode", "fstringExpression")]
+[Sugar] CONCAT : ".";
+
+[Sugar] ASSIGN : ":=";
+
+[Mode("DefaultLexerMode", "fstringExpression")]
+[Sugar] PLUS : "+";
+
+[Mode("DefaultLexerMode", "fstringExpression")]
+[Sugar] MINUS : "-";
+
+[Mode("DefaultLexerMode", "fstringExpression")]
+[Sugar] TIMES : "*";
+
+[Mode("DefaultLexerMode", "fstringExpression")]
+[Sugar] DIVIDE : "/";
+
+[Mode("default", "fstringExpression")]
+[Sugar] QUESTION : "?";
+
+[Mode("default", "fstringExpression")]
+[Sugar] ARROW : "->";
+
+[Mode("default", "fstringExpression")]
+[Sugar] OPEN_PAREN : "(";
+
+[Mode("default", "fstringExpression")]
+[Sugar] CLOSE_PAREN : ")";
+
+[Mode("default", "fstringExpression")]
+[Sugar] COLON : "|";
+
+[Sugar] SEMICOLON : ";";
+
+[SingleLineComment] COMMENT : "#";
+
+[Push("fstringExpression")]
+[Mode("fstring")]
+[Sugar] OPEN_FSTRING_EXPPRESSION : "{";
+
+[Pop]
+[Mode("fstringExpression")]
+[Sugar] CLOSE_FSTRING_EXPPRESSION : "}";
+
+[Mode("DefaultLexerMode", "fstringExpression")]
+[Push("fstring")]
+[Sugar] OPEN_FSTRING : "$\"";
+
+[Mode("fstring", "fstringExpression")]
+[Pop]
+[Sugar] CLOSE_FSTRING : "\"";
+
+[Mode("fstring")]
+[UpTo] FSTRING_CONTENT : "{" "\""; 
+
+
+
+parser IndentedWhileParserGeneric;
+
+[UseMemoization]
+[AutoCloseIndentations]
+[Right 50] LESSER;
+[Right 50] GREATER;
+[Right 50] EQUALS;
+[Right 50] DIFFERENT;
+[Right 10] CONCAT;
+-> program: sequence;
+block : INDENT[d] sequence UINDENT[d];
+statement : block;
+sequence: statement*;
+statement: IF[d] IndentedWhileParserGeneric_expressions THEN[d] block (ELSE[d] block)?;
+statement: WHILE[d] IndentedWhileParserGeneric_expressions DO[d] block;
+statement: IDENTIFIER ASSIGN[d] IndentedWhileParserGeneric_expressions;
+statement: SKIP[d];
+statement: RETURN[d] IndentedWhileParserGeneric_expressions;
+statement: PRINT[d] IndentedWhileParserGeneric_expressions;
+primary : QUESTION[d] IndentedWhileParserGeneric_expressions ARROW[d] IndentedWhileParserGeneric_expressions COLON[d] IndentedWhileParserGeneric_expressions;
+primary : OPEN_PAREN[d] IndentedWhileParserGeneric_expressions CLOSE_PAREN[d];
+primary : OPEN_FSTRING[d] fstring_element* CLOSE_FSTRING[d];
+fstring_element : FSTRING_CONTENT;
+fstring_element : OPEN_FSTRING_EXPPRESSION[d] IndentedWhileParserGeneric_expressions CLOSE_FSTRING_EXPPRESSION[d];
+primary: INT;
+primary: TRUE;
+primary: FALSE;
+primary: IDENTIFIER;
+[Operand] operand: primary;
+[Right 10] PLUS;
+[Right 10] MINUS;
+[Right 50] TIMES;
+[Right 50] DIVIDE;
+[Prefix 100] MINUS;
+[Right 10] OR;
+[Right 50] AND;
+[Prefix 100] NOT;

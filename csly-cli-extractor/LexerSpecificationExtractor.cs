@@ -16,7 +16,8 @@ public class LexerSpecificationExtractor
         {
             case GenericToken.Date:
             {
-                return $"[Date] {name} : {args[0]} '{args[1]}';";
+                
+                return $"[Date] {name} : {args[0].Replace($"{nameof(DateFormat)}.","")} {args[1]};";
             }
             case GenericToken.Comment:
             {

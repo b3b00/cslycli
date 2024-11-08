@@ -75,8 +75,6 @@ public class LexerSpecificationExtractor
                             }
                         }
                     }
-
-                    
                 }
                 return $"[{attr}] {name};";
             }
@@ -305,12 +303,8 @@ public class LexerSpecificationExtractor
                         .Where(x => modeAttributes.Contains(x.Name.ToString()));
                     foreach (var attr in modes)
                     {
-                        if (attr.Name.ToString() == "Push")
-                        {
-                            ;
-                        }
                         string[] pstrings = new string[] { };
-                        if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
+                        if (attr.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
                         {
                             pstrings = attr.ArgumentList.Arguments.Select(x =>
                             {
@@ -346,10 +340,6 @@ public class LexerSpecificationExtractor
                             List<string> pstrings = new List<string> { };
                             if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
                             {
-                                if (attr.Name.ToString() == "Lexeme")
-                                {
-                                    ;
-                                }
                                 Predicate<AttributeArgumentSyntax> filter = e =>
                                 {
                                     if (e.NameColon != null && e.NameColon.Name.Identifier.Text == "channel")
@@ -364,16 +354,6 @@ public class LexerSpecificationExtractor
 
                                     return true;
                                 };
-                                
-                                // pstrings = attr.ArgumentList.Arguments.Where(x => filter(x)).Select(x =>
-                                //     {
-                                //         if (attr.Name.ToString() == "Lexeme")
-                                //         {
-                                //              
-                                //         }
-                                //         return x.Expression.ToString();
-                                //         //return x.Expression.ExprToString();
-                                //     }).ToList();
 
                                 for (int i = 0; i < attr.ArgumentList.Arguments.Count; i++)
                                 {

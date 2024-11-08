@@ -29,10 +29,12 @@ public static class Program
     public static void Main(string[] args)
     {
         //Compile("C:\\Users\\olduh\\dev\\BlazorCslyViz\\BlazorVizView\\samples\\grammar\\indented-while.txt");
-        // Extract(@"C:\Users\olduh\dev\csly\src\samples\IndentedWhile\parser\IndentedWhileParserGeneric.cs","C:\\Users\\olduh\\dev\\csly\\src\\samples\\IndentedWhile\\parser\\IndentedWhileTokenGeneric.cs", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\indented-while.txt");
+        Extract(@"C:\Users\olduh\dev\csly\src\samples\IndentedWhile\parser\IndentedWhileParserGeneric.cs",@"C:\Users\olduh\dev\csly\src\samples\IndentedWhile\parser\IndentedWhileTokenGeneric.cs", @"C:\tmp\indented-while.txt");
+        Parse(@"C:\tmp\indented-while.txt",@"c:/tmp/indented.txt");
+        
         // Parse(@"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\grammar\indented-while.txt", @"C:\Users\olduh\dev\BlazorCslyViz\BlazorVizView\samples\source\indented-while.txt");
         // TestErrorMessages();
-        TestExpressionNodeNames();
+        // TestExpressionNodeNames();
     }
 
 

@@ -22,11 +22,11 @@ public class LexerSpecificationExtractor
             {
                 if (args.Length == 1)
                 {
-                    return $"[SingleLineComment] {name} : \"{args[0].Replace("\"","\\\"")}\";";
+                    return $"[SingleLineComment] {name} : {args[0]};";
                 }
                 else if (args.Length == 2)
                 {
-                    return $"[MultiLineComment] {name} : \"{args[0].Replace("\"","\\\"")}\" \"{args[1].Replace("\"","\\\"")}\";";
+                    return $"[MultiLineComment] {name} : {args[0]};";
                 }
 
                 break;
@@ -43,7 +43,7 @@ public class LexerSpecificationExtractor
                 }
                 else if (args.Length == 1)
                 {
-                    return $"[Hexa] {name} : \"{args[0].Replace("\"","\\\"")}\";";
+                    return $"[Hexa] {name} : {args[0]};";
                 }
 
                 break;
@@ -89,7 +89,7 @@ public class LexerSpecificationExtractor
                 b.Append("[Character] ").Append(name);
                 if (args.Length == 2)
                 {
-                    b.Append($" : \"{args[0].Replace("\"","\\\"")}\" \"{args[1].Replace("\\","\\\\").Replace("\"","\\\"")}\"");
+                    b.Append($" : {args[0]} {args[1]}");
                 }
 
                 b.Append(";");
@@ -101,7 +101,7 @@ public class LexerSpecificationExtractor
                 b.Append("[String] ").Append(name);
                 if (args.Length == 2)
                 {
-                    b.Append($" : \"{args[0].Replace("\"","\\\"")}\" \"{args[1].Replace("\\","\\\\").Replace("\"","\\\"")}\"");
+                    b.Append($" : {args[0]} {args[1]}");
                 }
 
                 b.Append(";");
@@ -109,13 +109,13 @@ public class LexerSpecificationExtractor
             }
             case GenericToken.KeyWord:
             {
-                string definitions = string.Join(" ", args.Select(x => "\"" + x.Replace("\"", "\\\"") + "\""));
+                string definitions = string.Join(" ", args);
                 
                 return $"[KeyWord] {name} : {definitions};";
             }
             case GenericToken.SugarToken:
             {
-                return $"[Sugar] {name} : \"{args[0].Replace("\"","\\\"")}\";";
+                return $"[Sugar] {name} : {args[0]};";
             }
             default:
             {
@@ -192,14 +192,14 @@ public class LexerSpecificationExtractor
         }
         else if (type == "UpTo")
         {
-            return $@"[UpTo] {name} : {string.Join(" ",args.Select(x => $@"""{x}"""))}; ";
+            return $@"[UpTo] {name} : {string.Join(" ",args)}; ";
         }
 
         if (type == "Mode")
         {
             if (args.Any())
             {
-                var t = string.Join(", ",args.Select(x => $@"""{x}"""));
+                var t = string.Join(", ",args);
                 return $@"[Mode({t})]";
             }
 
@@ -210,7 +210,7 @@ public class LexerSpecificationExtractor
         {
             if (args.Any())
             {
-                var t = string.Join(", ",args.Select(x => $@"""{x}"""));
+                var t = string.Join(", ",args);
                 return $@"[Push({t})]";
             }
 
@@ -304,10 +304,21 @@ public class LexerSpecificationExtractor
                         .Where(x => modeAttributes.Contains(x.Name.ToString()));
                     foreach (var attr in modes)
                     {
+                        if (attr.Name.ToString() == "Push")
+                        {
+                            ;
+                        }
                         string[] pstrings = new string[] { };
                         if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
                         {
-                            pstrings = attr.ArgumentList.Arguments.Select(x => x.Expression.ExprToString()).ToArray();
+                            pstrings = attr.ArgumentList.Arguments.Select(x =>
+                            {
+                                if (x.Expression.ExprToString() == nameof(ModeAttribute.DefaultLexerMode))
+                                {
+                                    return $@"""{ModeAttribute.DefaultLexerMode}""";
+                                }
+                                return x.Expression.ToString();
+                            }).ToArray();
                         }
 
                         var lexeme = Lexeme(member.Identifier.Text, attr.Name.ToString(), pstrings);
@@ -331,9 +342,13 @@ public class LexerSpecificationExtractor
                         }
                         else
                         {
-                            string[] pstrings = new string[] { };
+                            List<string> pstrings = new List<string> { };
                             if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
                             {
+                                if (attr.Name.ToString() == "Lexeme")
+                                {
+                                    ;
+                                }
                                 Predicate<AttributeArgumentSyntax> filter = e =>
                                 {
                                     if (e.NameColon != null && e.NameColon.Name.Identifier.Text == "channel")
@@ -349,11 +364,34 @@ public class LexerSpecificationExtractor
                                     return true;
                                 };
                                 
-                                pstrings = attr.ArgumentList.Arguments.Where(x => filter(x)).Select(x => x.Expression.ExprToString())
-                                    .ToArray();
+                                // pstrings = attr.ArgumentList.Arguments.Where(x => filter(x)).Select(x =>
+                                //     {
+                                //         if (attr.Name.ToString() == "Lexeme")
+                                //         {
+                                //              
+                                //         }
+                                //         return x.Expression.ToString();
+                                //         //return x.Expression.ExprToString();
+                                //     }).ToList();
+
+                                for (int i = 0; i < attr.ArgumentList.Arguments.Count; i++)
+                                {
+                                    var arg = attr.ArgumentList.Arguments[i];
+                                    if (filter(arg))
+                                    {
+                                        if (attr.Name.ToString() == "Lexeme" && i == 0)
+                                        {
+                                            pstrings.Add(arg.Expression.ExprToString());
+                                        }
+                                        else
+                                        {
+                                            pstrings.Add(arg.Expression.ToString());
+                                        }
+                                    }
+                                }
                             }
 
-                            var lexeme = Lexeme(member.Identifier.Text, attr.Name.ToString(), pstrings);
+                            var lexeme = Lexeme(member.Identifier.Text, attr.Name.ToString(), pstrings.ToArray());
                             builder.AppendLine(lexeme);
                         }
                     }

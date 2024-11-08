@@ -26,7 +26,7 @@ public class LexerSpecificationExtractor
                 }
                 else if (args.Length == 2)
                 {
-                    return $"[MultiLineComment] {name} : {args[0]};";
+                    return $"[MultiLineComment] {name} : {args[0]} {args[1]};";
                 }
 
                 break;

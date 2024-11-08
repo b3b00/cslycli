@@ -22,7 +22,7 @@ public enum CLIToken
     
     [LexemeLabel("en","string")]
     [LexemeLabel("fr","chaine de caractère")]
-    [String("\"","\\")] STRING,
+    [String("\"","\\",doEscape:false)] STRING,
 
 
     [LexemeLabel("en","comment")]

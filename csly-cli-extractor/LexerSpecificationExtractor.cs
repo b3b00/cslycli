@@ -53,7 +53,7 @@ public class LexerSpecificationExtractor
             {
                 string attr = "AlphaId";
                 if (args.Length == 1) {
-                    if (Enum.TryParse<IdentifierType>(args[0], out var idType))
+                    if (Enum.TryParse<IdentifierType>(args[0].Replace($"{nameof(IdentifierType)}.",""), out var idType))
                     {
                         
                         switch (idType)

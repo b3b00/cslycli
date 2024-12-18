@@ -643,7 +643,7 @@ public class ParserBuilder
                 new Type[1] { typeof(string[]) });
             
             CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
-                constructorInfo, new object[] { subNodeNames });
+                constructorInfo, new object[] { subNodeNames.Select(x => x == "null" ? null : x.ToString()).ToArray() });
 
             builder.SetCustomAttribute(customAttributeBuilder);
         }

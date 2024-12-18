@@ -82,7 +82,26 @@ data
 </xml>";
         var dot = builder.Getz(grammar, source, "XmlParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
         Check.That(dot.IsError).IsFalse();
-        Check.That(dot.Value[0].content).Contains("label=\"elements\"");
+        Check.That(dot.Value[0].content).Contains("label=\"elements\"")
+            .And.Not.Contains("label=\"null\"");
+
+
+    }
+    
+    [Fact]
+    public void TestGenerateWithSubNodeNames()
+    {
+        CultureInfo ci = new CultureInfo("en-US");
+        Thread.CurrentThread.CurrentCulture = ci;
+        Thread.CurrentThread.CurrentUICulture = ci;
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/xmlGrammar.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "XmlParser");
+        Check.That(model).IsOkModel();
+        var generated = _processor.GenerateParser(grammar,"xml","string");
+        Check.That(generated.Result.Parser).Contains("[SubNodeNames(null, \"elements\", null)]")
+        ;
 
 
     }

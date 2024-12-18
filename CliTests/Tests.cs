@@ -63,6 +63,31 @@ public class Tests
     
     
     [Fact]
+    public void TestSubNodeNames()
+    {
+        CultureInfo ci = new CultureInfo("en-US");
+        Thread.CurrentThread.CurrentCulture = ci;
+        Thread.CurrentThread.CurrentUICulture = ci;
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/xmlGrammar.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "XmlParser");
+        Check.That(model).IsOkModel();
+        var source = @"
+<xml>
+<node>value1</node>
+<othernode>value2</othernode>
+<!-- comment -->
+data
+</xml>";
+        var dot = builder.Getz(grammar, source, "XmlParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
+        Check.That(dot.IsError).IsFalse();
+        Check.That(dot.Value[0].content).Contains("label=\"elements\"");
+
+
+    }
+    
+    [Fact]
     public void TestGrammarWithImplicitsGenerator()
     {
         EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));

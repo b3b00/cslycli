@@ -41,13 +41,16 @@ genericLexer MinimalXmlLexer;
 parser MinimalXmlParser;
 
 -> document : misc* element misc*;
-element : OPEN[d] ID attributes SLASH[d] CLOSE[d];
-opentag : OPEN[d] ID attributes CLOSE[d];
+
+element : OPEN[d] ID attribute* SLASH[d] CLOSE[d];
+opentag : OPEN[d] ID attribute* CLOSE[d];
 closetag : OPEN[d] SLASH[d] ID CLOSE[d];
+
+@subNodes(null,elements,null);
 element : opentag [element|pi|comment|content]* closetag;
 misc : [comment | pi | content];
 comment : COMMENT;
-pi : OPEN_PI[d] ID attributes CLOSE_PI[d];
-attributes : attribute*;
+pi : OPEN_PI[d] ID attribute* CLOSE_PI[d];
 attribute: ID EQUALS[d] VALUE;
 content : CONTENT;
+

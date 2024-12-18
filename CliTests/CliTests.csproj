@@ -32,7 +32,7 @@
 
     <ItemGroup>
         <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
-        <PackageReference Include="sly" Version="3.4.7" />
+        <PackageReference Include="sly" Version="3.4.8" />
     </ItemGroup>
     
     <ItemGroup>
@@ -74,6 +74,12 @@
       <EmbeddedResource Include="data\whileGrammar.txt" />
       <None Remove="data\optionGrammar.txt" />
       <EmbeddedResource Include="data\optionGrammar.txt" />
+      <None Remove="data\xmlGrammar.txt" />
+      <EmbeddedResource Include="data\xmlGrammar.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="data\csproj.csproj" />
     </ItemGroup>
 
 </Project>

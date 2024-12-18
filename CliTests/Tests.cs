@@ -39,6 +39,28 @@ public class Tests
 
     }
     
+    [Fact]
+    public void TestCsproj()
+    {
+        CultureInfo ci = new CultureInfo("en-US");
+        Thread.CurrentThread.CurrentCulture = ci;
+        Thread.CurrentThread.CurrentUICulture = ci;
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/xmlGrammar.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "XmlParser");
+
+        var source = fs.ReadAllText("/data/csproj.csproj");
+        
+        Check.That(model).IsOkModel();
+        var dot = builder.Getz(grammar, source, "XmlParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
+        Check.That(dot.IsError).IsTrue();
+        var errors = dot.Error;
+        Check.That(errors[0]).Contains("unexpected end of stream");
+        
+
+    }
+    
     
     [Fact]
     public void TestGrammarWithImplicitsGenerator()

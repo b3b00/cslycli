@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+        <RootNamespace>CslyViz</RootNamespace>
+        <Version>2.0.6</Version>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <!--RunAOTCompilation>true</RunAOTCompilation-->
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.6" PrivateAssets="all" />
+        <PackageReference Include="BlazorDialog" Version="2.3.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0" />
+        <PackageReference Include="SharpCoreFileSystem" Version="1.1.2" />
+        <PackageReference Include="csly-cli-api" Version="1.6.2" />
+        <PackageReference Include="sly" Version="3.4.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ServiceWorker Include="wwwroot/service-worker.js" PublishedContent="wwwroot/service-worker.published.js" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="logic/" />
+        <Folder Include="wwwroot/samples/grammar/" />
+        <Folder Include="wwwroot/samples/source/" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Remove="wwwroot/css/loading.css" />
+        <Content Remove="Pages/Home.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Remove="wwwroot/samples/grammar/expression.txt" />
+        <EmbeddedResource Include="samples/grammar/expression.txt" />
+        <EmbeddedResource Include="samples/grammar/indented-while.txt" />
+        <EmbeddedResource Include="samples/grammar/json.txt" />
+        <EmbeddedResource Include="samples/grammar/template.txt" />
+        <EmbeddedResource Include="samples/grammar/while.txt" />
+        <EmbeddedResource Include="samples/grammar/xml.txt" />
+        <EmbeddedResource Include="samples/source/expression.txt" />
+        <EmbeddedResource Include="samples/source/indented-while.txt" />
+        <EmbeddedResource Include="samples/source/json.txt" />
+        <EmbeddedResource Include="samples/source/template.txt" />
+        <EmbeddedResource Include="samples/source/while.txt" />
+        <EmbeddedResource Include="samples/source/xml.txt" />
+        <Content Remove="wwwroot/samples/grammar/indented-while.txt" />
+        <Content Remove="wwwroot/samples/grammar/json.txt" />
+        <Content Remove="wwwroot/samples/grammar/template.txt" />
+        <Content Remove="wwwroot/samples/grammar/while.txt" />
+        <Content Remove="wwwroot/samples/grammar/xml.txt" />
+        <Content Remove="wwwroot/samples/source/expression.txt" />

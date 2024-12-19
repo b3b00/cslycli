@@ -115,7 +115,11 @@ public class LexerDecompiler
                     
                     if (lexem.GenericTokenParameters.Any())
                     {
-                        var args =lexem.GenericTokenParameters.Select(x => $@"""{x.Replace("'", "''")}""").ToList();
+                        var args =lexem.GenericTokenParameters.Take(2).ToList();
+                        if (args[0] == "\"" && args[1] == "\\")
+                        {
+                            return $"[String] {name};";
+                        }
                         return $"[String] {name} : {string.Join(" ", args)};";
                     }
                     return $"[String] {name};";
@@ -148,9 +152,8 @@ public class LexerDecompiler
 
                 foreach (Enum value in values)
                 {
-
                     var modeAttributes = value.GetAttributesOfType<ModeAttribute>();
-                    if (modeAttributes.Any())
+                    if (modeAttributes != null && modeAttributes.Any())
                     {
                         foreach (var modeAttribute in modeAttributes)
                         {
@@ -164,7 +167,7 @@ public class LexerDecompiler
                     }
 
                     var pushAttributes = value.GetAttributesOfType<PushAttribute>();
-                    if (pushAttributes.Any())
+                    if (pushAttributes != null && pushAttributes.Any())
                     {
                         foreach (var pushAttribute in pushAttributes)
                         {
@@ -174,7 +177,7 @@ public class LexerDecompiler
                     }
                     
                     var popAttributes = value.GetAttributesOfType<PopAttribute>();
-                    if (popAttributes.Any())
+                    if (popAttributes != null && popAttributes.Any())
                     {
                         foreach (var popAttribute in popAttributes)
                         {
@@ -183,7 +186,7 @@ public class LexerDecompiler
                     }
                     
                     var labelAttributes = value.GetAttributesOfType<LexemeLabelAttribute>();
-                    if (labelAttributes.Any())
+                    if (labelAttributes != null && labelAttributes.Any())
                     {
                         foreach (var labelAttribute in labelAttributes)
                         {
@@ -192,15 +195,32 @@ public class LexerDecompiler
                         }
                     }
                     
-                    var attributes = value.GetAttributesOfType<LexemeAttribute>();
-                    if (attributes.Any())
+                    var lexemeAttributes = value.GetAttributesOfType<LexemeAttribute>();
+                    if (lexemeAttributes!= null && lexemeAttributes.Any())
                     {
-                        foreach (var attribute in attributes)
+                        foreach (var attribute in lexemeAttributes)
                         {
                             var lexem = (attribute as LexemeAttribute);
                             builder.AppendLine(GetToken(value.ToString(), lexem));    
                         }
                         
+                    }
+                    
+                    var commentAttributes = value.GetAttributesOfType<CommentAttribute>();
+                    if (commentAttributes != null && commentAttributes.Any())
+                    {
+                        foreach (var commentAttribute in commentAttributes)
+                        {
+                            var comment = commentAttribute as CommentAttribute;
+                            if (!string.IsNullOrEmpty(comment.SingleLineCommentStart))
+                            {
+                                builder.AppendLine($@"[SingleLineComment] {value.ToString()} : ""{comment.SingleLineCommentStart}"";");
+                            }
+                            else
+                            {
+                                builder.AppendLine($@"[MultiLineComment] {value.ToString()} : ""{comment.MultiLineCommentStart}"" ""{comment.MultiLineCommentEnd}"";");
+                            }
+                        }
                     }
 
                     builder.AppendLine();

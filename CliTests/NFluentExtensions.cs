@@ -1,7 +1,10 @@
 using clsy.cli.builder;
+using csly_cli_api;
 using csly.cli.model;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
 using NFluent;
 using NFluent.Extensibility;
+using NFluent.Kernel;
 using sly.buildresult;
 using sly.lexer;
 using sly.parser;
@@ -26,14 +29,88 @@ public static class NFluentParseExtensions
             return lines;
         }
         
-        public static ICheckLink<ICheck<Result<Model,List<string>>>> IsOkModel(this ICheck<Result<Model,List<string>>> context) 
+        
+        
+        public static ICheckLink<ICheck<Result<Model,List<string>>>> IsOkModel(this ICheck<Result<Model,List<string>>> context) => IsOkResult<Model>(context);
+        
+        public static ICheckLink<ICheck<Result<Model,List<string>>>> IsNotOkModel(this ICheck<Result<Model,List<string>>> context) => IsNotOkResult<Model>(context);
+        
+        
+        public static ICheckLink<ICheck<Result<T,List<string>>>> IsNotOkResult<T>(this ICheck<Result<T,List<string>>> context) 
         {
-            ExtensibilityHelper.BeginCheck(context)
-                .FailWhen(sut => sut.IsError, $"parse failed")
-                .FailWhen(sut => sut.Value == null, "parse result is null")
-                .OnNegate("model expected to be wrong.")
-                .EndCheck();
-            return ExtensibilityHelper.BuildCheckLink(context);
+            var checker = ExtensibilityHelper.ExtractChecker(context);
+            var c = checker.ExecuteCheck(() =>
+                {
+                    var sut = checker.Value;
+                    if (!sut.IsError)
+                    {
+                        var errorMessage = @$"result should be KO";
+                        throw new FluentCheckException(errorMessage);
+                    }
+                },
+                "result was expected to be ok, but is ko."
+            );
+            
+            
+            return c;
+        }
+        
+        
+        public static ICheckLink<ICheck<Result<T,List<string>>>> IsOkResult<T>(this ICheck<Result<T,List<string>>> context) 
+        {
+            var checker = ExtensibilityHelper.ExtractChecker(context);
+            var c= checker.ExecuteCheck(() =>
+                {
+                    var sut = checker.Value;
+                    if (sut.IsError)
+                    {
+                        var errorMessage = @$"result contains errors : {string.Join("\n", sut.Error)}";
+                        throw new FluentCheckException(errorMessage);
+                    }
+                },
+
+                "result was expected to be wrong, but is ok");
+            
+            
+            return c;
+        }
+        
+        public static ICheckLink<ICheck<CliResult<T>>> IsOkCliResult<T>(this ICheck<CliResult<T>> context) 
+        {
+            var checker = ExtensibilityHelper.ExtractChecker(context);
+            var c= checker.ExecuteCheck(() =>
+            {
+                var sut = checker.Value;
+                if (sut.IsError)
+                {
+                    var errorMessage = @$"result contains errors : {string.Join("\n", sut.Errors)}";
+                    throw new FluentCheckException(errorMessage);
+                }
+            },
+
+            "result was expected to be wrong, but is ok");
+            
+            
+            return c;
+        }
+        
+        public static ICheckLink<ICheck<CliResult<T>>> IsNotOkCliResult<T>(this ICheck<CliResult<T>> context) 
+        {
+            var checker = ExtensibilityHelper.ExtractChecker(context);
+            var c= checker.ExecuteCheck(() =>
+                {
+                    var sut = checker.Value;
+                    if (!sut.IsError)
+                    {
+                        var errorMessage = @$"result is ok but should be wrong";
+                        throw new FluentCheckException(errorMessage);
+                    }
+                },
+
+                "result was expected to be ok, but is wronh");
+            
+            
+            return c;
         }
 
         

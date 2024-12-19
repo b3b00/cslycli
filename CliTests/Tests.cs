@@ -6,6 +6,7 @@ using clsy.cli.builder.parser;
 using csly_cli_api;
 using csly.cli.model.parser;
 using csly.cli.model.tree;
+using decompiler;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NFluent;
@@ -36,7 +37,7 @@ public class Tests
         
         Check.That(model).IsOkModel();
         var dot = builder.Getz(grammar, "2 + 2", "MyParser1", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
-        Check.That(dot.IsError).IsFalse();
+        Check.That(dot).IsOkResult();
 
     }
     
@@ -55,7 +56,7 @@ public class Tests
         
         Check.That(model).IsOkModel();
         var dot = builder.Getz(grammar, source, "XmlParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
-        Check.That(dot.IsError).IsTrue();
+        Check.That(dot).IsNotOkResult();
         var errors = dot.Error;
         Check.That(errors[0]).Contains("unexpected end of stream");
         
@@ -82,7 +83,7 @@ public class Tests
 data
 </xml>";
         var dot = builder.Getz(grammar, source, "XmlParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
-        Check.That(dot.IsError).IsFalse();
+        Check.That(dot).IsOkResult();
         Check.That(dot.Value[0].content).Contains("label=\"elements\"")
             .And.Not.Contains("label=\"null\"");
 
@@ -121,12 +122,12 @@ data
         var generated = _processor.GenerateParser(grammar,"xml","string");
         Check.That(generated.Result.Parser).Contains("[SubNodeNames(null, \"elements\", null)]");
         var extracted =_processor.ExtractGrammar(generated.Result.Parser, generated.Result.Lexer);
-        Check.That(extracted.IsError).IsFalse();
+        Check.That(extracted).IsOkCliResult();
         var spec = extracted.Result;
         Check.That(spec).IsNotNull().And.IsNotEmpty();
         Check.That(spec).Contains("@subNodes(null, elements, null);");
         var compiledExtraction = _processor.CompileModel(spec);
-        Check.That(compiledExtraction.IsError).IsFalse();
+        Check.That(compiledExtraction).IsOkCliResult();
         var parserModel = compiledExtraction.Result.ParserModel;
         Check.That(parserModel).IsNotNull();
         var checkedRule = parserModel.Rules.FirstOrDefault(x => x.Attributes.Any(y => y.Key == "subNodes"));
@@ -139,25 +140,37 @@ data
     }
 
     [Fact]
-    public void TestDecompileXml()
+    public void TestCompileThenDecompileXml()
     {
         CultureInfo ci = new CultureInfo("en-US");
         Thread.CurrentThread.CurrentCulture = ci;
         Thread.CurrentThread.CurrentUICulture = ci;
         EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
-        byte[] assemblyBytes = null;
-        using (var stream = fs.OpenFile("/data/assemblies/XML.dll",FileAccess.Read))
-        {
-            assemblyBytes = stream.ReadAllBytes();
-        }
+        var grammar = fs.ReadAllText("/data/xmlGrammar.txt");
+        
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "MinimalXmlParser");
+        Check.That(model).IsOkModel();
+        var errors = model.Error;
 
-        Check.That(assemblyBytes).Not.IsNullOrEmpty();   
+        var p = builder.BuildParser(model);
+        Check.That(p.lexerType).IsNotNull();
+        Check.That(p.parserType).IsNotNull();
+
+        var decompiler = new Decompiler();
+        var decompiled = decompiler.Decompile(p.lexerType, p.parserType);
+        Check.That(decompiled).IsNotNull().And.IsNotEmpty();
+        var rc = builder.CompileModel(decompiled, "MinimalXmlParser");
+        Check.That(rc).IsOkModel();
         
-        var decompiled =   _processor.Decompile("XML.MinimalXmlLexer", "XML.MinimalXmlParser", assemblyBytes);
-        Check.That(decompiled.IsOK).IsTrue();
-        Check.That(decompiled.Result).Not.IsNullOrEmpty();
-        Check.That(decompiled.Result).Contains("@subNodes(null, elements, null);");
-        
+        var parserModel = rc.Value.ParserModel;
+        Check.That(parserModel).IsNotNull();
+        var checkedRule = parserModel.Rules.FirstOrDefault(x => x.Attributes.Any(y => y.Key == "subNodes"));
+        Check.That(checkedRule).IsNotNull();
+        var attributes = checkedRule.Attributes.FirstOrDefault(x => x.Key == "subNodes").Value;
+        Check.That(attributes).IsNotNull().And.IsSingle();
+        var parameters = attributes[0].AttributeValues;
+        Check.That(parameters).IsEqualTo(new []{"null","elements","null"});
         
     }
     
@@ -185,7 +198,7 @@ data
         var model = builder.CompileModel(grammar, "MyParser1");
         Check.That(model).IsOkModel();
         var dot = builder.Getz(grammar, "2 + 2", "MyParser1", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
-        Check.That(dot.IsError).IsFalse();
+        Check.That(dot).IsOkResult();
 
     }
     
@@ -199,7 +212,7 @@ data
         Check.That(model).IsOkModel();
         
         var dot = builder.Getz(grammar, "(a:=0; while a < 10 do (print a; a := a +1 ))", "WhileParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
-        Check.That(dot.IsError).IsFalse();
+        Check.That(dot).IsOkResult();
     }
     
     [Fact]
@@ -226,7 +239,7 @@ data
         var grammar = fs.ReadAllText("/data/badGrammar.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "MyParser1");
-        Check.That(model.IsError).IsTrue();
+        Check.That(model).IsNotOkModel();
         var errors = model.Error;
         Check.That(errors).CountIs(1);
         var error = errors[0];
@@ -245,7 +258,7 @@ data
         Check.That(model).IsOkModel();
         Check.That(model.Value).IsNotNull();
         var json = builder.Getz(grammar, "2", "MinimalParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToJson)});
-        Check.That(json.IsError).IsFalse();
+        Check.That(json).IsOkResult();
         var content = json.Value.First().content;
         Assert.NotNull(content);
         Assert.NotEmpty(content);
@@ -279,7 +292,7 @@ data
         var grammar = fs.ReadAllText("/data/minimalGrammar.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "MinimalParser");
-        Check.That(model.IsError).IsFalse();
+        Check.That(model).IsOkResult();
         Check.That(model.Value).IsNotNull();
         var parserGenerator = new ParserGenerator();
         var source = parserGenerator.GenerateParser(model.Value, "ns","int");
@@ -297,28 +310,15 @@ data
         var grammar = fs.ReadAllText("/data/optionGrammar.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "P");
-        if (model.IsError)
-        {
-            model.Error.ForEach(Console.WriteLine);
-        }
-
         Check.That(model).IsOkModel();
         var dot = builder.Getz(grammar, "a b", "grammarX", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
-        if (dot.IsError)
-        {
-            dot.Error.ForEach(x => Debug.WriteLine(x));
-        }
-        Check.That(dot.IsError).IsFalse();
+        Check.That(dot).IsOkResult();
         var content = dot.Value.First().content;
         Assert.NotNull(content);
         Assert.NotEmpty(content);
         
         dot = builder.Getz(grammar, "a ", "grammarX", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});
-        if (dot.IsError)
-        {
-            dot.Error.ForEach(x => Debug.WriteLine(x));
-        }
-        Check.That(dot.IsError).IsFalse();
+        Check.That(dot).IsOkResult();
         content = dot.Value.First().content;
         Assert.NotNull(content);
         Assert.NotEmpty(content);
@@ -332,18 +332,10 @@ data
         var grammar = fs.ReadAllText("/data/grammarX.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "grammarX");
-        if (model.IsError)
-        {
-            model.Error.ForEach(Console.WriteLine);
-        }
-
         Check.That(model).IsOkModel();
         var json = builder.Getz(grammar, "( * / - + ]", "grammarX", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToJson)});
-        if (json.IsError)
-        {
-            json.Error.ForEach(x => Debug.WriteLine(x));
-        }
-        Check.That(json.IsError).IsFalse();
+        
+        Check.That(json).IsOkResult();
         var content = json.Value.First().content;
         Assert.NotNull(content);
         Assert.NotEmpty(content);
@@ -412,7 +404,7 @@ parser MinimalParser;
         var lexer = generator.GenerateLexer(model.Value.LexerModel, "namespace");
         ;
         var json = builder.Getz(grammar, "2024.04.23", "MyDateParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
-        Check.That(json.IsError).IsFalse();
+        Check.That(json).IsOkResult();
         var tree = JsonConvert.DeserializeObject<JObject>(json.Value[0].content);
         var firstToken = tree.SelectToken("$.Children[0].Token");
         Check.That(firstToken).IsNotNull();
@@ -448,9 +440,9 @@ parser MinimalParser;
         var lexer = generator.GenerateLexer(model.Value.LexerModel, "namespace");
         ;
         var json = builder.Getz(grammar, "hello world", "MyParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
-        Check.That(json.IsError).IsFalse();
+        Check.That(json).IsOkResult();
         json = builder.Getz(grammar, "HELLO woRld", "MyParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
-        Check.That(json.IsError).IsFalse();
+        Check.That(json).IsOkResult();
         
     }
     
@@ -465,7 +457,7 @@ parser MinimalParser;
         Check.That(model).IsOkModel();
         Check.That(model.Value).IsNotNull();
         var json = builder.Getz(grammar, "1 / 2 / 3 + 4", "ExprParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
-        Check.That(json.IsError).IsFalse();
+        Check.That(json).IsOkResult();
         var content = json.Value.First().content;
         Assert.NotNull(content);
         Assert.NotEmpty(content);
@@ -478,7 +470,7 @@ parser MinimalParser;
         var grammar = fs.ReadAllText("/data/noRoot.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "NoRootParser");
-        Check.That(model).Not.IsOkModel();
+        Check.That(model).IsNotOkModel();
         Check.That(model.Error).Contains("model have no root rule !");
     }
     
@@ -489,7 +481,7 @@ parser MinimalParser;
         var grammar = fs.ReadAllText("/data/missingReference.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "MissingReferenceParser");
-        Check.That(model).Not.IsOkModel();
+        Check.That(model).IsNotOkModel();
         Check.That(model.Error).CountIs(4);
     }
     
@@ -500,7 +492,7 @@ parser MinimalParser;
         var grammar = fs.ReadAllText("/data/leftRecursive.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "LeftRecursiveParser");
-        Check.That(model).Not.IsOkModel();
+        Check.That(model).IsNotOkModel();
         Check.That(model.Error).CountIs(2);
     }
 
@@ -522,7 +514,7 @@ parser SameKeywordParser;
 ";
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "SameKeywordParser");
-        Check.That(model).Not.IsOkModel();
+        Check.That(model).IsNotOkModel();
         Check.That(model.Error).CountIs(1);
         Check.That(model.Error[0]).Contains("hello");
         Check.That(model.Error[0]).Contains("HELLO");
@@ -544,7 +536,7 @@ parser SameKeywordParser;
 ";
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "SameKeywordParser");
-        Check.That(model).Not.IsOkModel();
+        Check.That(model).IsNotOkModel();
         Check.That(model.Error).CountIs(1);
         Check.That(model.Error[0]).Contains(".");
         Check.That(model.Error[0]).Contains("DOT");
@@ -760,12 +752,12 @@ parser p;
 ";
         _processor.CompileModel(grammar);
         var parseResult = _processor.GetSyntaxTree(grammar, "++2");
-        Check.That(parseResult.IsError).IsTrue();
+        Check.That(parseResult).IsNotOkCliResult();
         Check.That(parseResult.Errors).IsSingle();
         var error = parseResult.Errors[0];
         Check.That(error).Contains(ErrorCodes.PARSER_MISSING_OPERAND.ToString());
         var compilationResult = _processor.Compile(grammar);
-        Check.That(compilationResult.IsError).IsTrue();
+        Check.That(compilationResult).IsNotOkCliResult();
         Check.That(compilationResult.Errors).IsSingle();
         error = compilationResult.Errors[0];
         Check.That(error).Contains(ErrorCodes.PARSER_MISSING_OPERAND.ToString());
@@ -925,7 +917,7 @@ parser p;
         var grammar = fs.ReadAllText("/data/indentedWhile.txt");
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "IndentedWhileGrammar");
-        Check.That(model.IsError).IsFalse();
+        Check.That(model).IsOkResult();
         Check.That(model.Value).IsNotNull();
 
         string program = @"
@@ -946,7 +938,7 @@ print fstring
 return 100     
 ";
         var t = builder.Getz(grammar,program,"indentedWhileGrammar",new List<(string format, SyntaxTreeProcessor processor)>() {{("DOT",ParserBuilder.SyntaxTreeToDotGraph)}});
-        Check.That(t.IsError).IsFalse();
+        Check.That(t).IsOkResult();
     }
         
 }

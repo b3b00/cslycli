@@ -88,6 +88,7 @@ public class ParserDecompiler
             var operands = method.GetAttributes<OperandAttribute>();
             var operations = method.GetAttributes<OperationAttribute>();
             var nodeNames = method.GetAttributes<NodeNameAttribute>();
+            var subNodeNamesAttributes = method.GetAttributes<SubNodeNamesAttribute>();
 
             foreach (var operation in operations)
             {
@@ -102,16 +103,23 @@ public class ParserDecompiler
                 nodeName = nodeNames[0].Name;
             }
             
+            string[] subNodeNames = null;
+            if (subNodeNamesAttributes != null && subNodeNamesAttributes.Any())
+            {
+                subNodeNames = subNodeNamesAttributes[0].Names;
+            }
+            
             foreach (var production in productions)
             {
-                builder.AppendLine(GetProduction(production, isOperand, root, nodeName));
+                builder.AppendLine(GetProduction(production, isOperand, root, nodeName, subNodeNames));
             }
         }
 
         return builder.ToString();
     }
 
-    private string GetProduction(ProductionAttribute production, bool isOperand, string? rootRule, string? nodeName)
+    private string GetProduction(ProductionAttribute production, bool isOperand, string? rootRule, string? nodeName,
+        string[]? subNodeNames)
     {
         var split =  production.RuleString.Split(new[] { ':' });
         var nonTerminal = split[0].Trim();
@@ -120,6 +128,12 @@ public class ParserDecompiler
         if (!string.IsNullOrEmpty(nodeName))
         {
             builder.AppendLine($@"@node(""{nodeName}"");");
+        }
+
+        if (subNodeNames != null)
+        {
+            var nodeNames = string.Join(", ", subNodeNames);
+            builder.AppendLine($@"@subNodes({nodeNames});");
         }
         
         builder.AppendLine($"{(isRoot ? "-> ":"")}{(isOperand ? "[Operand] ":"")}{production.RuleString};");

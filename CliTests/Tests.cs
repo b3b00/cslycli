@@ -52,7 +52,7 @@ public class Tests
         var builder = new ParserBuilder();
         var model = builder.CompileModel(grammar, "XmlParser");
 
-        var source = fs.ReadAllText("/data/csproj.csproj");
+        var source = fs.ReadAllText("/data/csproj.project");
         
         Check.That(model).IsOkModel();
         var dot = builder.Getz(grammar, source, "XmlParser", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT",ParserBuilder.SyntaxTreeToDotGraph)});

@@ -76,10 +76,8 @@
       <EmbeddedResource Include="data\optionGrammar.txt" />
       <None Remove="data\xmlGrammar.txt" />
       <EmbeddedResource Include="data\xmlGrammar.txt" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="data\csproj.csproj" />
+      <None Remove="data\csproj.project" />
+      <EmbeddedResource Include="data\csproj.project" />
     </ItemGroup>
 
 </Project>

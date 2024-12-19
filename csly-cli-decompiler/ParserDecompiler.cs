@@ -132,7 +132,7 @@ public class ParserDecompiler
 
         if (subNodeNames != null)
         {
-            var nodeNames = string.Join(", ", subNodeNames);
+            var nodeNames = string.Join(", ", subNodeNames.Select(x => x ?? "null"));
             builder.AppendLine($@"@subNodes({nodeNames});");
         }
         

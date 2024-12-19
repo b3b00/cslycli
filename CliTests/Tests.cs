@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NFluent;
 using SharpFileSystem.FileSystems;
+using SharpFileSystem.IO;
 using sly.buildresult;
 using sly.lexer;
 using Xunit;
@@ -135,6 +136,29 @@ data
         var parameters = attributes[0].AttributeValues;
         Check.That(parameters).IsEqualTo(new []{"null","elements","null"});
     
+    }
+
+    [Fact]
+    public void TestDecompileXml()
+    {
+        CultureInfo ci = new CultureInfo("en-US");
+        Thread.CurrentThread.CurrentCulture = ci;
+        Thread.CurrentThread.CurrentUICulture = ci;
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        byte[] assemblyBytes = null;
+        using (var stream = fs.OpenFile("/data/assemblies/XML.dll",FileAccess.Read))
+        {
+            assemblyBytes = stream.ReadAllBytes();
+        }
+
+        Check.That(assemblyBytes).Not.IsNullOrEmpty();   
+        
+        var decompiled =   _processor.Decompile("XML.MinimalXmlLexer", "XML.MinimalXmlParser", assemblyBytes);
+        Check.That(decompiled.IsOK).IsTrue();
+        Check.That(decompiled.Result).Not.IsNullOrEmpty();
+        Check.That(decompiled.Result).Contains("@subNodes(null, elements, null);");
+        
+        
     }
     
     [Fact]

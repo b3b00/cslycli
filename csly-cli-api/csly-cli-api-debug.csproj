@@ -23,6 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder-debug.csproj"  />
+      <ProjectReference Include="..\csly-cli-decompiler\csly-cli-decompiler-debug.csproj" />
       <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor-debug.csproj" />
       <ProjectReference Include="..\csly-cli-model\csly-cli-model-debug.csproj"  />
         <ProjectReference Include="..\csly-cli-parser\csly-cli-parser-debug.csproj"  />

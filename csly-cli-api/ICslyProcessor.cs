@@ -72,4 +72,13 @@ public interface ICslyProcessor
     CliResult<ISyntaxNode> GetSyntaxTree(string grammar, string source);
 
 
+    /// <summary>
+    /// Extracts a parser sepcification from a .net assembly content
+    /// </summary>
+    /// <param name="lexerFqn">lexer fully qualified name</param>
+    /// <param name="parserFqn">parser fully qualified name</param>
+    /// <param name="assemblyBytes">assembly content</param>
+    /// <returns></returns>
+    CliResult<string> Decompile(string lexerFqn, string parserFqn, byte[] assemblyBytes);
+
 }

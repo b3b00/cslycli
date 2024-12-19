@@ -5,6 +5,7 @@ using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using csly.cli.model;
 using csly.cli.model.tree;
+using decompiler;
 using specificationExtractor;
 
 namespace csly_cli_api;
@@ -13,10 +14,13 @@ public class CslyProcessor : ICslyProcessor
 {
 
     private ParserBuilder _parserBuilder;
+
+    private Decompiler _decompiler;
     
     public CslyProcessor()
     {
         _parserBuilder = new ParserBuilder();
+        _decompiler = new Decompiler();
     }
     
     /// <summary>
@@ -330,5 +334,18 @@ namespace {nameSpace} {{
 
         return new CliResult<ISyntaxNode>(model.Error.Select(x => $"grammar error : {x}").ToList());
 
+    }
+
+    public CliResult<string> Decompile(string lexerFqn, string parserFqn, byte[] assemblyBytes)
+    {
+        try
+        {
+            var decompilationResult = _decompiler.Decompile(lexerFqn, parserFqn, assemblyBytes);
+            return new CliResult<string>(decompilationResult);
+        }
+        catch (Exception ex)
+        {
+            return new CliResult<string>(new List<string>() {ex.Message+"\n"+ex.StackTrace});
+        }
     }
 }

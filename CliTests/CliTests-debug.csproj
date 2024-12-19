@@ -76,6 +76,12 @@
       </EmbeddedResource>
       <None Remove="data\xmlGrammar.txt" />
       <EmbeddedResource Include="data\xmlGrammar.txt" />
+      <None Remove="data\assemblies\XML.dll" />
+      <EmbeddedResource Include="data\assemblies\XML.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="data\assemblies\" />
     </ItemGroup>
 
 </Project>

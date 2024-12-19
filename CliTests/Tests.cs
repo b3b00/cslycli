@@ -107,6 +107,37 @@ data
     }
     
     [Fact]
+    public void TestGenerateThenExtractWithSubNodeNames()
+    {
+        CultureInfo ci = new CultureInfo("en-US");
+        Thread.CurrentThread.CurrentCulture = ci;
+        Thread.CurrentThread.CurrentUICulture = ci;
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/xmlGrammar.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "XmlParser");
+        Check.That(model).IsOkModel();
+        var generated = _processor.GenerateParser(grammar,"xml","string");
+        Check.That(generated.Result.Parser).Contains("[SubNodeNames(null, \"elements\", null)]");
+        var extracted =_processor.ExtractGrammar(generated.Result.Parser, generated.Result.Lexer);
+        Check.That(extracted.IsError).IsFalse();
+        var spec = extracted.Result;
+        Check.That(spec).IsNotNull().And.IsNotEmpty();
+        Check.That(spec).Contains("@subNodes(null, elements, null);");
+        var compiledExtraction = _processor.CompileModel(spec);
+        Check.That(compiledExtraction.IsError).IsFalse();
+        var parserModel = compiledExtraction.Result.ParserModel;
+        Check.That(parserModel).IsNotNull();
+        var checkedRule = parserModel.Rules.FirstOrDefault(x => x.Attributes.Any(y => y.Key == "subNodes"));
+        Check.That(checkedRule).IsNotNull();
+        var attributes = checkedRule.Attributes.FirstOrDefault(x => x.Key == "subNodes").Value;
+        Check.That(attributes).IsNotNull().And.IsSingle();
+        var parameters = attributes[0].AttributeValues;
+        Check.That(parameters).IsEqualTo(new []{"null","elements","null"});
+    
+    }
+    
+    [Fact]
     public void TestGrammarWithImplicitsGenerator()
     {
         EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));

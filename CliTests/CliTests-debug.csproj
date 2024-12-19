@@ -31,7 +31,6 @@
 
     <ItemGroup>
                 <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />
-<!--        <PackageReference Include="sly" Version="3.2.7"/>-->
     </ItemGroup>
     
     <ItemGroup>
@@ -75,6 +74,9 @@
       <EmbeddedResource Include="data\indentedWhile.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
+      <None Remove="data\xmlGrammar.txt" />
+      <EmbeddedResource Include="data\xmlGrammar.txt" />
+      <None Remove="data\assemblies\XML.dll" />
     </ItemGroup>
 
 </Project>

@@ -26,7 +26,13 @@ public class Decompiler
     [ExcludeFromCodeCoverage]
     public string Decompile(string lexerFqn, string parserFqn, string assemblyPath)
     {
-        var assembly = Assembly.LoadFrom(assemblyPath);
+        var assemblyBytes = File.ReadAllBytes(assemblyPath);
+        return Decompile(lexerFqn, parserFqn, assemblyBytes);
+    }
+
+    public string Decompile(string lexerFqn, string parserFqn, byte[] assemblyBytes)
+    {
+        var assembly = Assembly.Load(assemblyBytes);
         var lexerType = assembly.GetType(lexerFqn);
         var parserType = assembly.GetType(parserFqn);
         return Decompile(lexerType, parserType);

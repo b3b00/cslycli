@@ -13,8 +13,7 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="sly" Version="3.4.7" />
-<!--      <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
+        <PackageReference Include="sly" Version="3.4.9" />
     </ItemGroup>
 
 

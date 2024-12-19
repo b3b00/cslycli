@@ -145,6 +145,11 @@ namespace {nameSpace} {{
         {
             builder.AppendLine($@"[NodeName(""{nodeName}"")]");
         }
+        if (rule.TryGetSubNodeNames(out var subNodeNames))
+        {
+            var values = subNodeNames.Select(n => n != "null" ? $"\"{n}\"" : "null");
+            builder.AppendLine($@"[SubNodeNames({string.Join(",",values)})]");
+        }
     }
 
 

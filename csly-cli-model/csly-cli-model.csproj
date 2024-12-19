@@ -8,8 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
-        <PackageReference Include="sly" Version="3.4.7" />
+        <PackageReference Include="sly" Version="3.4.9" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="System.Collections.Immutable" Version="9.0.0"/>

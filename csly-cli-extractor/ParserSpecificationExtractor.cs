@@ -38,13 +38,18 @@ public class ParserSpecificationExtractor
     }
     
     
-    private string Rule(string type, string rootRule,string nodeName, params string[] args)
+    private string Rule(string type, string rootRule,string nodeName, string[] subNodeNames, params string[] args)
     {
 
         StringBuilder builder = new StringBuilder();
         if (!string.IsNullOrEmpty(nodeName))
         {
             builder.AppendLine($@"@node(""{nodeName}"");");
+        }
+        if (subNodeNames != null && subNodeNames.Length > 0)
+        {
+            var nodeNames = string.Join(", ", subNodeNames);
+            builder.AppendLine($@"@subNodes({nodeNames});");
         }
         // Production
         if (type == "Production")
@@ -143,6 +148,20 @@ public class ParserSpecificationExtractor
                         nodeName = nodeNameAttribute.ArgumentList.Arguments.First().Expression.ExprToString();
                     }
                     
+                    var subNodeNamesAttribute = allAttributes.FirstOrDefault(x => x.Name.ToString().Contains("SubNodeNames"));
+                    string[] subNodeNames = null;
+                    if (subNodeNamesAttribute != null)
+                    {
+                        subNodeNames = subNodeNamesAttribute.ArgumentList.Arguments.Select(x =>
+                        {
+                            if (x.Expression is LiteralExpressionSyntax literal && literal.Kind() == SyntaxKind.NullLiteralExpression)
+                            {
+                                return "null";
+                            }
+                            return x.Expression.ExprToString();
+                        }).ToArray();
+                    }
+                    
                     foreach (var attr in attributes.SelectMany(x => x.Attributes))
                     {
                         if (attr.Name.ToString().Contains("Operand"))
@@ -150,6 +169,10 @@ public class ParserSpecificationExtractor
                             continue;
                         }
                         if (attr.Name.ToString().Contains("NodeName"))
+                        {
+                            continue;
+                        }
+                        if (attr.Name.ToString().Contains("SubNodeNames"))
                         {
                             continue;
                         }
@@ -164,7 +187,7 @@ public class ParserSpecificationExtractor
                             builder.Append("[Operand] ");
                         }
 
-                        builder.AppendLine(Rule(attr.Name.ToString(),rootRule, nodeName,pstrings));
+                        builder.AppendLine(Rule(attr.Name.ToString(),rootRule, nodeName, subNodeNames, pstrings));
                     }
                 }
             }

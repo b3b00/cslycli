@@ -601,6 +601,7 @@ public class ParserBuilder
         }
         _AddProductionAttribute(methodBuilder, rule.RuleString);
         _AddNodeNameAttribute(methodBuilder, rule);
+        _AddSubNodeNamesAttribute(methodBuilder, rule);
     }
     
     private  void _AddProductionAttribute(MethodBuilder builder, string rule)
@@ -632,6 +633,22 @@ public class ParserBuilder
         }
     }
     
+    private void _AddSubNodeNamesAttribute(MethodBuilder builder, Rule rule)
+    {
+        if (rule.TryGetSubNodeNames(out var subNodeNames))
+        {
+            Type attributeType = typeof(SubNodeNamesAttribute);
+        
+            ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                new Type[1] { typeof(string[]) });
+            
+            CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                constructorInfo, new object[] { subNodeNames.Select(x => x == "null" ? null : x.ToString()).ToArray() });
+
+            builder.SetCustomAttribute(customAttributeBuilder);
+        }
+    }
+    
     private int explicitPrefixCounter = 0;
     
     private void AddPrefix(TypeBuilder builder, PrefixRule prefix)
@@ -657,6 +674,7 @@ public class ParserBuilder
 
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
         _AddNodeNameAttribute(methodBuilder, prefix);
+        _AddSubNodeNamesAttribute(methodBuilder, prefix);
     }
 
     private void AddPrefixes(TypeBuilder builder, ManyPrefixRule prefixes)
@@ -685,6 +703,7 @@ public class ParserBuilder
 
             methodBuilder.SetCustomAttribute(customAttributeBuilder);
             _AddNodeNameAttribute(methodBuilder, prefixes);
+            _AddSubNodeNamesAttribute(methodBuilder, prefixes);
         }
     }
     
@@ -715,6 +734,7 @@ public class ParserBuilder
 
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
         _AddNodeNameAttribute(methodBuilder, postfix);
+        _AddSubNodeNamesAttribute(methodBuilder, postfix);
     }
     
     private void AddPostfixes(TypeBuilder builder, ManyPostfixRule postfixes)
@@ -742,6 +762,7 @@ public class ParserBuilder
 
             methodBuilder.SetCustomAttribute(customAttributeBuilder);
             _AddNodeNameAttribute(methodBuilder, postfixes);
+            _AddSubNodeNamesAttribute(methodBuilder, postfixes);
         }
     }
     
@@ -768,6 +789,7 @@ public class ParserBuilder
 
         methodBuilder.SetCustomAttribute(customAttributeBuilder);
         _AddNodeNameAttribute(methodBuilder, infix);
+        _AddSubNodeNamesAttribute(methodBuilder, infix);
     }
     
     private void AddInfixes(TypeBuilder builder, ManyInfixRule infixes)
@@ -796,6 +818,7 @@ public class ParserBuilder
 
             methodBuilder.SetCustomAttribute(customAttributeBuilder);
             _AddNodeNameAttribute(methodBuilder, infixes);
+            _AddSubNodeNamesAttribute(methodBuilder, infixes);
         }
     }
     

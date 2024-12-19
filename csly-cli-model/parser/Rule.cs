@@ -11,6 +11,8 @@ namespace csly.cli.model.parser
         public const string? methodNameAttribute = "name";
         
         public const string? nodeNameAttribute = "node";
+        
+        public const string? SubNodeNamesAttribute = "subNodes";
         public Rule( bool  isOperand = false)
         {
             Clauses = new List<IClause>();
@@ -59,6 +61,18 @@ namespace csly.cli.model.parser
         {
             nodeName = null;
             return TryGetFirstValue(nodeNameAttribute, out nodeName);
+        }
+        
+        public bool TryGetSubNodeNames(out string[] subNodeNames)
+        {
+            subNodeNames = null;
+            if (TryGetValues(SubNodeNamesAttribute, out var values))
+            {
+                subNodeNames = values[0].Select(x => x.ToString()).ToArray();
+                return true;
+            }
+
+            return false;
         }
 
         public override string ToString()

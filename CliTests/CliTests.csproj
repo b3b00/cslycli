@@ -31,8 +31,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!--        <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />-->
-        <PackageReference Include="sly" Version="3.4.8" />
+        <PackageReference Include="sly" Version="3.4.9" />
+        <PackageReference Include="SharpCoreFileSystem" Version="1.1.2"/>
     </ItemGroup>
     
     <ItemGroup>

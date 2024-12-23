@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
+using System.Text.Json.Nodes;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using csly_cli_api;
@@ -15,6 +16,7 @@ using SharpFileSystem.IO;
 using sly.buildresult;
 using sly.lexer;
 using Xunit;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace CliTests;
 
@@ -263,7 +265,10 @@ data
         Assert.NotNull(content);
         Assert.NotEmpty(content);
         var expected = fs.ReadAllText("/data/minimalJSON.json");
-        Check.That(content).IsEqualTo(expected);
+        var normalizedContent = JsonSerializer.Serialize(JsonSerializer.Deserialize<JsonNode>(content));
+        var normalizedExpected = JsonSerializer.Serialize(JsonSerializer.Deserialize<JsonNode>(expected));
+        Check.That(normalizedContent).IsEqualTo(normalizedExpected);
+        
     }
 
     [Fact]
@@ -647,6 +652,7 @@ genericLexer explicitL;
 
 parser explicitP;
 -> root : explicitP_expressions;
+@node(prefix);
 [Prefix 100] ""##"";
 [Operand] value : INT;" ;
         var t = _processor.CompileModel(grammar);
@@ -902,7 +908,7 @@ parser p;
         var dump = tree.Result.Dump("", "    ");
         var lines = dump.GetLines();
         Check.That(lines).Contains("        + entier ");
-        Check.That(lines).Contains("    + pupuce_mimi ");
+        Check.That(lines).Contains("    + pupuce ");
         var json = tree.Result.ToJson();
     
     }

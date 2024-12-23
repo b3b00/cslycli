@@ -21,7 +21,7 @@ parser SimpleExpressionParser;
 @node(factor);
 [Right 50] TIMES;
 [Left 50] DIVIDE;
-@(node(minus);
+@node(minus);
 [Prefix 100] MINUS;
 @node(factorial);
 [Postfix 100] FACTORIAL;

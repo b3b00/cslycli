@@ -408,9 +408,9 @@ public class ParserBuilder
             List<(string format, string content)> results = new List<(string format, string content)>();
             foreach (var processor in processors)
             {
-                var untyperType = typeof(TreeUntyper<>).MakeGenericType(buildResult.lexerType);
+                var untyperType = typeof(TreeUntyper<,>).MakeGenericType(buildResult.lexerType, typeof(object));
                 
-                var iSyntaxNodeType = typeof(sly.parser.syntax.tree.ISyntaxNode<>).MakeGenericType(buildResult.lexerType);
+                var iSyntaxNodeType = typeof(sly.parser.syntax.tree.ISyntaxNode<,>).MakeGenericType(buildResult.lexerType,typeof(object));
                 var untypeMethod = untyperType.GetMethod("Untype", new[] { iSyntaxNodeType });
                 var untyped = untypeMethod.Invoke(null, new object[] { syntaxTree });
                 var tree = untyped as ISyntaxNode;
@@ -487,9 +487,9 @@ public class ParserBuilder
             chrono.Tick("get syntax tree");
         }
 
-        var untyperType = typeof(TreeUntyper<>).MakeGenericType(buildResult.lexerType);
+        var untyperType = typeof(TreeUntyper<,>).MakeGenericType(buildResult.lexerType, typeof(object));
 
-        var iSyntaxNodeType = typeof(sly.parser.syntax.tree.ISyntaxNode<>).MakeGenericType(buildResult.lexerType);
+        var iSyntaxNodeType = typeof(sly.parser.syntax.tree.ISyntaxNode<,>).MakeGenericType(buildResult.lexerType, typeof(object));
         var untypeMethod = untyperType.GetMethod("Untype", new[] { iSyntaxNodeType });
         var untyped = untypeMethod.Invoke(null, new object[] { syntaxTree });
         var tree = untyped as ISyntaxNode;
@@ -517,7 +517,7 @@ public class ParserBuilder
     
     public static string SyntaxTreeToMermaid(Type lexerType, Type parserType, object syntaxTree)
     {
-        var graphvizType = typeof(MermaidEBNFSyntaxTreeVisitor<>).MakeGenericType(lexerType);
+        var graphvizType = typeof(MermaidEBNFSyntaxTreeVisitor<,>).MakeGenericType(lexerType, typeof(object));
         var visitor = graphvizType.GetConstructor(new Type[] { }).Invoke(new object[]{});
         
         var visited = graphvizType

@@ -15,16 +15,24 @@ genericLexer SimpleExpressionToken;
 parser SimpleExpressionParser;
 
 -> root : SimpleExpressionParser_expressions;
+@node(term);
 [Right 10] PLUS;
 [Left 10] MINUS;
+@node(factor);
 [Right 50] TIMES;
 [Left 50] DIVIDE;
+@(node(minus);
 [Prefix 100] MINUS;
+@node(factorial);
 [Postfix 100] FACTORIAL;
 [Operand] operand : primary_value;
+@node(double);
 primary_value : DOUBLE;
+@node(int);
 primary_value : INT;
+@node(id);
 primary_value : ID;
+@node(group);
 primary_value : LPAREN SimpleExpressionParser_expressions RPAREN;
 
 

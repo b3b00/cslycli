@@ -5,8 +5,8 @@
         <RootNamespace>csly_cli_api</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <version>1.6.4</version>
-        <PackageVersion>1.6.4</PackageVersion>
+        <version>1.6.5</version>
+        <PackageVersion>1.6.5</PackageVersion>
     </PropertyGroup>
     <PropertyGroup>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>

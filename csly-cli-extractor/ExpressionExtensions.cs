@@ -48,6 +48,10 @@ public static class ExpressionExtensions
 
                 return "";
             }
+            case InterpolatedStringExpressionSyntax interpol:
+            {
+                return interpol.Contents.ToString();
+            }
             default:
             {
                 return "don't know !";

@@ -20,10 +20,10 @@
       <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
       <PackageReference Include="NFluent" Version="3.0.4" />
-      <PackageReference Include="sly" Version="3.4.9" />
+      <PackageReference Include="sly" Version="3.5.4" />
         <PackageReference Include="System.Text.Json" Version="8.0.3" />
         <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
-        <PackageReference Include="System.Collections.Immutable" Version="9.0.0"/>
+        <PackageReference Include="System.Collections.immutable" Version="9.0.2"/>
         <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
         <PackageReference Include="System.Memory" Version="4.5.5"/>

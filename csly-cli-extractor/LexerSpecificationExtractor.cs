@@ -29,6 +29,11 @@ public class LexerSpecificationExtractor
                 {
                     return $"[MultiLineComment] {name} : {args[0]} {args[1]};";
                 }
+                else if (args.Length == 3)
+                {
+                    return $@"[SingleLineComment] {name} : {args[0]};
+[MultiLineComment] {name} : {args[1]} {args[2]};";
+                }
 
                 break;
             }
@@ -152,7 +157,7 @@ public class LexerSpecificationExtractor
         {
             return Lexeme(name, GenericToken.Double, args);
         }
-        else if (type == "SingleLineComment" || type == "MultiLineComment")
+        else if (type == "SingleLineComment" || type == "MultiLineComment" || type == "Comment")
         {
             return Lexeme(name, GenericToken.Comment, args);
         }

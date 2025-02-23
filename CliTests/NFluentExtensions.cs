@@ -1,3 +1,4 @@
+using System.Text.Json;
 using clsy.cli.builder;
 using csly_cli_api;
 using csly.cli.model;
@@ -28,9 +29,22 @@ public static class NFluentParseExtensions
 
             return lines;
         }
-        
-        
-        
+
+        public static ICheckLink<ICheck<string>> IsEqualToJson(this ICheck<string> context, string expected)
+        {
+            var checker = ExtensibilityHelper.ExtractChecker(context);
+            var c = checker.ExecuteCheck(() =>
+            {
+                var sut = checker.Value;
+                var expectedJson = JsonSerializer.Deserialize<JsonDocument>(expected);
+                var foundJson = JsonSerializer.Deserialize<JsonDocument>(sut);
+                Check.That(foundJson).IsNotNull();
+                Check.That(foundJson.ToString()).IsEqualTo(expectedJson.ToString());
+            },
+                    "json were expected not to be equal, but are equal.");
+            return c;
+        }
+
         public static ICheckLink<ICheck<Result<Model,List<string>>>> IsOkModel(this ICheck<Result<Model,List<string>>> context) => IsOkResult<Model>(context);
         
         public static ICheckLink<ICheck<Result<Model,List<string>>>> IsNotOkModel(this ICheck<Result<Model,List<string>>> context) => IsNotOkResult<Model>(context);

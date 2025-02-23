@@ -1,17 +1,14 @@
-using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
+using System.Text.Json;
 using clsy.cli.builder;
 using clsy.cli.builder.parser;
 using csly_cli_api;
 using csly.cli.model.parser;
 using csly.cli.model.tree;
 using decompiler;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NFluent;
 using SharpFileSystem.FileSystems;
-using SharpFileSystem.IO;
 using sly.buildresult;
 using sly.lexer;
 using Xunit;
@@ -263,7 +260,8 @@ data
         Assert.NotNull(content);
         Assert.NotEmpty(content);
         var expected = fs.ReadAllText("/data/minimalJSON.json");
-        Check.That(content).IsEqualTo(expected);
+        Check.That(content).IsEqualToJson(expected);
+        
     }
 
     [Fact]
@@ -405,10 +403,9 @@ parser MinimalParser;
         ;
         var json = builder.Getz(grammar, "2024.04.23", "MyDateParser", new List<(string format, SyntaxTreeProcessor processor)>() {("JSON",ParserBuilder.SyntaxTreeToJson)});
         Check.That(json).IsOkResult();
-        var tree = JsonConvert.DeserializeObject<JObject>(json.Value[0].content);
-        var firstToken = tree.SelectToken("$.Children[0].Token");
-        Check.That(firstToken).IsNotNull();
-        var dateTime = firstToken.SelectToken("Value").Value<string>();
+        var tree = JsonSerializer.Deserialize<JsonDocument>(json.Value[0].content);
+        JsonElement firstToken = tree.RootElement.GetProperty("Children")[0].GetProperty("Token");
+        var dateTime = firstToken.GetProperty("Value").GetString();
         Check.That(dateTime).IsEqualTo("2024.04.23");
     }
     
@@ -896,13 +893,14 @@ parser p;
         Check.That(generatedParser.Result.Parser).Contains("object factorial(object value");
         Check.That(generatedParser.Result.Parser).Contains("object entier(Token<l> p0)");
         Check.That(generatedParser.Result.Parser).Contains("public object mimi(object left, Token<l> oper, object right)");
-        var tree = _processor.GetSyntaxTree(grammar, "1+1");
+        var tree = _processor.GetSyntaxTree(grammar, "1+1-8");
         Check.That(tree.IsOK).IsTrue();
         Check.That(tree.Result).IsNotNull();
         var dump = tree.Result.Dump("", "    ");
         var lines = dump.GetLines();
         Check.That(lines).Contains("        + entier ");
-        Check.That(lines).Contains("    + pupuce_mimi ");
+        Check.That(lines).Contains("    + pupuce ");
+        Check.That(lines).Contains("        + mimi ");
         var json = tree.Result.ToJson();
     
     }

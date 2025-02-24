@@ -12,15 +12,15 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0"/>
         <PackageReference Include="xunit" Version="2.4.2"/>
-        <PackageReference Include="NFluent" Version="3.0.4" />
+        <PackageReference Include="NFluent" Version="3.0.4"/>
         <PackageReference Include="System.Memory" Version="4.5.5"/>
         <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
         <PackageReference Include="System.Collections.immutable" Version="9.0.2"/>
         <PackageReference Include="SharpCoreFileSystem" Version="1.1.2"/>
         <PackageReference Include="coverlet.msbuild" Version="3.1.2"/>
+        <PackageReference Include="sly" Version="3.5.4"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
-            
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
@@ -30,54 +30,48 @@
         </PackageReference>
     </ItemGroup>
 
+
     <ItemGroup>
-        <PackageReference Include="sly" Version="3.5.4" />
-        <PackageReference Include="SharpCoreFileSystem" Version="1.1.2"/>
-    </ItemGroup>
-    
-    <ItemGroup>
-<!--      <ProjectReference Include="..\..\sharpfilesystem\SharpCoreFileSystem\SharpCoreFileSystem.csproj" />-->
-      <ProjectReference Include="..\csly-cli-api\csly-cli-api.csproj" />
-      <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
-      <ProjectReference Include="..\csly-cli-decompiler\csly-cli-decompiler.csproj" />
-      <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj" />
-      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
-      <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
-      <ProjectReference Include="..\csly-cli\csly-cli.csproj" />
+        <ProjectReference Include="..\csly-cli-api\csly-cli-api.csproj"/>
+        <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj"/>
+        <ProjectReference Include="..\csly-cli-decompiler\csly-cli-decompiler.csproj"/>
+        <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj"/>
+        <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj"/>
+        <ProjectReference Include="..\csly-cli\csly-cli.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="data\badGrammar.txt" />
-      <EmbeddedResource Include="data\dotExtMarks.txt" />
-      <EmbeddedResource Include="data\expr.txt" />
-      <EmbeddedResource Include="data\ext.txt" />
-      <EmbeddedResource Include="data\extWithMarks.txt" />
-      <EmbeddedResource Include="data\extWithMarksMultiChain.txt" />
-      <EmbeddedResource Include="data\grammar1.txt" />
-      <EmbeddedResource Include="data\grammarWithImplicits.txt" />
-      <EmbeddedResource Include="data\grammarX.txt" />
-      <EmbeddedResource Include="data\indentedWhile.txt" />
-      <EmbeddedResource Include="data\leftRecursive.txt" />
-      <EmbeddedResource Include="data\lexer.csharp" />
-      <EmbeddedResource Include="data\lexerWithExt.csharp" />
-      <EmbeddedResource Include="data\manyLexemes.txt" />
-      <EmbeddedResource Include="data\meta.txt" />
-      <EmbeddedResource Include="data\minimalGrammar.txt" />
-      <EmbeddedResource Include="data\minimalGrammarWithExt.txt" />
-      <EmbeddedResource Include="data\minimalJSON.json" />
-      <EmbeddedResource Include="data\missingReference.txt" />
-      <EmbeddedResource Include="data\noRoot.txt" />
-      <EmbeddedResource Include="data\parser.csharp" />
-      <EmbeddedResource Include="data\simpleExpression.txt" />
-      <EmbeddedResource Include="data\simpleexpr\simpleexpressionparser.csharp" />
-      <EmbeddedResource Include="data\simpleexpr\simpleexpressiontoken.csharp" />
-      <EmbeddedResource Include="data\whileGrammar.txt" />
-      <None Remove="data\optionGrammar.txt" />
-      <EmbeddedResource Include="data\optionGrammar.txt" />
-      <None Remove="data\xmlGrammar.txt" />
-      <EmbeddedResource Include="data\xmlGrammar.txt" />
-      <None Remove="data\csproj.project" />
-      <EmbeddedResource Include="data\csproj.project" />
+        <EmbeddedResource Include="data\badGrammar.txt"/>
+        <EmbeddedResource Include="data\dotExtMarks.txt"/>
+        <EmbeddedResource Include="data\expr.txt"/>
+        <EmbeddedResource Include="data\ext.txt"/>
+        <EmbeddedResource Include="data\extWithMarks.txt"/>
+        <EmbeddedResource Include="data\extWithMarksMultiChain.txt"/>
+        <EmbeddedResource Include="data\grammar1.txt"/>
+        <EmbeddedResource Include="data\grammarWithImplicits.txt"/>
+        <EmbeddedResource Include="data\grammarX.txt"/>
+        <EmbeddedResource Include="data\indentedWhile.txt"/>
+        <EmbeddedResource Include="data\leftRecursive.txt"/>
+        <EmbeddedResource Include="data\lexer.csharp"/>
+        <EmbeddedResource Include="data\lexerWithExt.csharp"/>
+        <EmbeddedResource Include="data\manyLexemes.txt"/>
+        <EmbeddedResource Include="data\meta.txt"/>
+        <EmbeddedResource Include="data\minimalGrammar.txt"/>
+        <EmbeddedResource Include="data\minimalGrammarWithExt.txt"/>
+        <EmbeddedResource Include="data\minimalJSON.json"/>
+        <EmbeddedResource Include="data\missingReference.txt"/>
+        <EmbeddedResource Include="data\noRoot.txt"/>
+        <EmbeddedResource Include="data\parser.csharp"/>
+        <EmbeddedResource Include="data\simpleExpression.txt"/>
+        <EmbeddedResource Include="data\simpleexpr\simpleexpressionparser.csharp"/>
+        <EmbeddedResource Include="data\simpleexpr\simpleexpressiontoken.csharp"/>
+        <EmbeddedResource Include="data\whileGrammar.txt"/>
+        <None Remove="data\optionGrammar.txt"/>
+        <EmbeddedResource Include="data\optionGrammar.txt"/>
+        <None Remove="data\xmlGrammar.txt"/>
+        <EmbeddedResource Include="data\xmlGrammar.txt"/>
+        <None Remove="data\csproj.project"/>
+        <EmbeddedResource Include="data\csproj.project"/>
     </ItemGroup>
 
 </Project>

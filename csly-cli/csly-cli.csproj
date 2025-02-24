@@ -35,7 +35,6 @@
     <ItemGroup>      
       <ProjectReference Include="..\csly-cli-api\csly-cli-api.csproj" />      
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
-      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
       <ProjectReference Include="..\csly-cli-decompiler\csly-cli-decompiler.csproj" />
       <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor.csproj" />

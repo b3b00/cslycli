@@ -17,7 +17,6 @@
     <ItemGroup>
         <ProjectReference Include="..\csly-cli-api\csly-cli-api.csproj" />
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder.csproj" />
-      <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser.csproj" />
       <PackageReference Include="NFluent" Version="3.0.4" />
       <PackageReference Include="sly" Version="3.5.4" />

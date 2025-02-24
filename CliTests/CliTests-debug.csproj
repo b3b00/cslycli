@@ -16,7 +16,7 @@
         <PackageReference Include="System.Memory" Version="4.5.5"/>
         <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
-        <PackageReference Include="System.Collections.Immutable" Version="9.0.0"/>
+        <PackageReference Include="System.Collections.Immutable" Version="9.0.2"/>
         <PackageReference Include="coverlet.msbuild" Version="3.1.2"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
             
@@ -39,7 +39,6 @@
       <ProjectReference Include="..\csly-cli-builder\csly-cli-builder-debug.csproj" />
       <ProjectReference Include="..\csly-cli-decompiler\csly-cli-decompiler-debug.csproj" />
       <ProjectReference Include="..\csly-cli-extractor\csly-cli-extractor-debug.csproj" />
-      <ProjectReference Include="..\csly-cli-model\csly-cli-model-debug.csproj" />
       <ProjectReference Include="..\csly-cli-parser\csly-cli-parser-debug.csproj" />
       <ProjectReference Include="..\csly-cli\csly-cli-debug.csproj" />
     </ItemGroup>

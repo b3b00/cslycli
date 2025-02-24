@@ -105,8 +105,6 @@ public class LexerGenerator
     {
         var source = "";
         var tab = "            ";
-        // source = $"if (token == {lexerModel.Name}.{extension.Name}) {{\n\n";
-        // source += GetGenericCallBack(lexerModel.Name,extension.Name);
         if (first)
         {
             source += "\n\nvar builder = lexer.FSMBuilder;\n\n";

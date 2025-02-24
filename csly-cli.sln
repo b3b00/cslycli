@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-model", "csly-cli-model\csly-cli-model.csproj", "{ED364EB9-BFE7-4DE1-96BA-252DE98BA495}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli", "csly-cli\csly-cli.csproj", "{A621CA83-94B5-4624-A6CB-7E5F0DAA7A40}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csly-cli-parser", "csly-cli-parser\csly-cli-parser.csproj", "{61EEE386-C2A9-4089-9C86-9AB1A2DD721F}"
@@ -28,10 +26,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{ED364EB9-BFE7-4DE1-96BA-252DE98BA495}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED364EB9-BFE7-4DE1-96BA-252DE98BA495}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED364EB9-BFE7-4DE1-96BA-252DE98BA495}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED364EB9-BFE7-4DE1-96BA-252DE98BA495}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A621CA83-94B5-4624-A6CB-7E5F0DAA7A40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A621CA83-94B5-4624-A6CB-7E5F0DAA7A40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A621CA83-94B5-4624-A6CB-7E5F0DAA7A40}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -383,14 +383,6 @@ public class CLIParser
     #endregion
 
     #region parser
-
-    [Production("Identifier : [ID | GENERICLEXER | STRINGTOKEN |  PARSER | CHARTOKEN | INTTOKEN | DATETOKEN | DOUBLETOKEN | HEXATOKEN | " +
-                "ALPHAIDTOKEN | ALPHANUMIDTOKEN | ALPHANUMDASHIDTOKEN | KEYWORDTOKEN | SUGARTOKEN | SINGLELINECOMMENT | UPTOTOKEN | " +
-                "MULTILINECOMMENT | EXTENSIONTOKEN | PUSH | MODE | POP | TRUE | FALSE | INDENT | UINDENT | YYYYMMDD | DDMMYYYY ]")]
-    public ICLIModel Identifier(Token<CLIToken> token, ParserContext context)
-    {
-        return new Identifier(token);
-    }
     
     [Production("IdentifierOrString : [ID | GENERICLEXER | STRINGTOKEN |  PARSER | CHARTOKEN | INTTOKEN | DATETOKEN | DOUBLETOKEN | HEXATOKEN | " +
                 "ALPHAIDTOKEN | ALPHANUMIDTOKEN | ALPHANUMDASHIDTOKEN | KEYWORDTOKEN | SUGARTOKEN | SINGLELINECOMMENT | UPTOTOKEN | " +
@@ -407,22 +399,22 @@ public class CLIParser
         return null;
     }
 
-    [Production("rule  :  attribute* ARROW? operand? Identifier COLON[d] clause+ SEMICOLON[d]")]
-    //[Production("rule  :  ARROW ? operand? ID COLON[d] clause+ SEMICOLON[d]")]
+    [Production("rule  :  attribute* ARROW? operand? IdentifierOrString COLON[d] clause+ SEMICOLON[d]")]
+    //[Production("rule  :  ARROW ? operand? Identifier COLON[d] clause+ SEMICOLON[d]")]
     public GrammarNode Rule(List<ICLIModel> attributes, Token<CLIToken> root, ValueOption<ICLIModel> operand,
-        Identifier name, List<ICLIModel> clauses, ParserContext context)
+        ICLIModel name, List<ICLIModel> clauses, ParserContext context)
     {
         var rule = new Rule(operand.IsSome);
         rule.SetAttributes(attributes.Cast<AttributeModel>().ToList());
-
-        rule.NonTerminalName = name.Value;
+        var ntName = name as IdentifierOrString;
+        rule.NonTerminalName = ntName.Value;
         rule.Clauses = clauses.Cast<IClause>().ToList();
         rule.IsRoot = !root.IsEmpty;
         rule.Position = root.Position;
         return rule;
     }
     
-    [Production("rule  :  attribute* operand? Identifier+ SEMICOLON[d]")]
+    [Production("rule  :  attribute* operand? IdentifierOrString+ SEMICOLON[d]")]
     public GrammarNode ShortOPerand(List<ICLIModel> attributes, ValueOption<ICLIModel> operand, List<ICLIModel> ids,  ParserContext context)
     {
         var rule = new Rule(operand.IsSome);
@@ -682,22 +674,12 @@ public class CLIParser
 
         if (isTerminal)
         {
-            if (identifier.TokenId == CLIToken.ID)
-            {
-                clause = new TerminalClause(false, identifier.Value);
-                clause.Position = identifier.Position;
-            }
-            else if (identifier.TokenId == CLIToken.STRING)
+            if (identifier.TokenId == CLIToken.STRING)
             {
                 clause = new TerminalClause(true, identifier.StringWithoutQuotes);
                 clause.Position = identifier.Position;
             }
-            else if (identifier.TokenId == CLIToken.UINDENT)
-            {
-                clause = new TerminalClause(false, identifier.Value);
-                clause.Position = identifier.Position;
-            }
-            else if (identifier.TokenId == CLIToken.INDENT)
+            else
             {
                 clause = new TerminalClause(false, identifier.Value);
                 clause.Position = identifier.Position;

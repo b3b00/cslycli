@@ -12,7 +12,6 @@
     </ItemGroup>
     <ItemGroup>
                 <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />
-<!--        <PackageReference Include="sly" Version="3.2.7"/>-->
     </ItemGroup>
 
 

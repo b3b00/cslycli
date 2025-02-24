@@ -13,7 +13,7 @@
         <PackageReference Include="System.Collections.immutable" Version="9.0.2"/>
         <PackageReference Include="System.Memory" Version="4.5.5"/>
         <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
-        <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />
+<!--        <ProjectReference Include="..\csly-cli-model\csly-cli-model.csproj" />-->
         
     </ItemGroup>
    

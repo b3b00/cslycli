@@ -1,5 +1,6 @@
 ﻿using clsy.cli.builder.parser.cli.model;
 using clsy.cli.model.lexer;
+using clsy.cli.model.parser;
 using csly.cli.model;
 using csly.cli.model.lexer;
 using csly.cli.model.parser;
@@ -383,16 +384,33 @@ public class CLIParser
 
     #region parser
 
+    [Production("Identifier : [ID | GENERICLEXER | STRINGTOKEN |  PARSER | CHARTOKEN | INTTOKEN | DATETOKEN | DOUBLETOKEN | HEXATOKEN | " +
+                "ALPHAIDTOKEN | ALPHANUMIDTOKEN | ALPHANUMDASHIDTOKEN | KEYWORDTOKEN | SUGARTOKEN | SINGLELINECOMMENT | UPTOTOKEN | " +
+                "MULTILINECOMMENT | EXTENSIONTOKEN | PUSH | MODE | POP | TRUE | FALSE | INDENT | UINDENT | YYYYMMDD | DDMMYYYY ]")]
+    public ICLIModel Identifier(Token<CLIToken> token, ParserContext context)
+    {
+        return new Identifier(token);
+    }
+    
+    [Production("IdentifierOrString : [ID | GENERICLEXER | STRINGTOKEN |  PARSER | CHARTOKEN | INTTOKEN | DATETOKEN | DOUBLETOKEN | HEXATOKEN | " +
+                "ALPHAIDTOKEN | ALPHANUMIDTOKEN | ALPHANUMDASHIDTOKEN | KEYWORDTOKEN | SUGARTOKEN | SINGLELINECOMMENT | UPTOTOKEN | " +
+                "MULTILINECOMMENT | EXTENSIONTOKEN | PUSH | MODE | POP | TRUE | FALSE | INDENT | UINDENT | YYYYMMDD | DDMMYYYY | STRING ]")]
+    public ICLIModel IdOrString(Token<CLIToken> token, ParserContext context)
+    {
+        return new IdentifierOrString(token);
+    }
+    
+    
     [Production("operand :  LEFTBRACKET[d] OPERAND[d] RIGHTBRACKET[d]")]
     public GrammarNode Operand(ParserContext context)
     {
         return null;
     }
 
-    [Production("rule  :  attribute* ARROW? operand? ID COLON[d] clause+ SEMICOLON[d]")]
+    [Production("rule  :  attribute* ARROW? operand? Identifier COLON[d] clause+ SEMICOLON[d]")]
     //[Production("rule  :  ARROW ? operand? ID COLON[d] clause+ SEMICOLON[d]")]
     public GrammarNode Rule(List<ICLIModel> attributes, Token<CLIToken> root, ValueOption<ICLIModel> operand,
-        Token<CLIToken> name, List<ICLIModel> clauses, ParserContext context)
+        Identifier name, List<ICLIModel> clauses, ParserContext context)
     {
         var rule = new Rule(operand.IsSome);
         rule.SetAttributes(attributes.Cast<AttributeModel>().ToList());
@@ -404,45 +422,47 @@ public class CLIParser
         return rule;
     }
     
-    [Production("rule  :  attribute* operand? ID+ SEMICOLON[d]")]
-    public GrammarNode ShortOPerand(List<ICLIModel> attributes, ValueOption<ICLIModel> operand, List<Token<CLIToken>> ids,  ParserContext context)
+    [Production("rule  :  attribute* operand? Identifier+ SEMICOLON[d]")]
+    public GrammarNode ShortOPerand(List<ICLIModel> attributes, ValueOption<ICLIModel> operand, List<ICLIModel> ids,  ParserContext context)
     {
         var rule = new Rule(operand.IsSome);
         rule.SetAttributes(attributes.Cast<AttributeModel>().ToList());
-
+        var identifiers = ids.Cast<IdentifierOrString>().ToList();
         rule.NonTerminalName = "operand";
         if (ids.Count == 1)
         {
-            rule.Clauses = new List<IClause>() { BuildTerminalOrNonTerminal(ids[0], context) };
+            rule.Clauses = new List<IClause>() { BuildTerminalOrNonTerminal(identifiers[0], context) };
         }
         else
         {
-            var choice = new ChoiceClause(ids.Select(x => BuildTerminalOrNonTerminal(x, context)).ToList());
+            var choice = new ChoiceClause(identifiers.Select(x => BuildTerminalOrNonTerminal(x, context)).ToList());
             rule.Clauses = new List<IClause>() { choice };
         }
 
         rule.IsRoot = false;
-        rule.Position = ids[0].Position;
+        rule.Position = identifiers[0].Position;
         return rule;
     }
 
 
-    [Production("rule : attribute* LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] [ID|STRING]* SEMICOLON[d]")]
-    public ICLIModel PrefixRule(List<ICLIModel> attributes, Token<CLIToken> precedence, List<Token<CLIToken>> ids,
+    [Production("rule : attribute* LEFTBRACKET[d] PREFIX[d] INT RIGHTBRACKET[d] IdentifierOrString* SEMICOLON[d]")]
+    public ICLIModel PrefixRule(List<ICLIModel> attributes, Token<CLIToken> precedence, List<ICLIModel> ids,
         ParserContext context)
     {
+        var identifiers = ids.Cast<IdentifierOrString>().ToList();
         if (ids.Count == 1)
         {
-            var rule = new PrefixRule(ids[0].Value, ids[0].TokenID == CLIToken.STRING,
+            
+            var rule = new PrefixRule(identifiers[0].Value, identifiers[0].TokenId == CLIToken.STRING,
                 precedence.IntValue);
             rule.SetAttributes(attributes.Cast<AttributeModel>());
             rule.Position = precedence.Position;
             return rule;
         }
 
-        var r = new ManyPrefixRule(ids.Select(x =>
+        var r = new ManyPrefixRule(identifiers.Select(x =>
         {
-            var rule = new PrefixRule(x.Value, x.TokenID == CLIToken.STRING,
+            var rule = new PrefixRule(x.Value, x.TokenId == CLIToken.STRING,
                 precedence.IntValue);
             rule.Position = precedence.Position;
             return rule;
@@ -451,23 +471,24 @@ public class CLIParser
         return r;
     }
 
-    [Production("rule : attribute* LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] [ID|STRING]* SEMICOLON[d]")]
-    public ICLIModel PostfixRule(List<ICLIModel> attributes, Token<CLIToken> precedence, List<Token<CLIToken>> ids,
+    [Production("rule : attribute* LEFTBRACKET[d] POSTFIX[d] INT RIGHTBRACKET[d] IdentifierOrString* SEMICOLON[d]")]
+    public ICLIModel PostfixRule(List<ICLIModel> attributes, Token<CLIToken> precedence, List<ICLIModel> ids,
         ParserContext context)
     {
+        var identifiers = ids.Cast<IdentifierOrString>().ToList();
         if (ids.Count == 1)
         {
-            var rule = new PostfixRule(ids[0].Value, ids[0].TokenID == CLIToken.STRING,
+            var rule = new PostfixRule(identifiers[0].Value, identifiers[0].TokenId == CLIToken.STRING,
                 precedence.IntValue);
             rule.SetAttributes(attributes.Cast<AttributeModel>());
             rule.Position = precedence.Position;
             return rule;
         }
 
-        var r = new ManyPostfixRule(ids.Select(x =>
+        var r = new ManyPostfixRule(identifiers.Select(x =>
         {
             var value = x.IsExplicit ? x.Value.Substring(1, x.Value.Length - 1) : x.Value;
-            var rule = new PostfixRule(value, x.TokenID == CLIToken.STRING,
+            var rule = new PostfixRule(value, x.TokenId == CLIToken.STRING,
                 precedence.IntValue);
             rule.Position = precedence.Position;
             return rule;
@@ -476,13 +497,14 @@ public class CLIParser
         return r;
     }
 
-    [Production("rule : attribute* LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] [ID|STRING]+ SEMICOLON[d]")]
+    [Production("rule : attribute* LEFTBRACKET[d] [RIGHT|LEFT] INT RIGHTBRACKET[d] IdentifierOrString+ SEMICOLON[d]")]
     public ICLIModel InfixRule(List<ICLIModel> attributes, Token<CLIToken> rightOrLeft, Token<CLIToken> precedence,
-        List<Token<CLIToken>> ids, ParserContext context)
+        List<ICLIModel> ids, ParserContext context)
     {
-        if (ids.Count == 1)
+        var identifiers = ids.Cast<IdentifierOrString>().ToList();
+        if (identifiers.Count == 1)
         {
-            var rule = new InfixRule(ids[0].Value, ids[0].TokenID == CLIToken.STRING,
+            var rule = new InfixRule(identifiers[0].Value, identifiers[0].TokenId == CLIToken.STRING,
                 rightOrLeft.TokenID == CLIToken.LEFT ? Associativity.Left : Associativity.Right,
                 precedence.IntValue);
             rule.SetAttributes(attributes.Cast<AttributeModel>());
@@ -490,9 +512,9 @@ public class CLIParser
             return rule;
         }
 
-        var r = new ManyInfixRule(ids.Select(x =>
+        var r = new ManyInfixRule(identifiers.Select(x =>
         {
-            var rule = new InfixRule(x.Value, x.TokenID == CLIToken.STRING,
+            var rule = new InfixRule(x.Value, x.TokenId == CLIToken.STRING,
                 rightOrLeft.TokenID == CLIToken.LEFT ? Associativity.Left : Associativity.Right,
                 precedence.IntValue);
             rule.Position = precedence.Position;
@@ -503,8 +525,8 @@ public class CLIParser
     }
 
 
-    [Production("item : [ ID | STRING | INDENT | UINDENT ] ")]
-    public IClause Clause(Token<CLIToken> item, ParserContext context)
+    [Production("item : IdentifierOrString")]
+    public IClause Clause(IdentifierOrString item, ParserContext context)
     {
         return BuildTerminalOrNonTerminal(item, context);
     }
@@ -651,40 +673,40 @@ public class CLIParser
     #endregion
 
 
-    private IClause BuildTerminalOrNonTerminal(Token<CLIToken> token, ParserContext context)
+    private IClause BuildTerminalOrNonTerminal(IdentifierOrString identifier, ParserContext context)
     {
-        bool isTerminal = context.IsTerminal(token.Value) || token.TokenID == CLIToken.STRING ||
-                          token.TokenID == CLIToken.INDENT || token.TokenID == CLIToken.UINDENT;
+        bool isTerminal = context.IsTerminal(identifier.Value) || identifier.TokenId == CLIToken.STRING ||
+                          identifier.TokenId == CLIToken.INDENT || identifier.TokenId == CLIToken.UINDENT;
 
         IClause clause = null;
 
         if (isTerminal)
         {
-            if (token.TokenID == CLIToken.ID)
+            if (identifier.TokenId == CLIToken.ID)
             {
-                clause = new TerminalClause(false, token.Value);
-                clause.Position = token.Position;
+                clause = new TerminalClause(false, identifier.Value);
+                clause.Position = identifier.Position;
             }
-            else if (token.TokenID == CLIToken.STRING)
+            else if (identifier.TokenId == CLIToken.STRING)
             {
-                clause = new TerminalClause(true, token.StringWithoutQuotes);
-                clause.Position = token.Position;
+                clause = new TerminalClause(true, identifier.StringWithoutQuotes);
+                clause.Position = identifier.Position;
             }
-            else if (token.TokenID == CLIToken.UINDENT)
+            else if (identifier.TokenId == CLIToken.UINDENT)
             {
-                clause = new TerminalClause(false, token.Value);
-                clause.Position = token.Position;
+                clause = new TerminalClause(false, identifier.Value);
+                clause.Position = identifier.Position;
             }
-            else if (token.TokenID == CLIToken.INDENT)
+            else if (identifier.TokenId == CLIToken.INDENT)
             {
-                clause = new TerminalClause(false, token.Value);
-                clause.Position = token.Position;
+                clause = new TerminalClause(false, identifier.Value);
+                clause.Position = identifier.Position;
             }
         }
         else
         {
-            clause = new NonTerminalClause(token.Value);
-            clause.Position = token.Position;
+            clause = new NonTerminalClause(identifier.Value);
+            clause.Position = identifier.Position;
         }
 
 

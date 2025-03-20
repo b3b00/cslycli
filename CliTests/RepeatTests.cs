@@ -1,3 +1,4 @@
+using System.Globalization;
 using clsy.cli.builder.parser;
 using csly_cli_api;
 using csly.cli.model.parser;
@@ -10,6 +11,7 @@ namespace CliTests;
 
 public class RepeatTests
 {
+
     private string _grammar = @"
 genericLexer MinimalLexer;
 [AlphaId] ID ;
@@ -62,10 +64,14 @@ parser RepeatParser;
     [Fact]
     public void TestRunFail()
     {
+        // force culture to invariant to always have the same error message
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
         var result = _processor.Parse(_grammar,"a b c : d e f g h i j k l m n o p q r s t u v w x y z ");
         Check.That(result.IsOK).IsFalse();
         Check.That(result.Errors).CountIs(1);
-        Check.That(result.Errors[0]).Contains("parse error : Erreur de syntaxe : 'x (line 0, column 48)' ID inattendu.");
+        var rawError = result.Errors[0];
+        Check.That(result.Errors[0]).Contains("parse error : unexpected x (line 0, column 48) ID.");
+        
     }
 
     [Fact]

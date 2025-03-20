@@ -537,6 +537,18 @@ public class CLIParser
     {
         return new OneOrMoreClause(item) { Position = item.Position };
     }
+    
+    [Production("clause : item LEFTCURL[d] INT RIGHTCURL[d]")]
+    public IClause Repeat(IClause item, Token<CLIToken> count, ParserContext context)
+    {
+        return new RepeatClause(item, count.IntValue) { Position = item.Position };
+    }
+    
+    [Production("clause : item LEFTCURL[d] INT DASH[d] INT RIGHTCURL[d]")]
+    public IClause RepeatRange(IClause item, Token<CLIToken> min, Token<CLIToken> max,ParserContext context)
+    {
+        return new RepeatClause(item, min.IntValue, max.IntValue) { Position = item.Position };
+    }
 
     [Production("clause : item OPTION[d]")]
     public IClause OptionClause(IClause item, ParserContext context)
@@ -586,6 +598,17 @@ public class CLIParser
         return new ZeroOrMoreClause(choices);
     }
 
+    [Production("clause : choiceclause LEFTCURL[d] INT RIGHTCURL[d]")]
+    public IClause RepeatChoice(ChoiceClause item, Token<CLIToken> count, ParserContext context)
+    {
+        return new RepeatClause(item, count.IntValue) { Position = item.Position };
+    }
+    
+    [Production("clause : choiceclause LEFTCURL[d] INT DASH[d] INT RIGHTCURL[d]")]
+    public IClause RepeatChoiceRange(ChoiceClause item, Token<CLIToken> min, Token<CLIToken> max,ParserContext context)
+    {
+        return new RepeatClause(item, min.IntValue, max.IntValue) { Position = item.Position };
+    }
 
     [Production("clause : choiceclause OPTION[d] ")]
     public IClause ChoiceOptional(ChoiceClause choices, ParserContext context)
@@ -639,6 +662,17 @@ public class CLIParser
     public IClause GroupZeroOrMore(GroupClause group, ParserContext context)
     {
         return new ZeroOrMoreClause(group);
+    }
+    [Production("clause : group LEFTCURL[d] INT RIGHTCURL[d]")]
+    public IClause RepeatGroup(GroupClause item, Token<CLIToken> count, ParserContext context)
+    {
+        return new RepeatClause(item, count.IntValue) { Position = item.Position };
+    }
+    
+    [Production("clause : group LEFTCURL[d] INT DASH[d] INT RIGHTCURL[d]")]
+    public IClause RepeatGroupRange(GroupClause item, Token<CLIToken> min, Token<CLIToken> max,ParserContext context)
+    {
+        return new RepeatClause(item, min.IntValue, max.IntValue) { Position = item.Position };
     }
 
     [Production("clause : group OPTION[d] ")]

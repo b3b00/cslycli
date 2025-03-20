@@ -80,4 +80,15 @@ parser RepeatParser;
         var compiled = _processor.Parse(grammar, "a 1 b 2 c3 d 4 . x 5 y 6");
         Check.That(compiled).IsOkCliResult();
     }
+    
+    [Fact]
+    public void TestGenerate()
+    {
+        var fs = new EmbeddedResourceFileSystem(this.GetType().Assembly);
+        var lexerSource = fs.ReadAllText("/data/repeat/repeatlexer.csharp");
+        var parserSource = fs.ReadAllText("/data/repeat/repeatparser.csharp");
+        var generated = _processor.GenerateParser(_grammar,"ns","object");
+        Check.That(generated).IsOkCliResult();
+        Check.That(generated.Result.Parser).Contains("ID {3}").And.Contains("ID {10-20}");
+    }
 }

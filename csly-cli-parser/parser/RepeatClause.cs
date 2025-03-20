@@ -29,10 +29,10 @@ namespace csly.cli.model.parser
         {
             if (_isRange)
             {
-                return $"{Clause}{{{Min}-{Max}}}";
+                return $"{Clause} {{{Min}-{Max}}}";
             }
             
-            return $"{Clause}{{{Min}}}";
+            return $"{Clause} {{{Min}}}";
         }
 
       

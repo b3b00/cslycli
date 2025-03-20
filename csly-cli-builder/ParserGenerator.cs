@@ -266,6 +266,10 @@ namespace {nameSpace} {{
             {
                 return GetClause(zeroOr.Clause, parser) + " *";
             }
+            case RepeatClause repeat:
+            {
+                return repeat.ToString();
+            }
             case OptionClause opt:
             {
                 return GetClause(opt.Clause, parser) + "?";

@@ -9,6 +9,8 @@ namespace csly.cli.model.parser
         
         public int Max { get; set; }
 
+        private bool _isRange => Min != Max;
+
         public RepeatClause(IClause clause, int min) : this(clause, min, min)
         {
             
@@ -25,7 +27,12 @@ namespace csly.cli.model.parser
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            return Clause.ToString() + "*";
+            if (_isRange)
+            {
+                return $"{Clause}{{{Min}-{Max}}}";
+            }
+            
+            return $"{Clause}{{{Min}}}";
         }
 
       

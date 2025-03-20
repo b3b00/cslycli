@@ -80,6 +80,8 @@
       <EmbeddedResource Include="data\repeat\repeatparser.csharp" />
       <None Remove="data\repeat\repeatlexer.csharp" />
       <EmbeddedResource Include="data\repeat\repeatlexer.csharp" />
+      <None Remove="data\repeat\ParserTests.dll" />
+      <EmbeddedResource Include="data\repeat\ParserTests.dll" />
     </ItemGroup>
 
 </Project>

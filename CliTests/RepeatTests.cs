@@ -3,6 +3,7 @@ using csly_cli_api;
 using csly.cli.model.parser;
 using NFluent;
 using SharpFileSystem.FileSystems;
+using SharpFileSystem.IO;
 using Xunit;
 
 namespace CliTests;
@@ -84,11 +85,24 @@ parser RepeatParser;
     [Fact]
     public void TestGenerate()
     {
-        var fs = new EmbeddedResourceFileSystem(this.GetType().Assembly);
-        var lexerSource = fs.ReadAllText("/data/repeat/repeatlexer.csharp");
-        var parserSource = fs.ReadAllText("/data/repeat/repeatparser.csharp");
+        
+        
         var generated = _processor.GenerateParser(_grammar,"ns","object");
         Check.That(generated).IsOkCliResult();
         Check.That(generated.Result.Parser).Contains("ID {3}").And.Contains("ID {10-20}");
+    }
+
+    [Fact]
+    public void TestDecompile()
+    {
+        var fs = new EmbeddedResourceFileSystem(this.GetType().Assembly);
+        byte[] bytes;
+        using (var stream = fs.OpenFile("/data/repeat/ParserTests.dll", FileAccess.Read))
+        {
+            bytes = stream.ReadAllBytes();
+        }
+        var decompiled = _processor.Decompile("ParserTests.BasicToken","ParserTests.RepeatParser",bytes);
+        Check.That(decompiled).IsOkCliResult();
+        Check.That(decompiled.Result).Contains("root : thing{0-6} PERIOD[d];");
     }
 }

@@ -1,0 +1,15 @@
+ [ParserRoot("root")]
+ public class RepeatParser
+    {
+        [Production("root : thing{3-6} PERIOD[d] thing{2}")]
+        public string Root(List<string> things)
+        {
+            return string.Join(",", things);
+        }
+
+        [Production("thing : ID INT")]
+        public string Thing(Token<BasicToken> id, Token<BasicToken> integer)
+        {
+            return $"{id.Value}({integer.IntValue})";
+        }
+    }

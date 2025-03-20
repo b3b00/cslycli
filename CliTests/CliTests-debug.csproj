@@ -76,6 +76,10 @@
       <None Remove="data\xmlGrammar.txt" />
       <EmbeddedResource Include="data\xmlGrammar.txt" />
       <None Remove="data\assemblies\XML.dll" />
+      <None Remove="data\repeat\repeatparser.csharp" />
+      <EmbeddedResource Include="data\repeat\repeatparser.csharp" />
+      <None Remove="data\repeat\repeatlexer.csharp" />
+      <EmbeddedResource Include="data\repeat\repeatlexer.csharp" />
     </ItemGroup>
 
 </Project>

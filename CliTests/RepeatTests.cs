@@ -2,6 +2,7 @@ using clsy.cli.builder.parser;
 using csly_cli_api;
 using csly.cli.model.parser;
 using NFluent;
+using SharpFileSystem.FileSystems;
 using Xunit;
 
 namespace CliTests;
@@ -64,5 +65,19 @@ parser RepeatParser;
         Check.That(result.IsOK).IsFalse();
         Check.That(result.Errors).CountIs(1);
         Check.That(result.Errors[0]).Contains("parse error : Erreur de syntaxe : 'x (line 0, column 48)' ID inattendu.");
+    }
+
+    [Fact]
+    public void TestExtractRepeat()
+    {
+        var fs = new EmbeddedResourceFileSystem(this.GetType().Assembly);
+        var lexerSource = fs.ReadAllText("/data/repeat/repeatlexer.csharp");
+        var parserSource = fs.ReadAllText("/data/repeat/repeatparser.csharp");
+        var extracted = _processor.ExtractGrammar(parserSource, lexerSource);
+        Check.That(extracted).IsOkCliResult();
+        var grammar = extracted.Result;
+        Check.That(grammar).IsNotNull();
+        var compiled = _processor.Parse(grammar, "a 1 b 2 c3 d 4 . x 5 y 6");
+        Check.That(compiled).IsOkCliResult();
     }
 }

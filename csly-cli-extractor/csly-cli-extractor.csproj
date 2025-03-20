@@ -11,7 +11,7 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-4.final" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="sly" Version="3.5.4" />
+        <PackageReference Include="sly" Version="3.6.0" />
     </ItemGroup>
 
 

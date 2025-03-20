@@ -14,12 +14,12 @@
         <PackageReference Include="xunit" Version="2.4.2"/>
         <PackageReference Include="NFluent" Version="3.0.4"/>
         <PackageReference Include="System.Memory" Version="4.5.5"/>
-        <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
+        <PackageReference Include="System.ValueTuple" Version="4.6.0"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
         <PackageReference Include="System.Collections.immutable" Version="9.0.2"/>
         <PackageReference Include="SharpCoreFileSystem" Version="1.1.2"/>
         <PackageReference Include="coverlet.msbuild" Version="3.1.2"/>
-        <PackageReference Include="sly" Version="3.5.4"/>
+        <PackageReference Include="sly" Version="3.6.0"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -72,6 +72,12 @@
         <EmbeddedResource Include="data\xmlGrammar.txt"/>
         <None Remove="data\csproj.project"/>
         <EmbeddedResource Include="data\csproj.project"/>
+        <None Remove="data\repeat\repeatparser.csharp" />
+        <EmbeddedResource Include="data\repeat\repeatparser.csharp" />
+        <None Remove="data\repeat\repeatlexer.csharp" />
+        <EmbeddedResource Include="data\repeat\repeatlexer.csharp" />
+        <None Remove="data\repeat\ParserTests.dll" />
+        <EmbeddedResource Include="data\repeat\ParserTests.dll" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,11 @@
+public enum BasicToken
+    {
+        [AlphaId]
+        ID,
+        
+        [Int]
+        INT,
+        
+        [Sugar(".")]
+        PERIOD
+    }

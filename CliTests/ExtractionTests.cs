@@ -281,7 +281,6 @@ parser DateParser;
     [Fact]
     public void GenerateThenExtractDateTest()
     {
-        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
         var grammar = @"
 genericLexer MinimalLexer;
 [Date] DATE : YYYYMMDD '.';

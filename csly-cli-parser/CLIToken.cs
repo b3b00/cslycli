@@ -254,12 +254,12 @@ public enum CLIToken
     
     [LexemeLabel("fr","tiret haut")]
     [LexemeLabel("en","dash")]
-    [Mode("EXT")]
+    [Mode("EXT", "default")]
     [Sugar("-")]
     DASH,
     
     
-    [Mode("EXT")]
+    [Mode("EXT", "default")]
     [LexemeLabel("fr","accolade ouvrante")]
     [LexemeLabel("en","opening curly brace")]
     [Sugar("{")]
@@ -267,7 +267,7 @@ public enum CLIToken
     
     [LexemeLabel("fr","accolade fermante")]
     [LexemeLabel("en","closing curly brace")]
-    [Mode("EXT")]
+    [Mode("EXT", "default")]
     [Sugar("}")]
     RIGHTCURL,
     

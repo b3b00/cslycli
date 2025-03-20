@@ -14,7 +14,7 @@
         <PackageReference Include="xunit" Version="2.4.2"/>
         <PackageReference Include="NFluent" Version="3.0.4" />
         <PackageReference Include="System.Memory" Version="4.5.5"/>
-        <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
+        <PackageReference Include="System.ValueTuple" Version="4.6.0"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
         <PackageReference Include="System.Collections.Immutable" Version="9.0.2"/>
         <PackageReference Include="coverlet.msbuild" Version="3.1.2"/>
@@ -76,6 +76,12 @@
       <None Remove="data\xmlGrammar.txt" />
       <EmbeddedResource Include="data\xmlGrammar.txt" />
       <None Remove="data\assemblies\XML.dll" />
+      <None Remove="data\repeat\repeatparser.csharp" />
+      <EmbeddedResource Include="data\repeat\repeatparser.csharp" />
+      <None Remove="data\repeat\repeatlexer.csharp" />
+      <EmbeddedResource Include="data\repeat\repeatlexer.csharp" />
+      <None Remove="data\repeat\ParserTests.dll" />
+      <EmbeddedResource Include="data\repeat\ParserTests.dll" />
     </ItemGroup>
 
 </Project>

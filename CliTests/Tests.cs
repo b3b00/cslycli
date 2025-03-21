@@ -938,5 +938,46 @@ return 100
         var t = builder.Getz(grammar,program,"indentedWhileGrammar",new List<(string format, SyntaxTreeProcessor processor)>() {{("DOT",ParserBuilder.SyntaxTreeToDotGraph)}});
         Check.That(t).IsOkResult();
     }
+
+    [Fact]
+    public void TestProcessorCallback()
+    {
+        //
+        // 1. compile model form meta.txt
+        //
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/indentedWhile.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "IndentedWhileGrammar");
+        Check.That(model).IsOkResult();
+        Check.That(model.Value).IsNotNull();
+
+        string program = @"
+# factorial 
+r:=1
+i:=1
+while i == 11 do 
+    r := r * i
+    print r
+    print i
+    i := i + 1
+    
+v1 := 48
+v2 := 152
+fstring := $""v1 :> {v1} < v2 :> {v2} < v3 :> {v1+v2} <  v4 :>{$""hello,"".$"" world""}< v5 :>{(? b -> $""true"" | $""false"")}< - end""
+print fstring
+
+return 100     
+";
+        
+        List<string> messages = new List<string>();
+        var logger = (string message) =>
+        {
+            messages.Add(message);
+        };
+        var r = _processor.GetJson(grammar, program, logger);
+        Check.That(r.IsOK).IsTrue();
+        Check.That(messages).CountIs(4);
+    }
         
 }

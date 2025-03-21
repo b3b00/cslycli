@@ -10,12 +10,15 @@ public  class Chrono
     private bool _isStarted = false;
     
     public bool IsStarted => _isStarted;
+
+    private readonly Action<string> _callback = null;
     
     public IDictionary<string,long> LabeledElapsedMilliseconds { get; set; }
         
     private Stopwatch chrono;
-    public Chrono()
+    public Chrono(Action<string> callback = null)
     {
+        _callback = callback;
         chrono = new Stopwatch();
         ElapsedMilliseconds = new List<long>();
         LabeledElapsedMilliseconds = new Dictionary<string, long>();
@@ -30,6 +33,8 @@ public  class Chrono
     public void Stop(string label = null)
     {
         chrono.Stop();
+        var message = $"{label ?? "no label"} : {chrono.ElapsedMilliseconds}";
+        Log(message);
         ElapsedMilliseconds.Add(chrono.ElapsedMilliseconds);
         if (!string.IsNullOrEmpty(label))
         {
@@ -40,7 +45,8 @@ public  class Chrono
     public void Tick(string label = null)
     {
         chrono.Stop();
-        Console.WriteLine($"{label ?? "no label" } : {chrono.ElapsedMilliseconds}");
+        var message = $"{label ?? "no label"} : {chrono.ElapsedMilliseconds}";
+        Log(message);
         ElapsedMilliseconds.Add(chrono.ElapsedMilliseconds);
         if (!string.IsNullOrEmpty(label))
         {
@@ -58,5 +64,13 @@ public  class Chrono
             builder.AppendLine($"{step.Key} : {step.Value} ms");
         }
         return builder.ToString();
+    }
+    
+    private void Log(string message)
+    {
+        if (_callback != null)
+        {
+            _callback(message);
+        }
     }
 }

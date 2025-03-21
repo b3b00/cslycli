@@ -28,10 +28,10 @@ public class CslyProcessor : ICslyProcessor
     /// </summary>
     /// <param name="grammar">the grammar specification</param>
     /// <returns></returns>
-    public CliResult<Model> CompileModel(string grammar)
+    public CliResult<Model> CompileModel(string grammar, Action<string> callback = null)
     {
         
-        Chrono chrono = new Chrono();
+        Chrono chrono = new Chrono(callback);
         chrono.Start();
         var model = _parserBuilder.CompileModel(grammar, "MinimalParser",chrono);
         chrono.Stop();
@@ -44,9 +44,9 @@ public class CslyProcessor : ICslyProcessor
         return model.Error;
     }
 
-    public CliResult<string> Compile(string grammar)
+    public CliResult<string> Compile(string grammar, Action<string> callback = null)
     {
-        Chrono chrono = new Chrono();
+        Chrono chrono = new Chrono(callback);
         chrono.Start();
         var buildResult = _parserBuilder.Compile(grammar, "MinimalParser",chrono);
         chrono.Stop();
@@ -65,9 +65,9 @@ public class CslyProcessor : ICslyProcessor
     /// <param name="grammar">The grammar specification</param>
     /// <param name="source">The source</param>
     /// <returns></returns>
-    public CliResult<string> Parse(string grammar, string source)
+    public CliResult<string> Parse(string grammar, string source, Action<string> callback = null)
     {
-        var chrono = new Chrono();
+        var chrono = new Chrono(callback);
         chrono.Start();
         var model = _parserBuilder.CompileModel(grammar, "Dummy__@@_4589_Parser", chrono);
         
@@ -103,9 +103,9 @@ public class CslyProcessor : ICslyProcessor
     /// <param name="grammar">Grammar spec</param>
     /// <param name="source">source</param>
     /// <returns></returns>
-    public CliResult<string> GetDot(string grammar, string source)
+    public CliResult<string> GetDot(string grammar, string source, Action<string> callback = null)
     {
-        var chrono = new Chrono();
+        var chrono = new Chrono(callback);
         var model = _parserBuilder.CompileModel(grammar, "MinimalParser", chrono);
         if (model.IsOk)
         {
@@ -145,9 +145,9 @@ public class CslyProcessor : ICslyProcessor
     /// <returns></returns>
    
     
-    public CliResult<string> GetMermaid(string grammar, string source)
+    public CliResult<string> GetMermaid(string grammar, string source, Action<string> callback = null)
     {
-        var chrono = new Chrono();
+        var chrono = new Chrono(callback);
         var model = _parserBuilder.CompileModel(grammar, "MinimalParser", chrono);
         if (model.IsOk)
         {
@@ -185,10 +185,10 @@ public class CslyProcessor : ICslyProcessor
     /// <param name="grammar">Grammar spec</param>
     /// <param name="source">source</param>
     /// <returns></returns>
-    public CliResult<string> GetJson(string grammar, string source)
+    public CliResult<string> GetJson(string grammar, string source, Action<string> callback = null)
     {
         
-        var chrono = new Chrono();
+        var chrono = new Chrono(callback);
         var model = _parserBuilder.CompileModel(grammar, "MinimalParser",chrono);
         if (model.IsOk)
         {
@@ -217,9 +217,9 @@ public class CslyProcessor : ICslyProcessor
     /// <param name="nameSpace">namespace of the generated source</param>
     /// <param name="outputType">expected output type for the parser</param>
     /// <returns></returns>
-    public CliResult<GeneratedSource> GenerateParser(string grammar, string nameSpace, string outputType)
+    public CliResult<GeneratedSource> GenerateParser(string grammar, string nameSpace, string outputType, Action<string> callback = null)
     {
-        Chrono chrono = new Chrono();
+        Chrono chrono = new Chrono(callback);
         
         var model = _parserBuilder.CompileModel(grammar, "MinimalParser", chrono);
         if (model.IsOk)
@@ -251,7 +251,7 @@ public class CslyProcessor : ICslyProcessor
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include=""sly"" Version=""3.6.0"" />
+        <PackageReference Include=""sly"" Version=""3.6.1"" />
     </ItemGroup>
 
 </Project>";
@@ -307,7 +307,7 @@ namespace {nameSpace} {{
     /// <param name="parser">parser source file content</param>
     /// <param name="lexer">lexer source file content</param>
     /// <returns></returns>
-    public CliResult<string> ExtractGrammar(string parser, string lexer)
+    public CliResult<string> ExtractGrammar(string parser, string lexer, Action<string> callback = null)
     {
         var extractor = new SpecificationExtractor();
         var grammar  = extractor.ExtractFromSource(lexer, parser);
@@ -315,9 +315,9 @@ namespace {nameSpace} {{
 
     }
 
-    public CliResult<ISyntaxNode> GetSyntaxTree(string grammar, string source)
+    public CliResult<ISyntaxNode> GetSyntaxTree(string grammar, string source, Action<string> callback = null)
     {
-        var chrono = new Chrono();
+        var chrono = new Chrono(callback);
         var model = _parserBuilder.CompileModel(grammar, "MinimalParser", chrono);
         if (model.IsOk)
         {
@@ -336,7 +336,7 @@ namespace {nameSpace} {{
 
     }
 
-    public CliResult<string> Decompile(string lexerFqn, string parserFqn, byte[] assemblyBytes)
+    public CliResult<string> Decompile(string lexerFqn, string parserFqn, byte[] assemblyBytes, Action<string> callback = null)
     {
         try
         {

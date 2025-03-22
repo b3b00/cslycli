@@ -36,7 +36,7 @@ There are 4 usages of csly-cli :
     
 ### web playground
 
-a subset of the CLI functions is available as a PWA : [CSLY Playground]([https://](https://b3b00.github.io/CslyViz/)
+a subset of the CLI functions is available as a PWA : [CSLY Playground](https://https://b3b00.github.io/CslyViz/)
 
 ### testing the parser
 

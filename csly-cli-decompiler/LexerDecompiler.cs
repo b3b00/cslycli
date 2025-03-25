@@ -124,6 +124,17 @@ public class LexerDecompiler
                     }
                     return $"[String] {name};";
                 }
+                case GenericToken.Char:
+                {
+                    ;
+                    if (lexem.GenericTokenParameters.Any())
+                    {
+                        var args =lexem.GenericTokenParameters.Take(2).ToList();
+                        
+                        return $"[Character] {name} : {string.Join(" ", args.Select(x => $"\"{(x.StartsWith("\\") || x.StartsWith("\"") ? "\\"+x : x)}\""))};";
+                    }
+                    return $"[Character] {name};";
+                }
             }
             return $"[] {name}";
             
@@ -191,10 +202,14 @@ public class LexerDecompiler
                         foreach (var labelAttribute in labelAttributes)
                         {
                             var label = labelAttribute as LexemeLabelAttribute;
-                            builder.AppendLine($@"@label(""{label.Language}"",""{label.Label}"")");
+                            builder.AppendLine($@"@label(""{label.Language}"",""{label.Label}"");");
                         }
                     }
-                    
+
+                    if (value.ToString() == "CHAR")
+                    {
+                        ;
+                    }
                     var lexemeAttributes = value.GetAttributesOfType<LexemeAttribute>();
                     if (lexemeAttributes!= null && lexemeAttributes.Any())
                     {

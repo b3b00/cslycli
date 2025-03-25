@@ -132,8 +132,8 @@ public class CLIParser
 
 
     [Production(
-        "token : attribute* LEFTBRACKET[d] [SUGARTOKEN|SINGLELINECOMMENT|HEXATOKEN] RIGHTBRACKET[d] ID COLON[d] STRING SEMICOLON[d]")]
-    public ICLIModel OneArgToken(List<ICLIModel> attributes, Token<CLIToken> type, Token<CLIToken> id,
+        "token : attribute* LEFTBRACKET[d] [SUGARTOKEN|SINGLELINECOMMENT|HEXATOKEN] RIGHTBRACKET[d] IdentifierOrString COLON[d] STRING SEMICOLON[d]")]
+    public ICLIModel OneArgToken(List<ICLIModel> attributes, Token<CLIToken> type, ICLIModel id,
         Token<CLIToken> value, ParserContext context)
     {
         var tokenType = type.TokenID switch
@@ -144,14 +144,15 @@ public class CLIParser
             CLIToken.HEXATOKEN => GenericToken.Hexa,
             _ => GenericToken.SugarToken
         };
-        context.AddEnumName(id.Value);
-        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, id.Value,
+        var idValue = (id as IdentifierOrString).Value;
+        context.AddEnumName(idValue);
+        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, idValue,
             value.StringWithoutQuotes) { Position = type.Position };
     }
 
     [Production(
-        "token : attribute* LEFTBRACKET[d] [STRINGTOKEN|CHARTOKEN|MULTILINECOMMENT] RIGHTBRACKET[d] ID COLON[d] STRING STRING SEMICOLON[d]")]
-    public ICLIModel TwoArgToken(List<ICLIModel> attributes, Token<CLIToken> type, Token<CLIToken> id,
+        "token : attribute* LEFTBRACKET[d] [STRINGTOKEN|CHARTOKEN|MULTILINECOMMENT] RIGHTBRACKET[d] IdentifierOrString COLON[d] STRING STRING SEMICOLON[d]")]
+    public ICLIModel TwoArgToken(List<ICLIModel> attributes, Token<CLIToken> type, ICLIModel id,
         Token<CLIToken> arg1, Token<CLIToken> arg2, ParserContext context)
     {
         var tokenType = type.TokenID switch
@@ -161,52 +162,54 @@ public class CLIParser
             CLIToken.MULTILINECOMMENT => GenericToken.Comment,
             _ => GenericToken.SugarToken
         };
-        context.AddEnumName(id.Value);
-        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, id.Value,
+        var idValue = (id as IdentifierOrString).Value; 
+        context.AddEnumName(idValue);
+        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, idValue,
                 arg1.StringWithoutQuotes.Replace("\\\\", "\\"), arg2.StringWithoutQuotes.Replace("\\\\", "\\"))
             { Position = type.Position };
     }
 
     [Production(
-        "token : attribute* LEFTBRACKET[d] [KEYWORDTOKEN] RIGHTBRACKET[d] ID COLON[d]  STRING* SEMICOLON[d]")]
-    public ICLIModel ManyArgToken(List<ICLIModel> attributes, Token<CLIToken> type, Token<CLIToken> id,
+        "token : attribute* LEFTBRACKET[d] [KEYWORDTOKEN] RIGHTBRACKET[d] IdentifierOrString COLON[d]  STRING* SEMICOLON[d]")]
+    public ICLIModel ManyArgToken(List<ICLIModel> attributes, Token<CLIToken> type, ICLIModel id,
         List<Token<CLIToken>> args, ParserContext context)
     {
         var tokenType = GenericToken.KeyWord;
-        context.AddEnumName(id.Value);
+        var idValue = (id as IdentifierOrString).Value;
+        context.AddEnumName(idValue);
         var aargs = args.Select(arg => arg.StringWithoutQuotes.Replace("\\\\", "\\")).ToArray();
-        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, id.Value, aargs)
+        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, idValue, aargs)
             { Position = type.Position };
     }
 
     [Production(
-        "token :attribute* LEFTBRACKET[d] DATETOKEN[d] RIGHTBRACKET[d] ID COLON[d] [DDMMYYYY|YYYYMMDD] CHAR SEMICOLON[d]")]
-    public ICLIModel DateToken(List<ICLIModel> attributes, Token<CLIToken> id, Token<CLIToken> dateType,
+        "token :attribute* LEFTBRACKET[d] DATETOKEN[d] RIGHTBRACKET[d] IdentifierOrString COLON[d] [DDMMYYYY|YYYYMMDD] CHAR SEMICOLON[d]")]
+    public ICLIModel DateToken(List<ICLIModel> attributes, ICLIModel id, Token<CLIToken> dateType,
         Token<CLIToken> separator, ParserContext context)
     {
         var tokenType = GenericToken.Date;
         string format = dateType.TokenID.ToString();
-
-        context.AddEnumName(id.Value);
-        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, id.Value, format,
+        var idValue = (id as IdentifierOrString).Value;
+        context.AddEnumName(idValue);
+        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, idValue, format,
             separator.CharValue.ToString()) { Position = id.Position };
     }
 
     [Production(
-        "token :attribute* LEFTBRACKET[d] UPTOTOKEN[d] RIGHTBRACKET[d] ID COLON[d] STRING* SEMICOLON[d]")]
-    public ICLIModel UpToToken(List<ICLIModel> attributes, Token<CLIToken> id, List<Token<CLIToken>> delimiters,
+        "token :attribute* LEFTBRACKET[d] UPTOTOKEN[d] RIGHTBRACKET[d] IdentifierOrString COLON[d] STRING* SEMICOLON[d]")]
+    public ICLIModel UpToToken(List<ICLIModel> attributes, ICLIModel id, List<Token<CLIToken>> delimiters,
         ParserContext context)
     {
         var tokenType = GenericToken.UpTo;
-
-        context.AddEnumName(id.Value);
-        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, id.Value,
+        var idValue = (id as IdentifierOrString).Value;
+        context.AddEnumName(idValue);
+        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, idValue,
             delimiters.Select(x => x.StringWithoutQuotes).ToArray()) { Position = id.Position };
     }
 
     [Production(
-        "token : attribute* LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN|HEXATOKEN] RIGHTBRACKET[d] ID SEMICOLON[d]")]
-    public ICLIModel NoArgToken(List<ICLIModel> attributes, Token<CLIToken> type, Token<CLIToken> id,
+        "token : attribute* LEFTBRACKET[d] [STRINGTOKEN|INTTOKEN|ALPHAIDTOKEN|ALPHANUMIDTOKEN|ALPHANUMDASHIDTOKEN|DOUBLETOKEN|HEXATOKEN] RIGHTBRACKET[d] IdentifierOrString SEMICOLON[d]")]
+    public ICLIModel NoArgToken(List<ICLIModel> attributes, Token<CLIToken> type, ICLIModel id,
         ParserContext context)
     {
         var tokenType = type.TokenID switch
@@ -227,24 +230,26 @@ public class CLIParser
             CLIToken.ALPHANUMDASHIDTOKEN => IdentifierType.AlphaNumericDash,
             _ => IdentifierType.Alpha
         };
-        context.AddEnumName(id.Value);
+        var idValue = (id as IdentifierOrString).Value;
+        context.AddEnumName(idValue);
         if (type.TokenID == CLIToken.STRINGTOKEN)
         {
-            return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, id.Value, idType, "\"", "\\")
+            return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, idValue, idType, "\"", "\\")
                 { Position = id.Position };
         }
 
-        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, id.Value, idType)
+        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, idValue, idType)
             { Position = id.Position };
     }
 
-    [Production("token : attribute* LEFTBRACKET[d] EXTENSIONTOKEN[d] RIGHTBRACKET[d] ID extension ")]
-    public ICLIModel ExtensionToken(List<ICLIModel> attributes, Token<CLIToken> id, ICLIModel extension,
+    [Production("token : attribute* LEFTBRACKET[d] EXTENSIONTOKEN[d] RIGHTBRACKET[d] IdentifierOrString extension ")]
+    public ICLIModel ExtensionToken(List<ICLIModel> attributes, ICLIModel id, ICLIModel extension,
         ParserContext context)
     {
-        (extension as ExtensionTokenModel).Name = id.Value;
+        var idValue = (id as IdentifierOrString).Value;
+        (extension as ExtensionTokenModel).Name = idValue;
         (extension as ExtensionTokenModel).SetAttributes(attributes.Cast<AttributeModel>());
-        context.AddEnumName(id.Value);
+        context.AddEnumName(idValue);
         return (extension as ExtensionTokenModel);
     }
 
@@ -522,6 +527,9 @@ public class CLIParser
     {
         return BuildTerminalOrNonTerminal(item, context);
     }
+
+    [Production("item : choiceclause")]
+    public IClause ClauseChoice(IClause choice, ParserContext context) => choice; 
 
 
     #region clauses

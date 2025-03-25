@@ -126,7 +126,6 @@ public class LexerDecompiler
                 }
                 case GenericToken.Char:
                 {
-                    ;
                     if (lexem.GenericTokenParameters.Any())
                     {
                         var args =lexem.GenericTokenParameters.Take(2).ToList();
@@ -206,10 +205,6 @@ public class LexerDecompiler
                         }
                     }
 
-                    if (value.ToString() == "CHAR")
-                    {
-                        ;
-                    }
                     var lexemeAttributes = value.GetAttributesOfType<LexemeAttribute>();
                     if (lexemeAttributes!= null && lexemeAttributes.Any())
                     {

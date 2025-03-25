@@ -251,16 +251,17 @@ public class LexerSpecificationExtractor
             {
                 foreach (var attribute in attributes.Attributes)
                 {
-                    if (attribute.Name.ToString() == "Lexer")
+                    if (attribute.ArgumentList != null && attribute.Name.ToString() == "Lexer")
                     {
                         var args = attribute.ArgumentList.Arguments;
 
-                        if (args != null && args.Any())
+                        if (args.Any())
                         {
                             foreach (var arg in args)
                             {
                                 var value = arg.Expression;
-                                var name = arg.NameEquals.Name.ToString();
+                                var name = arg?.NameEquals?.Name.ToString();
+                                
                                 if (name == "IgnoreEOL")
                                 {
                                     builder.AppendLine($"[IgnoreEndOfLines({value.ToString()})]");

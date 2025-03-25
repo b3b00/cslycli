@@ -260,7 +260,7 @@ public class LexerSpecificationExtractor
                             foreach (var arg in args)
                             {
                                 var value = arg.Expression;
-                                var name = arg?.NameEquals?.Name.ToString();
+                                var name = arg.NameEquals?.Name.ToString();
                                 
                                 if (name == "IgnoreEOL")
                                 {
@@ -380,8 +380,11 @@ public class LexerSpecificationExtractor
                             }
                         }
 
-                        var lexeme = Lexeme(member.Identifier.Text, attr.Name.ToString(), pstrings.ToArray());
-                        builder.AppendLine(lexeme);
+                        if (attr != null)
+                        {
+                            var lexeme = Lexeme(member.Identifier.Text, attr.Name.ToString(), pstrings.ToArray());
+                            builder.AppendLine(lexeme);
+                        }
                     }
 
                     builder.AppendLine();

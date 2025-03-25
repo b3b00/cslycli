@@ -251,16 +251,17 @@ public class LexerSpecificationExtractor
             {
                 foreach (var attribute in attributes.Attributes)
                 {
-                    if (attribute.Name.ToString() == "Lexer")
+                    if (attribute.ArgumentList != null && attribute.Name.ToString() == "Lexer")
                     {
                         var args = attribute.ArgumentList.Arguments;
 
-                        if (args != null && args.Any())
+                        if (args.Any())
                         {
                             foreach (var arg in args)
                             {
                                 var value = arg.Expression;
-                                var name = arg.NameEquals.Name.ToString();
+                                var name = arg.NameEquals?.Name.ToString();
+                                
                                 if (name == "IgnoreEOL")
                                 {
                                     builder.AppendLine($"[IgnoreEndOfLines({value.ToString()})]");
@@ -325,58 +326,62 @@ public class LexerSpecificationExtractor
                         builder.AppendLine(lexeme);
 
                     }
-                   
-                    foreach (var attr in attributes.SelectMany(x => x.Attributes).Where(x => !modeAttributes.Contains(x.Name.ToString())))
+
+                    foreach (var attr in attributes.SelectMany(x => x.Attributes)
+                                 .Where(x => x.Name.ToString() == "LexemeLabel"))
                     {
-                        if (attr.Name.ToString().Contains("LexemeLabel"))
+                        string[] lpstrings = new string[] { };
+                        if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
                         {
-                            string[] lpstrings = new string[] { };
-                            if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
-                            {
-                                lpstrings = attr.ArgumentList.Arguments.Select(x => x.Expression.ExprToString())
-                                    .ToArray();
-                            }
-
-                            var label = $@"@label(""{lpstrings[0]}"",""{lpstrings[1]}"");";
-                            builder.AppendLine(label);
+                            lpstrings = attr.ArgumentList.Arguments.Select(x => x.Expression.ExprToString())
+                                .ToArray();
                         }
-                        else
+
+                        var label = $@"@label(""{lpstrings[0]}"",""{lpstrings[1]}"");";
+                        builder.AppendLine(label);
+                    }
+
+                    foreach (var attr in attributes.SelectMany(x => x.Attributes)
+                                 .Where(x => !modeAttributes.Contains(x.Name.ToString()) &&
+                                             x.Name.ToString() != "LexemeLabel"))
+                    {
+                        List<string> pstrings = new List<string> { };
+                        if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
                         {
-                            List<string> pstrings = new List<string> { };
-                            if (attr?.ArgumentList?.Arguments != null && attr.ArgumentList.Arguments.Any())
+                            Predicate<AttributeArgumentSyntax> filter = e =>
                             {
-                                Predicate<AttributeArgumentSyntax> filter = e =>
+                                if (e.NameColon != null && e.NameColon.Name.Identifier.Text == "channel")
                                 {
-                                    if (e.NameColon != null && e.NameColon.Name.Identifier.Text == "channel")
-                                    {
-                                        return false;
-                                    }
+                                    return false;
+                                }
 
-                                    if (e.NameColon != null && e.NameEquals.Name.Identifier.Text == "channel")
-                                    {
-                                        return false;
-                                    }
-
-                                    return true;
-                                };
-
-                                for (int i = 0; i < attr.ArgumentList.Arguments.Count; i++)
+                                if (e.NameColon != null && e.NameEquals.Name.Identifier.Text == "channel")
                                 {
-                                    var arg = attr.ArgumentList.Arguments[i];
-                                    if (filter(arg))
+                                    return false;
+                                }
+
+                                return true;
+                            };
+
+                            for (int i = 0; i < attr.ArgumentList.Arguments.Count; i++)
+                            {
+                                var arg = attr.ArgumentList.Arguments[i];
+                                if (filter(arg))
+                                {
+                                    if (attr.Name.ToString() == "Lexeme" && i == 0)
                                     {
-                                        if (attr.Name.ToString() == "Lexeme" && i == 0)
-                                        {
-                                            pstrings.Add(arg.Expression.ExprToString());
-                                        }
-                                        else
-                                        {
-                                            pstrings.Add(arg.Expression.ToString());
-                                        }
+                                        pstrings.Add(arg.Expression.ExprToString());
+                                    }
+                                    else
+                                    {
+                                        pstrings.Add(arg.Expression.ToString());
                                     }
                                 }
                             }
+                        }
 
+                        if (attr != null)
+                        {
                             var lexeme = Lexeme(member.Identifier.Text, attr.Name.ToString(), pstrings.ToArray());
                             builder.AppendLine(lexeme);
                         }

@@ -6,6 +6,7 @@ using clsy.cli.builder.parser;
 using csly_cli_api;
 using csly.cli.model.parser;
 using csly.cli.model.tree;
+using csly.cli.parser;
 using decompiler;
 using NFluent;
 using SharpFileSystem.FileSystems;
@@ -979,5 +980,17 @@ return 100
         Check.That(r.IsOK).IsTrue();
         Check.That(messages).CountIs(4);
     }
-        
+
+
+    [Fact]
+    public void TestDecompileMeta()
+    {
+        var decompiler = new Decompiler();
+        var decompiled = decompiler.Decompile(typeof(CLIToken), typeof(CLIParser));
+        Check.That(decompiled).IsNotNull().And.IsNotEmpty();
+        var rc = _processor.CompileModel(decompiled);
+        Check.That(rc).IsOkCliResult();
+        var selfCompiled = _processor.GetJson(decompiled, decompiled);
+        Check.That(selfCompiled).IsOkCliResult();
+    }
 }

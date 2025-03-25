@@ -302,6 +302,9 @@ clauses can be (all examples will use the simple lexer defined above) :
      <br>``` oneOrMore : (ID STRING)+;```
    - zero or more with '*' : 
      <br>``` zeroOrMore : ID*;```
+   - repetition with :
+      - `{x}` : repeat x times
+      - `{x-y}`: repeat x to y times   
  - a optional clause with '?' : 
    <br>```optional : [IF|THEN|ELSE]?``` 
  - an explicit token as a string surrounded by ' : 

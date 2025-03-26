@@ -528,6 +528,8 @@ discardeditem : item DISCARD?;
 
 clause : item ZEROORMORE[d];
 clause : item ONEORMORE[d];
+clause : item LEFTCURL[d] INT RIGHTCURL[d];
+clause : item LEFTCURL[d] INT DASH[d] INT RIGHTCURL[d];
 
 clause : item OPTION;
 
@@ -539,12 +541,17 @@ choiceclause : LEFTBRACKET[d]  item ( OR[d] item)* RIGHTBRACKET[d]  ;
 
 clause : choiceclause ONEORMORE[d] ;
 clause : choiceclause ZEROORMORE[d] ;
+clause : choiceclause LEFTCURL[d] INT RIGHTCURL[d];
+clause : choiceclause LEFTCURL[d] INT DASH[d] INT RIGHTCURL[d];
 clause : choiceclause OPTION[d] ;
+
 clause : group;
 group : LEFTPAREN[d] discardeditem* RIGHTPAREN[d] ;
 
 clause : group ONEORMORE[d] ;
 clause : group ZEROORMORE [d];
+clause : group LEFTCURL[d] INT RIGHTCURL[d];
+clause : group LEFTCURL[d] INT DASH[d] INT RIGHTCURL[d];
 clause : group OPTION[d] ;
 
 

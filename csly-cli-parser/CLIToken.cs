@@ -96,6 +96,9 @@ public enum CLIToken
     [LexemeLabel("fr","mot clé 'AlphaNumDashId'")]
     [LexemeLabel("en","'AlphanumDashId' keyword")]
     [Keyword("AlphaNumDashId")] ALPHANUMDASHIDTOKEN,
+    [LexemeLabel("fr","mot clé 'CustomId'")]
+    [LexemeLabel("en","'CustomId' keyword")]
+    [Keyword("CustomId")] CUSTOMIDTOKEN,
     [LexemeLabel("fr","mot clé 'Keyword'")]
     [LexemeLabel("en","'Keyword' keyword")]
     [Keyword("KeyWord")] KEYWORDTOKEN,

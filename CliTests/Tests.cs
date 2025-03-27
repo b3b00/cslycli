@@ -993,4 +993,36 @@ return 100
         var selfCompiled = _processor.GetJson(decompiled, decompiled);
         Check.That(selfCompiled).IsOkCliResult();
     }
+
+    [Fact]
+    public void TestCustomId()
+    {
+        var builder = new ParserBuilder();
+        var grammar = @"
+genericLexer customLexer;
+[CustomId] ID : ""_A-Za-z"" ""---_-_0-9A-Za-z."";
+parser customParser;
+-> root : ID+; 
+";
+        
+        var model = builder.CompileModel(grammar, "CustomIdGrammar");
+        Check.That(model).IsOkResult();
+        Check.That(model.Value).IsNotNull();
+
+        string program = @"
+foo_bar.baz.qux-45.quux_66 hello _world666
+";
+        var t = builder.Getz(grammar,program,"CustomIdGrammar",new List<(string format, SyntaxTreeProcessor processor)>() {{("DOT",ParserBuilder.SyntaxTreeToDotGraph)}});
+        Check.That(t).IsOkResult();
+
+        var generated = _processor.GenerateParser(grammar,"ns","object");
+        Check.That(generated).IsNotNull();
+        Check.That(generated).IsOkCliResult();
+        Check.That(generated.Result.Lexer).IsNotNull().And.IsNotEmpty();
+        Check.That(generated.Result.Lexer).Contains("[CustomId(\"_A-Za-z\", \"---_-_0-9A-Za-z.\")]");
+
+        var extracted = _processor.ExtractGrammar(generated.Result.Parser, generated.Result.Lexer);
+        Check.That(extracted).IsOkCliResult();
+        Check.That(extracted.Result).Contains("[CustomId] ID : \"_A-Za-z\" \"---_-_0-9A-Za-z.\";");
+    }
 }

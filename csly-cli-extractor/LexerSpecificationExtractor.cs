@@ -80,7 +80,20 @@ public class LexerSpecificationExtractor
                             }
                         }
                     }
+                    return $"[{attr}] {name};";
                 }
+                else if (args.Length == 3)
+                {
+                    if (Enum.TryParse<IdentifierType>(args[0].Replace($"{nameof(IdentifierType)}.", ""),
+                            out var idType))
+                    {
+                        if (idType == IdentifierType.Custom)
+                        {
+                            return $"[CustomId] {name} : {args[1]} {args[2]};";
+                        }
+                    }
+                }
+
                 return $"[{attr}] {name};";
             }
             case GenericToken.Int:
@@ -176,6 +189,13 @@ public class LexerSpecificationExtractor
         else if (type == "AlphaNumDashId")
         {
             return Lexeme(name, GenericToken.Identifier, IdentifierType.AlphaNumericDash.ToString());
+        }
+        else if (type == "CustomId")
+        {
+            var customArgs = new List<string>();
+            customArgs.Add(IdentifierType.Custom.ToString());
+            customArgs.AddRange(args);
+            return Lexeme(name, GenericToken.Identifier, customArgs.ToArray());
         }
         else if (type == "String")
         {

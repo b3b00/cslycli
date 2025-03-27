@@ -413,6 +413,12 @@ public class LexerGenerator
                                 builder.AppendLine($"\t\t[AlphaNumDashId]");
                                 break;
                             }
+                            case IdentifierType.Custom:
+                            {
+                                var patterns = string.Join(", ",token.Args.Select(x => $@"""{x}"""));
+                                builder.AppendLine($"\t\t[CustomId({patterns})]");
+                                break;
+                            }
                             default:
                             {
                                 break;

@@ -23,7 +23,8 @@ namespace cslycli
                     GenerateOptions,
                     GenerateProjectOptions,
                     ExtractOptions,
-                    DecompileOptions
+                    DecompileOptions,
+                    CompileOptions
                 >(args)
                 .MapResult(
                     (TestOptions test) => Test(test, processor),
@@ -32,6 +33,7 @@ namespace cslycli
                         Generate(generateProject.ToGenerateOptions(), processor, true),
                     (ExtractOptions extract) => Extract(extract, processor),
                     (DecompileOptions decompile) => Decompile(decompile, processor),
+                    (CompileOptions compile) => Compile(compile, processor),
                     errors =>
                     {
                         foreach (Error error in errors)
@@ -42,6 +44,27 @@ namespace cslycli
                         return 1;
                     }
                 );
+        }
+
+        private static int Compile(CompileOptions compile, CslyProcessor processor)
+        {
+            string grammarSource = File.ReadAllText(compile.Grammar);
+            var result = processor.Compile(grammarSource);
+            if (result.IsError)
+            {
+                Console.WriteLine("Errors in grammar specification file:");
+                foreach (string error in result.Errors)
+                {
+                    Console.WriteLine(error);
+                }
+
+                return 1;
+            }
+            else
+            {
+                Console.WriteLine("grammar is OK!");
+                return 0;
+            }
         }
 
         private static int Decompile(DecompileOptions decompile, CslyProcessor processor)

@@ -151,7 +151,7 @@ public class CLIParser
     }
 
     [Production(
-        "token : attribute* LEFTBRACKET[d] [STRINGTOKEN|CHARTOKEN|MULTILINECOMMENT] RIGHTBRACKET[d] IdentifierOrString COLON[d] STRING STRING SEMICOLON[d]")]
+        "token : attribute* LEFTBRACKET[d] [STRINGTOKEN|CHARTOKEN|MULTILINECOMMENT|CUSTOMIDTOKEN] RIGHTBRACKET[d] IdentifierOrString COLON[d] STRING STRING SEMICOLON[d]")]
     public ICLIModel TwoArgToken(List<ICLIModel> attributes, Token<CLIToken> type, ICLIModel id,
         Token<CLIToken> arg1, Token<CLIToken> arg2, ParserContext context)
     {
@@ -160,11 +160,13 @@ public class CLIParser
             CLIToken.STRINGTOKEN => GenericToken.String,
             CLIToken.CHARTOKEN => GenericToken.Char,
             CLIToken.MULTILINECOMMENT => GenericToken.Comment,
+            CLIToken.CUSTOMIDTOKEN => GenericToken.Identifier,
             _ => GenericToken.SugarToken
         };
         var idValue = (id as IdentifierOrString).Value; 
         context.AddEnumName(idValue);
-        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, idValue,
+        
+        return new TokenModel(attributes.Cast<AttributeModel>().ToList(), tokenType, idValue,IdentifierType.Custom,
                 arg1.StringWithoutQuotes.Replace("\\\\", "\\"), arg2.StringWithoutQuotes.Replace("\\\\", "\\"))
             { Position = type.Position };
     }
@@ -390,7 +392,7 @@ public class CLIParser
     #region parser
     
     [Production(@"IdentifierOrString : [ID | GENERICLEXER | STRINGTOKEN |  PARSER | CHARTOKEN | INTTOKEN | DATETOKEN | DOUBLETOKEN | HEXATOKEN | 
-                ALPHAIDTOKEN | ALPHANUMIDTOKEN | ALPHANUMDASHIDTOKEN | KEYWORDTOKEN | SUGARTOKEN | SINGLELINECOMMENT | UPTOTOKEN | 
+                ALPHAIDTOKEN | ALPHANUMIDTOKEN | ALPHANUMDASHIDTOKEN | CUSTOMIDTOKEN | KEYWORDTOKEN | SUGARTOKEN | SINGLELINECOMMENT | UPTOTOKEN | 
                 MULTILINECOMMENT | EXTENSIONTOKEN | PUSH | MODE | POP | TRUE | FALSE | INDENT | UINDENT | YYYYMMDD | DDMMYYYY | STRING ]")]
     public ICLIModel IdOrString(Token<CLIToken> token, ParserContext context)
     {

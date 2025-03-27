@@ -22,6 +22,14 @@ public class TestOptions
 
 }
 
+[Verb("compile")]
+public class CompileOptions 
+{
+    [Option('g',"grammar",Required = true,HelpText = "path to grammar file")]
+    public string Grammar { get; set; }
+
+}
+
 public enum OutputFormat
 {
     NO = 0,

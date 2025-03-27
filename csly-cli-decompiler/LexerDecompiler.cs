@@ -69,6 +69,10 @@ public class LexerDecompiler
                         {
                             return $"[AlphaNumDashId] {name};";
                         }
+                        case IdentifierType.Custom:
+                        {
+                            return $@"[CustomId] {name} : ""{lexem.IdentifierStartPattern}"" ""{lexem.IdentifierRestPattern}"";";
+                        }
                     }
 
                     break;

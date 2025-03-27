@@ -370,16 +370,30 @@ public class LexerBuilder
                     IdentifierType.Alpha => typeof(AlphaIdAttribute),
                     IdentifierType.AlphaNumeric => typeof(AlphaNumIdAttribute),
                     IdentifierType.AlphaNumericDash => typeof(AlphaNumDashIdAttribute),
+                    IdentifierType.Custom => typeof(CustomIdAttribute),
                     _ => typeof(AlphaIdAttribute)
                 };
-                ConstructorInfo constructorInfo = attributeType.GetConstructor(
-                    new Type[0] { });
+                if (identifierType != IdentifierType.Custom)
+                {
+                    ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                        new Type[0] { });
 
-                CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
-                    constructorInfo, new object[] { });
+                    CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                        constructorInfo, new object[] { }); 
 
-                builder.SetCustomAttribute(customAttributeBuilder);
-                
+                    builder.SetCustomAttribute(customAttributeBuilder);
+                }
+                else
+                {
+                    ConstructorInfo constructorInfo = attributeType.GetConstructor(
+                        new Type[2] {typeof(string), typeof(string) });
+
+                    CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(
+                        constructorInfo, new object[] { args[0], args[1]});
+
+                    builder.SetCustomAttribute(customAttributeBuilder);
+                }
+
                 AddJsonAttribute(builder);
             }
             else if (genericToken == GenericToken.Extension)

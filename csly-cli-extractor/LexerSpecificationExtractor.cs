@@ -190,6 +190,13 @@ public class LexerSpecificationExtractor
         {
             return Lexeme(name, GenericToken.Identifier, IdentifierType.AlphaNumericDash.ToString());
         }
+        else if (type == "CustomId")
+        {
+            var customArgs = new List<string>();
+            customArgs.Add(IdentifierType.Custom.ToString());
+            customArgs.AddRange(args);
+            return Lexeme(name, GenericToken.Identifier, customArgs.ToArray());
+        }
         else if (type == "String")
         {
             return Lexeme(name, GenericToken.String, args);

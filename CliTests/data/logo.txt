@@ -1,0 +1,39 @@
+﻿genericLexer logolexer;
+
+[AlphaNumId] ID;
+[Int] NUMBER;
+[KeyWord] AV : "AV";
+[KeyWord] RE : "RE";
+[KeyWord] TD : "TD";
+[KeyWord] TG : "TG";
+[KeyWord] BC : "BC";
+[KeyWord] LC : "LC";
+[KeyWord] CLEAN: "NETTOIE";
+[KeyWord] HOME : "MAISON";
+[KeyWord] REPEAT : "REPETE";
+[KeyWord] PO : "PO";
+[KeyWord] END : "FIN";
+[Sugar] LBRACK : "[";
+[Sugar] RBRANCK : "]";
+[Sugar] COLON : ":";
+parser logoparser;
+
+-> program   :   instruction*;
+
+instruction  : [ command  | repeat   | procedure_definition | procedure_call ];
+
+command  : [ AV | RE |TD | TG ]  NUMBER;
+command : [ BC | LC];
+command : [CLEAN | HOME];
+
+
+
+repeat         : REPEAT NUMBER "[" instruction* "]" ;
+
+procedure_definition : PO ID parameter* instruction* END;
+
+procedure_call : ID expression*  ;
+
+parameter    : COLON ID ;
+expression  : NUMBER;
+expression : parameter ;

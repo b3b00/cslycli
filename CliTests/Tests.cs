@@ -941,6 +941,28 @@ return 100
     }
 
     [Fact]
+    public void TestLogo()
+    {
+        EmbeddedResourceFileSystem fs = new EmbeddedResourceFileSystem(Assembly.GetAssembly(typeof(Tests)));
+        var grammar = fs.ReadAllText("/data/logo.txt");
+        var builder = new ParserBuilder();
+        var model = builder.CompileModel(grammar, "Logo");
+        Check.That(model).IsOkResult();
+        Check.That(model.Value).IsNotNull();
+
+        string program = @"
+PO CARRE :LONGUEUR
+  RÉPÈTE 4 [ AV :LONGUEUR TD 90 ]
+FIN
+CARRE 100";
+        var t = builder.Getz(grammar, program, "Logo", new List<(string format, SyntaxTreeProcessor processor)>() {("DOT", ParserBuilder.SyntaxTreeToDotGraph)});
+        Check.That(t).IsOkResult();
+        var content = t.Value.First().content;
+        Assert.NotNull(content);
+        Assert.NotEmpty(content);
+    }
+    
+    [Fact]
     public void TestProcessorCallback()
     {
         //

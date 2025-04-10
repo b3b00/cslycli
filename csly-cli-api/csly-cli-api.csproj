@@ -5,8 +5,8 @@
         <RootNamespace>csly_cli_api</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <version>1.7.0</version>
-        <PackageVersion>1.7.0</PackageVersion>
+        <version>1.7.1</version>
+        <PackageVersion>1.7.1</PackageVersion>
     </PropertyGroup>
     <PropertyGroup>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="sly" Version="3.6.2" />
+        <PackageReference Include="sly" Version="3.6.4" />
     </ItemGroup>
 
     <ItemGroup>

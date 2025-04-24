@@ -251,7 +251,7 @@ public class CslyProcessor : ICslyProcessor
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include=""sly"" Version=""3.7.0"" />
+        <PackageReference Include=""sly"" Version=""3.7.2"" />
     </ItemGroup>
 
 </Project>";

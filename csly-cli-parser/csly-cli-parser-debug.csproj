@@ -10,6 +10,7 @@
                 <ProjectReference Include="..\..\csly\src\sly\sly.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="System.Collections.Immutable" Version="9.0.2"/>
         <PackageReference Include="System.Memory" Version="4.5.5"/>
         <PackageReference Include="System.ValueTuple" Version="4.6.0"/>

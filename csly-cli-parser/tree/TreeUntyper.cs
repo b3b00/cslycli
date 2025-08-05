@@ -8,7 +8,7 @@ namespace csly.cli.model.tree;
 
 
 
-public class TreeUntyper<T,O> where T :struct
+public class TreeUntyper<T,O> where T : struct, Enum
 {
     public static ISyntaxNode? Untype(ISyntaxNode<T,O> node)
     {

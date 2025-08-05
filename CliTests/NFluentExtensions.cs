@@ -128,7 +128,7 @@ public static class NFluentParseExtensions
         }
 
         
-        public static ICheckLink<ICheck<ParseResult<IN,OUT>>> IsOkParsing<IN,OUT>(this ICheck<ParseResult<IN,OUT>> context) where IN : struct
+        public static ICheckLink<ICheck<ParseResult<IN,OUT>>> IsOkParsing<IN,OUT>(this ICheck<ParseResult<IN,OUT>> context) where IN : struct, Enum
         {
             ExtensibilityHelper.BeginCheck(context)
                 .FailWhen(sut => sut.IsError, $"parse failed")
@@ -138,7 +138,7 @@ public static class NFluentParseExtensions
             return ExtensibilityHelper.BuildCheckLink(context);
         }
         
-        public static ICheckLink<ICheck<LexerResult<IN>>> IsOkLexing<IN>(this ICheck<LexerResult<IN>> context) where IN : struct
+        public static ICheckLink<ICheck<LexerResult<IN>>> IsOkLexing<IN>(this ICheck<LexerResult<IN>> context) where IN : struct, Enum
         {
             ExtensibilityHelper.BeginCheck(context)
                 .FailWhen(sut => sut.IsError, "lexing failed")
@@ -170,7 +170,7 @@ public static class NFluentParseExtensions
             return ExtensibilityHelper.BuildCheckLink(context);
         }
 
-        public static ICheckLink<ICheck<Token<T>>> IsEqualTo<T>(this ICheck<Token<T>> context, T expectedTokenId, string expectedValue) where T: struct
+        public static ICheckLink<ICheck<Token<T>>> IsEqualTo<T>(this ICheck<Token<T>> context, T expectedTokenId, string expectedValue) where T : struct, Enum
         {
             ExtensibilityHelper.BeginCheck(context)
                 .FailWhen(sut => !sut.TokenID.Equals(expectedTokenId), "expecting {expected} found {checked}.")
@@ -181,7 +181,7 @@ public static class NFluentParseExtensions
             return ExtensibilityHelper.BuildCheckLink(context);
         }
         
-        public static ICheckLink<ICheck<Token<T>>> IsEqualTo<T>(this ICheck<Token<T>> context, T expectedTokenId, string expectedValue, int expectedLine, int expectedColumn) where T: struct
+        public static ICheckLink<ICheck<Token<T>>> IsEqualTo<T>(this ICheck<Token<T>> context, T expectedTokenId, string expectedValue, int expectedLine, int expectedColumn) where T : struct, Enum
         {
             ExtensibilityHelper.BeginCheck(context)
                 .FailWhen(sut => !sut.TokenID.Equals(expectedTokenId), "expecting {expected} found {checked}.")

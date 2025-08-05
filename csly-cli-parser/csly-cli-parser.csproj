@@ -7,7 +7,7 @@
         <RootNamespace>csly.cli.parser</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="sly" Version="3.7.2" />
+        <PackageReference Include="sly" Version="3.7.3" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="System.Collections.immutable" Version="9.0.2"/>
